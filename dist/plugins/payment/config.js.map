@@ -1,0 +1,1 @@
+{"version":3,"file":"config.js","sourceRoot":"","sources":["../../../src/plugins/payment/config.ts"],"names":[],"mappings":"AAEA,OAAO,EACL,mBAAmB,EACnB,mBAAmB,GAEpB,MAAM,2BAA2B,CAAC;AAqBnC,mBAAmB,CAAC,iBAAiB,EAAE,EAAE,CAAC,CAAC;AAC3C,mBAAmB,CAAC,iBAAiB,EAAE;IACrC,iBAAiB,EAAE;QACjB,IAAI,EAAE,6DAA6D;QACnE,OAAO,EAAE,KAAK;KACf;CACF,CAAC,CAAC"}
