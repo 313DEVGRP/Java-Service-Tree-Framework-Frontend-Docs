@@ -1,1 +1,0 @@
-{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../../../src/plugins/copilot/workflow/index.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,uBAAuB,EAAE,wBAAwB,EAAE,MAAM,YAAY,CAAC;AAC/E,OAAO,EAAE,sBAAsB,EAAE,MAAM,WAAW,CAAC;AACnD,OAAO,EACL,KAAK,aAAa,EAClB,KAAK,gBAAgB,EACrB,gBAAgB,GACjB,MAAM,SAAS,CAAC;AACjB,OAAO,EAAE,kBAAkB,EAAE,qBAAqB,EAAE,MAAM,YAAY,CAAC"}

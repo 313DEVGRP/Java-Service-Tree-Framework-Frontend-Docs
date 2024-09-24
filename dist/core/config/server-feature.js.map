@@ -1,1 +1,0 @@
-{"version":3,"file":"server-feature.js","sourceRoot":"","sources":["../../../src/core/config/server-feature.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,aAAa,EAAE,MAAM,SAAS,CAAC;AAExC,MAAM,CAAC,MAAM,gBAAgB,GAAuB,IAAI,GAAG,EAAE,CAAC;AAC9D,MAAM,UAAU,oBAAoB,CAAC,OAAsB;IACzD,gBAAgB,CAAC,GAAG,CAAC,OAAO,CAAC,CAAC;AAChC,CAAC;AACD,OAAO,EAAE,aAAa,EAAE,CAAC"}
