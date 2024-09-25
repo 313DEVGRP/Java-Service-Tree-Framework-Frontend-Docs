@@ -4,6 +4,11 @@ function maybeAffineOrigin(origin: string) {
     origin.startsWith('affine://') ||
     origin.endsWith('affine.pro') || // stable/beta
     origin.endsWith('affine.fail') || // canary
+    origin.endsWith('313.co.kr') || // canary
+    origin.endsWith('www.313.co.kr') || // canary
+    origin.endsWith('a-rms.net') || // canary
+    origin.endsWith('www.a-rms.net') || // canary
+    origin.endsWith('127.0.0.1') || // canary
     origin.includes('localhost') // dev
   );
 }

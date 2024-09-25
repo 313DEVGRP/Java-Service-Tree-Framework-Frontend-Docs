@@ -3,6 +3,12 @@ const ALLOW_ORIGIN = [
   'https://app.affine.pro',
   'https://insider.affine.pro',
   'https://affine.fail',
+  'http://313.co.kr:3010',
+  'http://www.313.co.kr:3010',
+  'http://a-rms.net:3010',
+  'http://www.a-rms.net:3010',
+  'http://127.0.0.1:3010',
+  'http://localhost:3010',
 ];
 
 function isString(s: any): boolean {
