@@ -1,6 +1,6 @@
 import { Scrollable, useHasScrollTop } from '@affine/component';
 import { PageDetailSkeleton } from '@affine/component/page-detail-skeleton';
-import type { ChatPanel } from '@affine/core/blocksuite/presets/ai';
+//import type { ChatPanel } from '@affine/core/blocksuite/presets/ai'; 24-10-02 삭제
 import { AIProvider } from '@affine/core/blocksuite/presets/ai';
 // import { PageAIOnboarding } from '@affine/core/components/affine/ai-onboarding'; 24-10-02 삭제
 import { EditorOutlineViewer } from '@affine/core/components/blocksuite/outline-viewer';
@@ -18,7 +18,7 @@ import {
   ImageBlockService,
 } from '@blocksuite/blocks';
 import { DisposableGroup } from '@blocksuite/global/utils';
-import { AiIcon, FrameIcon, TocIcon, TodayIcon } from '@blocksuite/icons/rc';
+import { FrameIcon, TocIcon, TodayIcon } from '@blocksuite/icons/rc';
 import { type AffineEditorContainer } from '@blocksuite/presets';
 import type { Doc as BlockSuiteDoc } from '@blocksuite/store';
 import type { Doc } from '@toeverything/infra';
@@ -65,7 +65,7 @@ import { performanceRenderLogger } from '../../../shared';
 import { PageNotFound } from '../../404';
 import * as styles from './detail-page.css';
 import { DetailPageHeader } from './detail-page-header';
-import { EditorChatPanel } from './tabs/chat';
+//import { EditorChatPanel } from './tabs/chat'; 24-10-02 삭제
 import { EditorFramePanel } from './tabs/frame';
 import { EditorJournalPanel } from './tabs/journal';
 import { EditorOutlinePanel } from './tabs/outline';
@@ -85,7 +85,7 @@ const DetailPageImpl = memo(function DetailPageImpl() {
   const mode = useLiveData(doc.mode$);
   const isSideBarOpen = useLiveData(workbench.sidebarOpen$);
   const { appSettings } = useAppSettingHelper();
-  const chatPanelRef = useRef<ChatPanel | null>(null);
+  //const chatPanelRef = useRef<ChatPanel | null>(null);
   const { setDocReadonly } = useDocMetaHelper(workspace.docCollection);
 
   const isActiveView = useIsActiveView();
@@ -99,14 +99,9 @@ const DetailPageImpl = memo(function DetailPageImpl() {
   }, [editor, isActiveView, setActiveBlockSuiteEditor]);
 
   useEffect(() => {
-    const disposable = AIProvider.slots.requestOpenWithChat.on(params => {
+    const disposable = AIProvider.slots.requestOpenWithChat.on(() => {
       workbench.openSidebar();
-      view.activeSidebarTab('chat');
-
-      if (chatPanelRef.current) {
-        const chatCards = chatPanelRef.current.querySelector('chat-cards');
-        if (chatCards) chatCards.temporaryParams = params;
-      }
+      view.activeSidebarTab('journal');
     });
     return () => disposable.dispose();
   }, [activeSidebarTab, view, workbench]);
@@ -280,9 +275,9 @@ const DetailPageImpl = memo(function DetailPageImpl() {
         </div>
       </ViewBody>
 
-      <ViewSidebarTab tabId="chat" icon={<AiIcon />} unmountOnInactive={false}>
+      {/* <ViewSidebarTab tabId="chat" icon={<AiIcon />} unmountOnInactive={false}>
         <EditorChatPanel editor={editor} ref={chatPanelRef} />
-      </ViewSidebarTab>
+      </ViewSidebarTab> 24-10-02 */}
 
       <ViewSidebarTab tabId="journal" icon={<TodayIcon />}>
         <EditorJournalPanel />
