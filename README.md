@@ -9,3 +9,10 @@
    3. `4.3.1`이 출력되면 성공
 4. `yarn install` 명령어로 필요 패키지 설치
 5. `yarn dev` 명령어로 로컬 구동
+
+COPY ./packages/frontend/web/dist ./dist
+COPY ./packages/frontend/admin/dist ./admin
+
+COPY ./packages/backend/server /app
+COPY ./packages/frontend/web/dist /app/static
+COPY ./packages/frontend/admin/dist /app/static/admin

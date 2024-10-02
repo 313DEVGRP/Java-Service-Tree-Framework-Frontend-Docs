@@ -8,7 +8,6 @@
 .yarn/versions
 
 # compiled output
-*dist
 /tmp
 /out-tsc
 .nyc_output
