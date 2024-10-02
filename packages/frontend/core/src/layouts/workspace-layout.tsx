@@ -31,14 +31,14 @@ import {
 import { Map as YMap } from 'yjs';
 
 import { AIProvider } from '../blocksuite/presets/ai';
-import { WorkspaceAIOnboarding } from '../components/affine/ai-onboarding';
+// import { WorkspaceAIOnboarding } from '../components/affine/ai-onboarding'; 24-10-02 삭제
 import { AppContainer } from '../components/affine/app-container';
 import { SyncAwareness } from '../components/affine/awareness';
 import {
   appSidebarResizingAtom,
   SidebarSwitch,
 } from '../components/app-sidebar';
-import { AIIsland } from '../components/pure/ai-island';
+// import { AIIsland } from '../components/pure/ai-island'; 24-10-02 삭제
 import { RootAppSidebar } from '../components/root-app-sidebar';
 import { MainContainer } from '../components/workspace';
 import { WorkspaceUpgrade } from '../components/workspace-upgrade';
@@ -67,8 +67,8 @@ export const WorkspaceLayout = function WorkspaceLayout({
       <CurrentWorkspaceModals />
       <WorkspaceLayoutInner>{children}</WorkspaceLayoutInner>
       {/* should show after workspace loaded */}
-      <WorkspaceAIOnboarding />
-      <AIIsland />
+      {/* <WorkspaceAIOnboarding /> 24-10-24 삭제 */}
+      {/* <AIIsland /> 24-10-24 삭제 */}
     </SWRConfigProvider>
   );
 };
