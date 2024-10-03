@@ -1,0 +1,2 @@
+"use strict";(globalThis.webpackChunk_affine_web=globalThis.webpackChunk_affine_web||[]).push([[4701],{24701:(w,_,c)=>{c.d(_,{wx:()=>x,Pd:()=>a,zN:()=>e,r6:()=>j,oE:()=>b,t8:()=>h,$r:()=>i});var x="_12jc2wx0",a="_12jc2wx2",e="_12jc2wx6",j="_12jc2wx1",b="_12jc2wx3",h="_12jc2wx5",i="_12jc2wx4"}}]);
+//# sourceMappingURL=chunk.4701.297f7da8.js.map

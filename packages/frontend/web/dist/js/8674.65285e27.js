@@ -1,0 +1,2 @@
+"use strict";(globalThis.webpackChunk_affine_web=globalThis.webpackChunk_affine_web||[]).push([[8674],{18674:(e,s,t)=>{t.d(s,{y:()=>i});class i{constructor(e){this.id=e,this.fields=new Map}insert(e,s){let t=this.fields.get(e)??[];Array.isArray(s)?t.push(...s):t.push(s),this.fields.set(e,t)}get(e){let s=this.fields.get(e);return void 0===s?void 0:1===s.length?s[0]:s}static from(e,s){let t=new i(e);if(s instanceof Map)for(let[e,i]of s)t.insert(e,i);else for(let e in s)t.insert(e,s[e]);return t}}}}]);
+//# sourceMappingURL=8674.65285e27.js.map

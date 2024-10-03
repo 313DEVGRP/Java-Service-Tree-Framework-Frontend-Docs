@@ -1,0 +1,2 @@
+"use strict";(globalThis.webpackChunk_affine_web=globalThis.webpackChunk_affine_web||[]).push([[4581],{44581:(e,a,b)=>{b.r(a),b.d(a,{Component:()=>h});var n=b(36870),s=b(90863);let h=()=>(0,n.jsx)(s.A,{})}}]);
+//# sourceMappingURL=chunk.4581.d982d69a.js.map
