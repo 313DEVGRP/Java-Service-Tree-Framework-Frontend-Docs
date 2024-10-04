@@ -19,8 +19,7 @@ export function getRuntimeConfig(buildFlags: BuildFlags): RuntimeConfig {
         enablePreloading: true,
         enableCaptcha: true,
         enableExperimentalFeature: true,
-        allowLocalWorkspace:
-          buildFlags.distribution === 'desktop' ? true : false,
+        allowLocalWorkspace: false,
         enableOrganize: true,
         enableInfoModal: true,
 
@@ -84,15 +83,11 @@ export function getRuntimeConfig(buildFlags: BuildFlags): RuntimeConfig {
     enableEnhanceShareMode: process.env.ENABLE_ENHANCE_SHARE_MODE
       ? process.env.ENABLE_ENHANCE_SHARE_MODE === 'true'
       : currentBuildPreset.enableEnhanceShareMode,
-    allowLocalWorkspace: process.env.ALLOW_LOCAL_WORKSPACE
-      ? process.env.ALLOW_LOCAL_WORKSPACE === 'true'
-      : buildFlags.mode === 'development'
-        ? true
-        : currentBuildPreset.allowLocalWorkspace,
+    allowLocalWorkspace: false,
   };
 
   const testEnvironmentPreset = {
-    allowLocalWorkspace: true,
+    allowLocalWorkspace: false,
   };
 
   if (buildFlags.mode === 'development') {
