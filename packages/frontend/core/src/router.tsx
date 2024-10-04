@@ -164,4 +164,5 @@ export const router = (
   future: {
     v7_normalizeFormMethod: true,
   },
+  basename: '/adoc', // Adjust this to your needs
 });
