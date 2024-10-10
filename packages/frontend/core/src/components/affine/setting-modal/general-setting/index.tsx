@@ -1,8 +1,6 @@
-import { UserFeatureService } from '@affine/core/modules/cloud/services/user-feature';
 import { useI18n } from '@affine/i18n';
 import {
   AppearanceIcon,
-  ExperimentIcon,
   InformationIcon,
   KeyboardIcon,
 } from '@blocksuite/icons/rc';
@@ -15,7 +13,6 @@ import type { GeneralSettingKey } from '../types';
 import { AboutAffine } from './about';
 import { AppearanceSettings } from './appearance';
 import { BillingSettings } from './billing';
-import { ExperimentalFeatures } from './experimental-features';
 import { PaymentIcon, UpgradeIcon } from './icons';
 import { AFFiNEPricingPlans } from './plans';
 import { Shortcuts } from './shortcuts';
@@ -31,19 +28,14 @@ export type GeneralSettingList = GeneralSettingListItem[];
 
 export const useGeneralSettingList = (): GeneralSettingList => {
   const t = useI18n();
-  const { authService, serverConfigService, userFeatureService } = useServices({
+  const { authService, serverConfigService } = useServices({
     AuthService,
     ServerConfigService,
-    UserFeatureService,
   });
   const status = useLiveData(authService.session.status$);
   const hasPaymentFeature = useLiveData(
     serverConfigService.serverConfig.features$.map(f => f?.payment)
   );
-
-  useEffect(() => {
-    userFeatureService.userFeature.revalidate();
-  }, [userFeatureService]);
 
   const settings: GeneralSettingListItem[] = [
     {
@@ -83,15 +75,6 @@ export const useGeneralSettingList = (): GeneralSettingList => {
     }
   }
 
-  if (runtimeConfig.enableExperimentalFeature) {
-    settings.push({
-      key: 'experimental-features',
-      title: t['com.affine.settings.workspace.experimental-features'](),
-      icon: ExperimentIcon,
-      testId: 'experimental-features-trigger',
-    });
-  }
-
   return settings;
 };
 
@@ -111,8 +94,6 @@ export const GeneralSetting = ({ generalKey }: GeneralSettingProps) => {
       return <AFFiNEPricingPlans />;
     case 'billing':
       return <BillingSettings />;
-    case 'experimental-features':
-      return <ExperimentalFeatures />;
     default:
       return null;
   }
