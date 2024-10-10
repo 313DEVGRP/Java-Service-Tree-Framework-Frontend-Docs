@@ -1,3 +1,4 @@
+import { UserFeatureService } from '@affine/core/modules/cloud/services/user-feature';
 import { useI18n } from '@affine/i18n';
 import {
   AppearanceIcon,
@@ -28,14 +29,19 @@ export type GeneralSettingList = GeneralSettingListItem[];
 
 export const useGeneralSettingList = (): GeneralSettingList => {
   const t = useI18n();
-  const { authService, serverConfigService } = useServices({
+  const { authService, serverConfigService, userFeatureService } = useServices({
     AuthService,
     ServerConfigService,
+    UserFeatureService,
   });
   const status = useLiveData(authService.session.status$);
   const hasPaymentFeature = useLiveData(
     serverConfigService.serverConfig.features$.map(f => f?.payment)
   );
+
+  useEffect(() => {
+    userFeatureService.userFeature.revalidate();
+  }, [userFeatureService]);
 
   const settings: GeneralSettingListItem[] = [
     {
