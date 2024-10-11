@@ -22,7 +22,7 @@ export type ErrorBoundaryProps = {
 
 export type EditorProps = {
   page: Doc;
-  mode: 'page' | 'edgeless';
+  mode: 'page';
   shared?: boolean;
   defaultSelectedBlockId?: string;
   // on Editor instance instantiated
