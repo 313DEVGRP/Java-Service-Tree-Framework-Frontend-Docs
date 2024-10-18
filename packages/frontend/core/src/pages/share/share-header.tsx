@@ -1,4 +1,4 @@
-import { EditorModeSwitch } from '@affine/core/components/blocksuite/block-suite-mode-switch';
+// import { EditorModeSwitch } from '@affine/core/components/blocksuite/block-suite-mode-switch';
 import ShareHeaderRightItem from '@affine/core/components/cloud/share-header-right-item';
 import type { DocCollection } from '@blocksuite/store';
 import type { DocMode } from '@toeverything/infra';
@@ -17,7 +17,7 @@ export function ShareHeader({
 }) {
   return (
     <div className={styles.header}>
-      <EditorModeSwitch isPublic pageId={pageId} publicMode={publishMode} />
+      {/* edgeless/page 변환 버튼 <EditorModeSwitch isPublic pageId={pageId} publicMode={publishMode} /> */}
       <BlocksuiteHeaderTitle
         docCollection={docCollection}
         pageId={pageId}

@@ -1,6 +1,7 @@
 import type { BlockComponent } from '@blocksuite/block-std';
 import type {
   AffineEditorContainer,
+  EdgelessEditor,
   PageEditor,
 } from '@blocksuite/presets';
 import type { Doc } from '@blocksuite/store';
@@ -18,7 +19,7 @@ import {
   useState,
 } from 'react';
 
-import { BlocksuiteDocEditor } from './lit-adaper';
+import { BlocksuiteDocEditor, BlocksuiteEdgelessEditor } from './lit-adaper';
 import * as styles from './styles.css';
 
 // copy forwardSlot from blocksuite, but it seems we need to dispose the pipe
@@ -103,7 +104,7 @@ export const BlocksuiteEditorContainer = forwardRef<
   const hashChangedRef = useRef(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const docRef = useRef<PageEditor>(null);
-  
+  const edgelessRef = useRef<EdgelessEditor>(null);
 
   const slots: BlocksuiteEditorContainerRef['slots'] = useMemo(() => {
     return {
@@ -152,19 +153,17 @@ export const BlocksuiteEditorContainer = forwardRef<
         return page;
       },
       get host() {
-        if (mode === 'page') {
-          return docRef.current?.host
-        }
-        return undefined;
+        return mode === 'page'
+          ? docRef.current?.host
+          : edgelessRef.current?.host;
       },
       get model() {
         return page.root as any;
       },
       get updateComplete() {
-        if (mode === 'page') {
-          return docRef.current?.updateComplete;
-        }
-        return undefined;
+        return mode === 'page'
+          ? docRef.current?.updateComplete
+          : edgelessRef.current?.updateComplete;
       },
       get mode() {
         return mode;
@@ -258,8 +257,14 @@ export const BlocksuiteEditorContainer = forwardRef<
       style={style}
       ref={rootRef}
     >
-      {mode === 'page' && (
+      {mode === 'page' ? (
         <BlocksuiteDocEditor shared={shared} page={page} ref={docRef} />
+      ) : (
+        <BlocksuiteEdgelessEditor
+          shared={shared}
+          page={page}
+          ref={edgelessRef}
+        />
       )}
     </div>
   );

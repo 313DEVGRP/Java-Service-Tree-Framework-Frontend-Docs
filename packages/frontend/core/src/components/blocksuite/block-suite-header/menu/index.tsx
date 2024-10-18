@@ -148,17 +148,18 @@ export const PageHeaderMenuButton = ({
     track.$.header.docOptions.renameDoc();
   }, [rename]);
 
-  const handleSwitchMode = useCallback(() => {
-    doc.toggleMode();
-    track.$.header.docOptions.switchPageMode({
-      mode: currentMode === 'page' ? 'edgeless' : 'page',
-    });
-    toast(
-      currentMode === 'page'
-        ? t['com.affine.toastMessage.edgelessMode']()
-        : t['com.affine.toastMessage.pageMode']()
-    );
-  }, [currentMode, doc, t]);
+  // edgeless/page 변환 버튼
+  // const handleSwitchMode = useCallback(() => {
+  //   doc.toggleMode();
+  //   track.$.header.docOptions.switchPageMode({
+  //     mode: currentMode === 'page' ? 'edgeless' : 'page',
+  //   });
+  //   toast(
+  //     currentMode === 'page'
+  //       ? t['com.affine.toastMessage.edgelessMode']()
+  //       : t['com.affine.toastMessage.pageMode']()
+  //   );
+  // }, [currentMode, doc, t]);
   const menuItemStyle = {
     padding: '4px 12px',
     transition: 'all 0.3s',
@@ -261,7 +262,7 @@ export const PageHeaderMenuButton = ({
           {t['Rename']()}
         </MenuItem>
       )}
-      <MenuItem
+      {/* edgeless/page 변환 버튼 <MenuItem
         preFix={
           <MenuIcon>
             {currentMode === 'page' ? <EdgelessIcon /> : <PageIcon />}
@@ -275,7 +276,7 @@ export const PageHeaderMenuButton = ({
         {currentMode === 'page'
           ? t['com.affine.pageMode.edgeless']()
           : t['com.affine.pageMode.page']()}
-      </MenuItem>
+      </MenuItem> */}
       <MenuItem
         data-testid="editor-option-menu-favorite"
         onSelect={handleToggleFavorite}

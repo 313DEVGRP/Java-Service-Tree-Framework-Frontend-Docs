@@ -31,7 +31,8 @@ export async function buildShowcaseWorkspace(
   );
 
   if (defaultDoc) {
-    defaultDoc.setMode('edgeless');
+    // page 모드로 생성
+    defaultDoc.setMode('page');
   }
 
   dispose();

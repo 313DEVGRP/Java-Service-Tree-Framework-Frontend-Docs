@@ -2,7 +2,7 @@ import { RadioGroup, type RadioItem, toast, Tooltip } from '@affine/component';
 import { registerAffineCommand } from '@affine/core/commands';
 import { track } from '@affine/core/mixpanel';
 import { useI18n } from '@affine/i18n';
-import { PageIcon } from '@blocksuite/icons/rc';
+import { EdgelessIcon, PageIcon } from '@blocksuite/icons/rc';
 import {
   type DocMode,
   DocsService,
@@ -12,7 +12,7 @@ import {
 import { useCallback, useEffect, useMemo } from 'react';
 
 import { switchItem } from './style.css';
-import {PageSwitchItem } from './switch-items';
+import { EdgelessSwitchItem, PageSwitchItem } from './switch-items';
 
 export interface EditorModeSwitchProps {
   pageId: string;
@@ -20,6 +20,12 @@ export interface EditorModeSwitchProps {
   publicMode?: DocMode;
 }
 
+const EdgelessRadioItem: RadioItem = {
+  value: 'edgeless',
+  label: <EdgelessSwitchItem />,
+  testId: 'switch-edgeless-mode-button',
+  className: switchItem,
+};
 const PageRadioItem: RadioItem = {
   value: 'page',
   label: <PageSwitchItem />,
@@ -45,11 +51,18 @@ export const EditorModeSwitch = ({
     track.$.header.actions.switchPageMode({ mode: 'page' });
   }, [currentMode, doc, isPublic, t, trash]);
 
+  const toggleEdgeless = useCallback(() => {
+    if (currentMode === 'edgeless' || isPublic || trash) return;
+    doc?.setMode('edgeless');
+    toast(t['com.affine.toastMessage.edgelessMode']());
+    track.$.header.actions.switchPageMode({ mode: 'edgeless' });
+  }, [currentMode, doc, isPublic, t, trash]);
+
   const onModeChange = useCallback(
     (mode: DocMode) => {
-     if (mode === 'page') togglePage() ;
+      mode === 'page' ? togglePage() : toggleEdgeless();
     },
-    [togglePage]
+    [toggleEdgeless, togglePage]
   );
 
   const shouldHide = useCallback(
@@ -63,13 +76,16 @@ export const EditorModeSwitch = ({
     return registerAffineCommand({
       id: 'affine:doc-mode-switch',
       category: 'editor:page',
-      label: t['com.affine.cmdk.switch-to-page'](),
-      icon: <PageIcon />,
+      label:
+        currentMode === 'page'
+          ? t['com.affine.cmdk.switch-to-edgeless']()
+          : t['com.affine.cmdk.switch-to-page'](),
+      icon: currentMode === 'page' ? <EdgelessIcon /> : <PageIcon />,
       keyBinding: {
         binding: 'Alt+KeyS',
         capture: true,
       },
-      run: () => onModeChange('page'),
+      run: () => onModeChange(currentMode === 'edgeless' ? 'page' : 'edgeless'),
     });
   }, [currentMode, isPublic, onModeChange, t, trash]);
 
@@ -85,6 +101,7 @@ export const EditorModeSwitch = ({
           mode={currentMode}
           setMode={onModeChange}
           hidePage={shouldHide('page')}
+          hideEdgeless={shouldHide('edgeless')}
         />
       </div>
     </Tooltip>
@@ -95,18 +112,21 @@ export interface PureEditorModeSwitchProps {
   mode?: DocMode;
   setMode: (mode: DocMode) => void;
   hidePage?: boolean;
+  hideEdgeless?: boolean;
 }
 
 export const PureEditorModeSwitch = ({
   mode,
   setMode,
   hidePage,
+  hideEdgeless,
 }: PureEditorModeSwitchProps) => {
   const items = useMemo(
     () => [
       ...(hidePage ? [] : [PageRadioItem]),
+      ...(hideEdgeless ? [] : [EdgelessRadioItem]),
     ],
-    [hidePage]
+    [hideEdgeless, hidePage]
   );
   return (
     <RadioGroup
