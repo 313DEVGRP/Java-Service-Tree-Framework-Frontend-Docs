@@ -66,7 +66,7 @@ import { PageNotFound } from '../../404';
 import * as styles from './detail-page.css';
 import { DetailPageHeader } from './detail-page-header';
 //import { EditorChatPanel } from './tabs/chat'; 24-10-02 삭제
-import { EditorFramePanel } from './tabs/frame';
+//import { EditorFramePanel } from './tabs/frame';
 import { EditorJournalPanel } from './tabs/journal';
 import { EditorOutlinePanel } from './tabs/outline';
 
@@ -287,9 +287,9 @@ const DetailPageImpl = memo(function DetailPageImpl() {
         <EditorOutlinePanel editor={editor} />
       </ViewSidebarTab>
 
-      <ViewSidebarTab tabId="frame" icon={<FrameIcon />}>
+      {/* <ViewSidebarTab tabId="frame" icon={<FrameIcon />}>
         <EditorFramePanel editor={editor} />
-      </ViewSidebarTab>
+      </ViewSidebarTab> */}
 
       <GlobalPageHistoryModal />
       {/* <PageAIOnboarding /> 24-10-02 삭제*/}
