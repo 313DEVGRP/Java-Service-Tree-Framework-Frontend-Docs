@@ -10,14 +10,14 @@ import { menuContent } from './new-page-button.css';
 
 type NewPageButtonProps = {
   createNewPage: (e?: MouseEvent) => void;
-  createNewEdgeless: (e?: MouseEvent) => void;
+  //createNewEdgeless: (e?: MouseEvent) => void;
   importFile?: () => void;
   size?: 'small' | 'default';
 };
 
 export const CreateNewPagePopup = ({
   createNewPage,
-  createNewEdgeless,
+  //createNewEdgeless,
   importFile,
 }: NewPageButtonProps) => {
   const t = useI18n();
@@ -38,14 +38,14 @@ export const CreateNewPagePopup = ({
         onAuxClick={createNewPage}
         data-testid="new-page-button-in-all-page"
       />
-      <BlockCard
+      {/* <BlockCard
         title={t['com.affine.new_edgeless']()}
         desc={t['com.affine.draw_with_a_blank_whiteboard']()}
         right={<EdgelessIcon width={20} height={20} />}
         onClick={createNewEdgeless}
         onAuxClick={createNewEdgeless}
         data-testid="new-edgeless-button-in-all-page"
-      />
+      /> */}
       {importFile ? (
         <BlockCard
           title={t['com.affine.new_import']()}
@@ -62,7 +62,7 @@ export const CreateNewPagePopup = ({
 
 export const NewPageButton = ({
   createNewPage,
-  createNewEdgeless,
+  //createNewEdgeless,
   importFile,
   size,
   children,
@@ -78,17 +78,17 @@ export const NewPageButton = ({
     [createNewPage]
   );
 
-  const handleCreateNewEdgeless: NewPageButtonProps['createNewEdgeless'] =
-    useCallback(
-      e => {
-        createNewEdgeless(e);
-        setOpen(false);
-        track.allDocs.header.actions.createDoc({
-          mode: 'edgeless',
-        });
-      },
-      [createNewEdgeless]
-    );
+  // const handleCreateNewEdgeless: NewPageButtonProps['createNewEdgeless'] =
+  //   useCallback(
+  //     e => {
+  //       createNewEdgeless(e);
+  //       setOpen(false);
+  //       track.allDocs.header.actions.createDoc({
+  //         mode: 'edgeless',
+  //       });
+  //     },
+  //     [createNewEdgeless]
+  //   );
 
   const handleImportFile = useCallback(() => {
     importFile?.();
@@ -100,7 +100,7 @@ export const NewPageButton = ({
       items={
         <CreateNewPagePopup
           createNewPage={handleCreateNewPage}
-          createNewEdgeless={handleCreateNewEdgeless}
+          // createNewEdgeless={handleCreateNewEdgeless}
           importFile={importFile ? handleImportFile : undefined}
         />
       }
