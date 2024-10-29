@@ -76,65 +76,18 @@ export function setupSlashMenuEntry(slashMenu: AffineSlashMenuWidget) {
     };
   };
 
+  
   const menu = slashMenu.config.items.slice();
+  /* DrawIo 추가 */
   menu.unshift({
-    name: 'Ask AI',
+    name: 'DrawIO',
     icon: AIStarIcon,
     showWhen: showWhenWrapper(),
-    action: ({ rootComponent }) => {
-      const view = rootComponent.host.view;
-      const affineAIPanelWidget = view.getWidget(
-        AFFINE_AI_PANEL_WIDGET,
-        rootComponent.model.id
-      ) as AffineAIPanelWidget;
-      assertExists(affineAIPanelWidget);
-      assertExists(AIProvider.actions.chat);
-      assertExists(affineAIPanelWidget.host);
-      handleInlineAskAIAction(affineAIPanelWidget.host);
+    action: () => {
+      window.open('http://www.313.co.kr/reference/drawio/', '_blank');
     },
   });
-
-  const AIMenuItems: AffineSlashMenuItem[] = [
-    { groupName: 'AFFiNE AI' },
-    ...AIItems.filter(({ name }) =>
-      ['Fix spelling', 'Fix grammar'].includes(name)
-    ).map(item => ({
-      ...actionItemWrapper(item),
-      name: `${item.name} from above`,
-    })),
-
-    ...AIItems.filter(({ name }) =>
-      ['Summarize', 'Continue writing'].includes(name)
-    ).map(actionItemWrapper),
-
-    {
-      name: 'Action with above',
-      icon: iconWrapper(MoreHorizontalIcon),
-      subMenu: [
-        { groupName: 'Action with above' },
-        ...AIItems.filter(({ name }) =>
-          ['Translate to', 'Change tone to'].includes(name)
-        ).map(subMenuWrapper),
-
-        ...AIItems.filter(({ name }) =>
-          [
-            'Improve writing',
-            'Make it longer',
-            'Make it shorter',
-            'Generate outline',
-            'Find actions',
-          ].includes(name)
-        ).map(actionItemWrapper),
-      ],
-    },
-  ];
-
-  const basicGroupEnd = menu.findIndex(
-    item => 'groupName' in item && item.groupName === 'List'
-  );
-  // insert ai item after basic group
-  menu.splice(basicGroupEnd, 0, ...AIMenuItems);
-
+  /* AIMenuItems, Ask AI 메뉴 삭제 */
   slashMenu.config = {
     ...AffineSlashMenuWidget.DEFAULT_CONFIG,
     items: menu,

@@ -113,7 +113,7 @@ export const AIParagraphBlockSpec: BlockSpec = {
       assertInstanceOf(service, ParagraphBlockService);
       service.placeholderGenerator = model => {
         if (model.type === 'text') {
-          return "Type '/' for commands, 'space' for AI";
+          return "Type '/' for commands";
         }
 
         const placeholders = {
@@ -131,17 +131,17 @@ export const AIParagraphBlockSpec: BlockSpec = {
   },
 };
 
-export const AICodeBlockSpec: BlockSpec = {
-  ...CodeBlockSpec,
-  setup(slots, disposableGroup) {
-    CodeBlockSpec.setup?.(slots, disposableGroup);
-    slots.widgetConnected.on(view => {
-      if (view.component instanceof AffineCodeToolbarWidget) {
-        setupCodeToolbarEntry(view.component);
-      }
-    });
-  },
-};
+// export const AICodeBlockSpec: BlockSpec = {
+//   ...CodeBlockSpec,
+//   setup(slots, disposableGroup) {
+//     CodeBlockSpec.setup?.(slots, disposableGroup);
+//     slots.widgetConnected.on(view => {
+//       if (view.component instanceof AffineCodeToolbarWidget) {
+//         setupCodeToolbarEntry(view.component);
+//       }
+//     });
+//   },
+// };
 
 export const AIImageBlockSpec: BlockSpec = {
   ...ImageBlockSpec,

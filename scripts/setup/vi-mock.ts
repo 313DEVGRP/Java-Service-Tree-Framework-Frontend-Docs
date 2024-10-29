@@ -37,7 +37,7 @@ vi.mock('@blocksuite/presets/ai', () => ({
     provide: vi.fn(),
   },
   AIEdgelessRootBlockSpec: {},
-  AICodeBlockSpec: {},
+  //AICodeBlockSpec: {},
   AIImageBlockSpec: {},
   AIParagraphBlockSpec: {},
   AIPageRootBlockSpec: {},
