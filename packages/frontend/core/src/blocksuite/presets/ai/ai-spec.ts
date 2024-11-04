@@ -19,8 +19,8 @@ import {
 import { assertInstanceOf } from '@blocksuite/global/utils';
 import { literal, unsafeStatic } from 'lit/static-html.js';
 
-import { buildAIPanelConfig } from './ai-panel';
-import { setupCodeToolbarEntry } from './entries/code-toolbar/setup-code-toolbar';
+// import { buildAIPanelConfig } from './ai-panel';
+// import { setupCodeToolbarEntry } from './entries/code-toolbar/setup-code-toolbar';
 import {
   setupEdgelessCopilot,
   setupEdgelessElementToolbarEntry,
@@ -28,7 +28,7 @@ import {
 import { setupFormatBarEntry } from './entries/format-bar/setup-format-bar';
 import { setupImageToolbarEntry } from './entries/image-toolbar/setup-image-toolbar';
 import { setupSlashMenuEntry } from './entries/slash-menu/setup-slash-menu';
-import { setupSpaceEntry } from './entries/space/setup-space';
+// import { setupSpaceEntry } from './entries/space/setup-space'; 
 
 export const AIPageRootBlockSpec: BlockSpec = {
   ...PageRootBlockSpec,
@@ -45,11 +45,11 @@ export const AIPageRootBlockSpec: BlockSpec = {
     PageRootBlockSpec.setup?.(slots, disposableGroup);
     disposableGroup.add(
       slots.widgetConnected.on(view => {
-        if (view.component instanceof AffineAIPanelWidget) {
-          view.component.style.width = '630px';
-          view.component.config = buildAIPanelConfig(view.component);
-          setupSpaceEntry(view.component);
-        }
+        // if (view.component instanceof AffineAIPanelWidget) { 'space' key : AI 입력창 삭제
+        //   view.component.style.width = '630px';
+        //   view.component.config = buildAIPanelConfig(view.component);
+        //   setupSpaceEntry(view.component);
+        // }
 
         if (view.component instanceof AffineFormatBarWidget) {
           setupFormatBarEntry(view.component);
@@ -79,12 +79,12 @@ export const AIEdgelessRootBlockSpec: BlockSpec = {
   },
   setup(slots, disposableGroup) {
     EdgelessRootBlockSpec.setup?.(slots, disposableGroup);
-    slots.widgetConnected.on(view => {
-      if (view.component instanceof AffineAIPanelWidget) {
-        view.component.style.width = '430px';
-        view.component.config = buildAIPanelConfig(view.component);
-        setupSpaceEntry(view.component);
-      }
+    slots.widgetConnected.on(view => { 
+      // if (view.component instanceof AffineAIPanelWidget) { 'space' key : AI 입력창 삭제
+      //   view.component.style.width = '430px';
+      //   view.component.config = buildAIPanelConfig(view.component);
+      //   setupSpaceEntry(view.component);
+      // }
 
       if (view.component instanceof EdgelessCopilotWidget) {
         setupEdgelessCopilot(view.component);
@@ -131,7 +131,7 @@ export const AIParagraphBlockSpec: BlockSpec = {
   },
 };
 
-// export const AICodeBlockSpec: BlockSpec = {
+// export const AICodeBlockSpec: BlockSpec = { 
 //   ...CodeBlockSpec,
 //   setup(slots, disposableGroup) {
 //     CodeBlockSpec.setup?.(slots, disposableGroup);
