@@ -248,7 +248,7 @@ export const useWinPageKeyboardShortcuts = (): ShortcutMap => {
       [t('increaseIndent')]: ['Tab'],
       [t('reduceIndent')]: ['Shift+Tab'],
       [t('groupDatabase')]: ['Ctrl + G'],
-      ['Switch']: ['Alt + S'],
+      // ['Switch']: ['Alt + S'], 단축키 문구 삭제 page/edgeless 
       // not implement yet
       // [t('moveUp')]: 'Ctrl + Alt + ↑',
       // [t('moveDown')]: 'Ctrl + Alt + ↓',
