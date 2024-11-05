@@ -173,7 +173,7 @@ export const AppearanceSettings = () => {
             />
           </SettingRow>
         ) : null}
-        {runtimeConfig.enableThemeEditor ? <ThemeEditorSetting /> : null}
+        {/* 테마 수정 삭제 {runtimeConfig.enableThemeEditor ? <ThemeEditorSetting /> : null} */}
       </SettingWrapper>
       {runtimeConfig.enableNewSettingUnstableApi ? (
         <SettingWrapper title={t['com.affine.appearanceSettings.date.title']()}>
