@@ -29,13 +29,13 @@ export const AIPlan = () => {
   }
 
   const billingTip = subscription?.nextBillAt
-    ? t['com.affine.payment.ai.billing-tip.next-bill-at']({
+    ? t['com.arms.payment.ai.billing-tip.next-bill-at']({
         due: i18nTime(subscription.nextBillAt, {
           absolute: { accuracy: 'day' },
         }),
       })
     : subscription?.canceledAt && subscription.end
-      ? t['com.affine.payment.ai.billing-tip.end-at']({
+      ? t['com.arms.payment.ai.billing-tip.end-at']({
           end: i18nTime(subscription.end, {
             absolute: { accuracy: 'day' },
           }),
@@ -46,8 +46,8 @@ export const AIPlan = () => {
     <AIPlanLayout
       caption={
         subscription
-          ? t['com.affine.payment.ai.pricing-plan.caption-purchased']()
-          : t['com.affine.payment.ai.pricing-plan.caption-free']()
+          ? t['com.arms.payment.ai.pricing-plan.caption-purchased']()
+          : t['com.arms.payment.ai.pricing-plan.caption-free']()
       }
       actionButtons={
         isLoggedIn ? (
@@ -65,7 +65,7 @@ export const AIPlan = () => {
               />
               <a href="https://ai.affine.pro" target="_blank" rel="noreferrer">
                 <Button className={styles.learnAIButton}>
-                  {t['com.affine.payment.ai.pricing-plan.learn']()}
+                  {t['com.arms.payment.ai.pricing-plan.learn']()}
                 </Button>
               </a>
             </>

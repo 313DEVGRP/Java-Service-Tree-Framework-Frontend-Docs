@@ -118,16 +118,16 @@ export const SignIn: FC<AuthPanelProps> = ({
   return (
     <>
       <ModalHeader
-        title={t['com.affine.auth.sign.in']()}
-        subTitle={t['com.affine.brand.affineCloud']()}
+        title={t['com.arms.auth.sign.in']()}
+        subTitle={t['com.arms.brand.affineCloud']()}
       />
 
       <OAuth redirectUri={searchParams.get('redirect_uri')} />
 
       <div className={style.authModalContent}>
         <AuthInput
-          label={t['com.affine.settings.email']()}
-          placeholder={t['com.affine.auth.sign.email.placeholder']()}
+          label={t['com.arms.settings.email']()}
+          placeholder={t['com.arms.auth.sign.email.placeholder']()}
           value={email}
           onChange={useCallback(
             (value: string) => {
@@ -136,9 +136,7 @@ export const SignIn: FC<AuthPanelProps> = ({
             [setAuthEmail]
           )}
           error={!isValidEmail}
-          errorHint={
-            isValidEmail ? '' : t['com.affine.auth.sign.email.error']()
-          }
+          errorHint={isValidEmail ? '' : t['com.arms.auth.sign.email.error']()}
           onEnter={onContinue}
         />
 
@@ -155,13 +153,13 @@ export const SignIn: FC<AuthPanelProps> = ({
             suffixStyle={{ width: 20, height: 20, color: cssVar('blue') }}
             onClick={onContinue}
           >
-            {t['com.affine.auth.sign.email.continue']()}
+            {t['com.arms.auth.sign.email.continue']()}
           </Button>
         ) : null}
 
         <div className={style.authMessage}>
           {/*prettier-ignore*/}
-          <Trans i18nKey="com.affine.auth.sign.message">
+          <Trans i18nKey="com.arms.auth.sign.message">
               By clicking &quot;Continue with Google/Email&quot; above, you acknowledge that
               you agree to AFFiNE&apos;s <a href="https://affine.pro/terms" target="_blank" rel="noreferrer">Terms of Conditions</a> and <a href="https://affine.pro/privacy" target="_blank" rel="noreferrer">Privacy Policy</a>.
           </Trans>

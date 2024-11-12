@@ -45,7 +45,7 @@ export const EmptyPageList = ({
       );
     }
     if (type === 'trash') {
-      return t['com.affine.workspaceSubPath.trash.empty-description']();
+      return t['com.arms.workspaceSubPath.trash.empty-description']();
     }
     if (type === 'shared') {
       return t['emptySharedPages']();
@@ -57,7 +57,7 @@ export const EmptyPageList = ({
     <div className={styles.pageListEmptyStyle}>
       {heading && <div>{heading}</div>}
       <Empty
-        title={t['com.affine.emptyDesc']()}
+        title={t['com.arms.emptyDesc']()}
         description={
           <span className={styles.descWrapper}>{getEmptyDescription()}</span>
         }
@@ -71,7 +71,7 @@ export const EmptyCollectionList = ({ heading }: { heading: ReactNode }) => {
   return (
     <div className={styles.pageListEmptyStyle}>
       {heading && <div>{heading}</div>}
-      <Empty title={t['com.affine.emptyDesc.collection']()} />
+      <Empty title={t['com.arms.emptyDesc.collection']()} />
     </div>
   );
 };
@@ -81,7 +81,7 @@ export const EmptyTagList = ({ heading }: { heading: ReactNode }) => {
   return (
     <div className={styles.pageListEmptyStyle}>
       {heading && <div>{heading}</div>}
-      <Empty title={t['com.affine.emptyDesc.tag']()} />
+      <Empty title={t['com.arms.emptyDesc.tag']()} />
     </div>
   );
 };

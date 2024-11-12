@@ -225,11 +225,11 @@ const rotateVisibility = (
 const visibilityMenuText = (visibility: PropertyVisibility = 'visible') => {
   switch (visibility) {
     case 'hide':
-      return 'com.affine.page-properties.property.hide-in-view';
+      return 'com.arms.page-properties.property.hide-in-view';
     case 'hide-if-empty':
-      return 'com.affine.page-properties.property.hide-in-view-when-empty';
+      return 'com.arms.page-properties.property.hide-in-view-when-empty';
     case 'visible':
-      return 'com.affine.page-properties.property.show-in-view';
+      return 'com.arms.page-properties.property.show-in-view';
     default:
       throw new Error(`unknown visibility: ${visibility}`);
   }
@@ -238,11 +238,11 @@ const visibilityMenuText = (visibility: PropertyVisibility = 'visible') => {
 const visibilitySelectorText = (visibility: PropertyVisibility = 'visible') => {
   switch (visibility) {
     case 'hide':
-      return 'com.affine.page-properties.property.always-hide';
+      return 'com.arms.page-properties.property.always-hide';
     case 'hide-if-empty':
-      return 'com.affine.page-properties.property.hide-when-empty';
+      return 'com.arms.page-properties.property.hide-when-empty';
     case 'visible':
-      return 'com.affine.page-properties.property.always-show';
+      return 'com.arms.page-properties.property.always-show';
     default:
       throw new Error(`unknown visibility: ${visibility}`);
   }
@@ -301,7 +301,7 @@ const VisibilityModeSelector = ({
         className={styles.selectorButton}
       >
         {required ? (
-          t['com.affine.page-properties.property.required']()
+          t['com.arms.page-properties.property.required']()
         ) : (
           <>
             {t[visibilitySelectorText(visibility)]()}
@@ -327,7 +327,7 @@ export const PagePropertiesSettingsPopup = ({
         className={styles.menuHeader}
         style={{ minWidth: 320 }}
       >
-        {t['com.affine.page-properties.settings.title']()}
+        {t['com.arms.page-properties.settings.title']()}
       </div>
     );
     options.push('-');
@@ -528,7 +528,7 @@ export const PagePropertyRowNameMenu = ({
       options.push({
         type: 'danger',
         icon: <DeleteIcon />,
-        text: t['com.affine.page-properties.property.remove-property'](),
+        text: t['com.arms.page-properties.property.remove-property'](),
         onClick: () => setShowDeleteModal(true),
       });
     }
@@ -654,7 +654,7 @@ export const PagePropertiesTableHeader = ({
               })}
             </>
           ) : (
-            <>{t['com.affine.syncing']()}</>
+            <>{t['com.arms.syncing']()}</>
           )}
         </div>
       </Tooltip>
@@ -692,7 +692,7 @@ export const PagePropertiesTableHeader = ({
         {backlinks.length > 0 ? (
           <PageBacklinksPopup backlinks={backlinks}>
             <div className={styles.tableHeaderBacklinksHint}>
-              {t['com.affine.page-properties.backlinks']()} · {backlinks.length}
+              {t['com.arms.page-properties.backlinks']()} · {backlinks.length}
             </div>
           </PageBacklinksPopup>
         ) : null}
@@ -701,7 +701,7 @@ export const PagePropertiesTableHeader = ({
       <Divider />
       <div className={styles.tableHeaderSecondaryRow}>
         <div className={clsx(!open ? styles.pageInfoDimmed : null)}>
-          {t['com.affine.page-properties.page-info']()}
+          {t['com.arms.page-properties.page-info']()}
         </div>
         {properties.length === 0 || manager.readonly ? null : (
           <PagePropertiesSettingsPopup>
@@ -918,7 +918,7 @@ export const PagePropertiesCreatePropertyMenuItems = ({
     const options: MenuItemOption[] = [];
     options.push(
       <div role="heading" className={styles.menuHeader}>
-        {t['com.affine.page-properties.create-property.menu.header']()}
+        {t['com.arms.page-properties.create-property.menu.header']()}
       </div>
     );
     options.push('-');
@@ -926,7 +926,7 @@ export const PagePropertiesCreatePropertyMenuItems = ({
       newPropertyTypes.map(type => {
         const iconName = getDefaultIconName(type);
         const Icon = nameToIcon(iconName, type);
-        const name = t[`com.affine.page-properties.property.${type}`]();
+        const name = t[`com.arms.page-properties.property.${type}`]();
         return {
           icon: <Icon />,
           text: name,
@@ -980,7 +980,7 @@ const PagePropertiesAddPropertyMenuItems = ({
     const options: MenuItemOption[] = [];
     options.push(
       <div role="heading" className={styles.menuHeader}>
-        {t['com.affine.page-properties.add-property.menu.header']()}
+        {t['com.arms.page-properties.add-property.menu.header']()}
       </div>
     );
 
@@ -1003,7 +1003,7 @@ const PagePropertiesAddPropertyMenuItems = ({
     options.push('-');
     options.push({
       icon: <PlusIcon />,
-      text: t['com.affine.page-properties.add-property.menu.create'](),
+      text: t['com.arms.page-properties.add-property.menu.create'](),
       onClick: onCreateClicked,
     });
 
@@ -1057,7 +1057,7 @@ export const PagePropertiesAddProperty = () => {
         prefix={<PlusIcon />}
         className={styles.addPropertyButton}
       >
-        {t['com.affine.page-properties.add-property']()}
+        {t['com.arms.page-properties.add-property']()}
       </Button>
     </Menu>
   );

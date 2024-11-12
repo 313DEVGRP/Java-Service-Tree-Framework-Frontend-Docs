@@ -123,7 +123,7 @@ export const EditTagMenu = ({
     });
 
     options.push({
-      text: t['com.affine.page-properties.tags.open-tags-page'](),
+      text: t['com.arms.page-properties.tags.open-tags-page'](),
       icon: <TagsIcon />,
       onClick() {
         navigate.jumpToTag(legacyProperties.workspaceId, tag?.id || '');
@@ -371,7 +371,7 @@ export const TagsEditor = ({ pageId, readonly }: TagsEditorProps) => {
       </div>
       <div className={styles.tagsEditorTagsSelector}>
         <div className={styles.tagsEditorTagsSelectorHeader}>
-          {t['com.affine.page-properties.tags.selector-header-title']()}
+          {t['com.arms.page-properties.tags.selector-header-title']()}
         </div>
         <Scrollable.Root>
           <Scrollable.Viewport

@@ -65,7 +65,7 @@ export const TimeRow = ({ docId }: { docId: string }) => {
         {serverClock ? (
           <RowComponent
             icon={<HistoryIcon />}
-            name={t[!syncing && !retrying ? 'Updated' : 'com.affine.syncing']()}
+            name={t[!syncing && !retrying ? 'Updated' : 'com.arms.syncing']()}
             time={!syncing && !retrying ? formatI18nTime(serverClock) : null}
           />
         ) : manager.updatedDate ? (

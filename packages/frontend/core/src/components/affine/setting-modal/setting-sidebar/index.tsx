@@ -95,11 +95,11 @@ export const SignInButton = () => {
       </div>
 
       <div className="content">
-        <div className="name" title={t['com.affine.settings.sign']()}>
-          {t['com.affine.settings.sign']()}
+        <div className="name" title={t['com.arms.settings.sign']()}>
+          {t['com.arms.settings.sign']()}
         </div>
-        <div className="email" title={t['com.affine.setting.sign.message']()}>
-          {t['com.affine.setting.sign.message']()}
+        <div className="email" title={t['com.arms.setting.sign.message']()}>
+          {t['com.arms.setting.sign.message']()}
         </div>
       </div>
     </div>
@@ -148,10 +148,10 @@ export const SettingSidebar = ({
   return (
     <div className={style.settingSlideBar} data-testid="settings-sidebar">
       <div className={style.sidebarTitle}>
-        {t['com.affine.settingSidebar.title']()}
+        {t['com.arms.settingSidebar.title']()}
       </div>
       <div className={style.sidebarSubtitle}>
-        {t['com.affine.settingSidebar.settings.general']()}
+        {t['com.arms.settingSidebar.settings.general']()}
       </div>
       <div className={style.sidebarItemsWrapper}>
         {generalList.map(({ title, icon, key, testId }) => {
@@ -174,7 +174,7 @@ export const SettingSidebar = ({
       </div>
 
       <div className={style.sidebarSubtitle}>
-        {t['com.affine.settingSidebar.settings.workspace']()}
+        {t['com.arms.settingSidebar.settings.workspace']()}
       </div>
       <div className={clsx(style.sidebarItemsWrapper, 'scroll')}>
         <Suspense fallback={<WorkspaceListSkeleton />}>
@@ -240,11 +240,11 @@ export const WorkspaceList = ({
 const subTabConfigs = [
   {
     key: 'preference',
-    title: 'com.affine.settings.workspace.preferences',
+    title: 'com.arms.settings.workspace.preferences',
   },
   {
     key: 'properties',
-    title: 'com.affine.settings.workspace.properties',
+    title: 'com.arms.settings.workspace.properties',
   },
 ] satisfies {
   key: WorkspaceSubTab;

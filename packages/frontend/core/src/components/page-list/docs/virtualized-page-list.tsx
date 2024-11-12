@@ -31,7 +31,7 @@ const usePageOperationsRenderer = () => {
   const removeFromAllowList = useCallback(
     (id: string) => {
       collectionService.deletePagesFromCollections([id]);
-      toast(t['com.affine.collection.removePage.success']());
+      toast(t['com.arms.collection.removePage.success']());
     },
     [collectionService, t]
   );
@@ -174,7 +174,7 @@ export const VirtualizedPageList = ({
         onClose={hideFloatingToolbar}
         content={
           <Trans
-            i18nKey="com.affine.page.toolbar.selected"
+            i18nKey="com.arms.page.toolbar.selected"
             count={filteredSelectedPageIds.length}
           >
             <div style={{ color: 'var(--affine-text-secondary-color)' }}>

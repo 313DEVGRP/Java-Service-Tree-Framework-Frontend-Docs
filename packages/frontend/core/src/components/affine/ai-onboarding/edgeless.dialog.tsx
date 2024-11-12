@@ -85,8 +85,8 @@ export const AIOnboardingEdgeless = () => {
 
       const id = notify(
         {
-          title: t['com.affine.ai-onboarding.edgeless.title'](),
-          message: t['com.affine.ai-onboarding.edgeless.message'](),
+          title: t['com.arms.ai-onboarding.edgeless.title'](),
+          message: t['com.arms.ai-onboarding.edgeless.message'](),
           icon: <AiIcon />,
           iconColor: cssVar('processingColor'),
           thumb: <EdgelessOnboardingAnimation />,
@@ -103,7 +103,7 @@ export const AIOnboardingEdgeless = () => {
                 className={styles.actionButton}
               >
                 <span className={styles.getStartedButtonText}>
-                  {t['com.affine.ai-onboarding.edgeless.get-started']()}
+                  {t['com.arms.ai-onboarding.edgeless.get-started']()}
                 </span>
               </Button>
               {aiSubscription ? null : (
@@ -117,7 +117,7 @@ export const AIOnboardingEdgeless = () => {
                   }}
                 >
                   <span className={styles.purchaseButtonText}>
-                    {t['com.affine.ai-onboarding.edgeless.purchase']()}
+                    {t['com.arms.ai-onboarding.edgeless.purchase']()}
                   </span>
                 </Button>
               )}

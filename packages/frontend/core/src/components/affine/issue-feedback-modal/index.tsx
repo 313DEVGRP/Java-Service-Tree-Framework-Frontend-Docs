@@ -20,12 +20,12 @@ export const IssueFeedbackModal = () => {
           loop
         />
       }
-      title={t['com.affine.issue-feedback.title']()}
+      title={t['com.arms.issue-feedback.title']()}
       onOpenChange={setOpen}
-      description={t['com.affine.issue-feedback.description']()}
-      cancelText={t['com.affine.issue-feedback.cancel']()}
+      description={t['com.arms.issue-feedback.description']()}
+      cancelText={t['com.arms.issue-feedback.cancel']()}
       to={`${runtimeConfig.githubUrl}/issues/new/choose`}
-      confirmText={t['com.affine.issue-feedback.confirm']()}
+      confirmText={t['com.arms.issue-feedback.confirm']()}
       confirmButtonOptions={{
         variant: 'primary',
       }}

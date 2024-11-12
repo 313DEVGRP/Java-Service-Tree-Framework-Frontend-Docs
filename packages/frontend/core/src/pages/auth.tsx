@@ -71,11 +71,11 @@ export const Component = () => {
       // FIXME: There is not notification
       if (res?.sendVerifyChangeEmail) {
         notify.success({
-          title: t['com.affine.auth.sent.verify.email.hint'](),
+          title: t['com.arms.auth.sent.verify.email.hint'](),
         });
       } else {
         notify.error({
-          title: t['com.affine.auth.sent.change.email.fail'](),
+          title: t['com.arms.auth.sent.change.email.fail'](),
         });
       }
 

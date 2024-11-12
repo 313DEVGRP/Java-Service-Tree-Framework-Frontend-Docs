@@ -23,31 +23,31 @@ export const LifetimePlan = () => {
   return (
     <BelieverCard type={1}>
       <div className={styles.caption1}>
-        {t['com.affine.payment.lifetime.caption-1']()}
+        {t['com.arms.payment.lifetime.caption-1']()}
       </div>
 
       <div className={styles.title}>
-        {t['com.affine.payment.lifetime.title']()}
+        {t['com.arms.payment.lifetime.title']()}
       </div>
 
       <div className={styles.price}>{readableLifetimePrice}</div>
 
       {isBeliever ? (
         <Button className={styles.purchase} size="default" disabled>
-          {t['com.affine.payment.lifetime.purchased']()}
+          {t['com.arms.payment.lifetime.purchased']()}
         </Button>
       ) : (
         <Upgrade
           className={styles.purchase}
           recurring={SubscriptionRecurring.Lifetime}
         >
-          {t['com.affine.payment.lifetime.purchase']()}
+          {t['com.arms.payment.lifetime.purchase']()}
         </Upgrade>
       )}
 
       <div className={styles.caption2}>
         <Trans
-          i18nKey="com.affine.payment.lifetime.caption-2"
+          i18nKey="com.arms.payment.lifetime.caption-2"
           components={{
             a: <a className={styles.userPolicyLink} href="#" />,
           }}

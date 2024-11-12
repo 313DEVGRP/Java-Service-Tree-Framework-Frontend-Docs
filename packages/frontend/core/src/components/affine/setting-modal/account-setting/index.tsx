@@ -110,20 +110,20 @@ export const AvatarAndName = () => {
 
   return (
     <SettingRow
-      name={t['com.affine.settings.profile']()}
-      desc={t['com.affine.settings.profile.message']()}
+      name={t['com.arms.settings.profile']()}
+      desc={t['com.arms.settings.profile.message']()}
       spreadCol={false}
     >
       <FlexWrapper style={{ margin: '12px 0 24px 0' }} alignItems="center">
         <UserAvatar />
 
         <div className={styles.profileInputWrapper}>
-          <label>{t['com.affine.settings.profile.name']()}</label>
+          <label>{t['com.arms.settings.profile.name']()}</label>
           <FlexWrapper alignItems="center">
             <Input
               defaultValue={input}
               data-testid="user-name-input"
-              placeholder={t['com.affine.settings.profile.placeholder']()}
+              placeholder={t['com.arms.settings.profile.placeholder']()}
               maxLength={64}
               minLength={0}
               style={{ width: 280, height: 32 }}
@@ -138,7 +138,7 @@ export const AvatarAndName = () => {
                   marginLeft: '12px',
                 }}
               >
-                {t['com.affine.editCollection.save']()}
+                {t['com.arms.editCollection.save']()}
               </Button>
             ) : null}
           </FlexWrapper>
@@ -164,11 +164,7 @@ const StoragePanel = () => {
   }, [setSettingModalAtom]);
 
   return (
-    <SettingRow
-      name={t['com.affine.storage.title']()}
-      desc=""
-      spreadCol={false}
-    >
+    <SettingRow name={t['com.arms.storage.title']()} desc="" spreadCol={false}>
       <StorageProgress onUpgrade={onUpgrade} />
     </SettingRow>
   );
@@ -216,33 +212,33 @@ export const AccountSetting: FC = () => {
   return (
     <>
       <SettingHeader
-        title={t['com.affine.setting.account']()}
-        subtitle={t['com.affine.setting.account.message']()}
+        title={t['com.arms.setting.account']()}
+        subtitle={t['com.arms.setting.account.message']()}
         data-testid="account-title"
       />
       <AvatarAndName />
-      <SettingRow name={t['com.affine.settings.email']()} desc={account.email}>
+      <SettingRow name={t['com.arms.settings.email']()} desc={account.email}>
         <Button onClick={onChangeEmail}>
           {account.info?.emailVerified
-            ? t['com.affine.settings.email.action.change']()
-            : t['com.affine.settings.email.action.verify']()}
+            ? t['com.arms.settings.email.action.change']()
+            : t['com.arms.settings.email.action.verify']()}
         </Button>
       </SettingRow>
       <SettingRow
-        name={t['com.affine.settings.password']()}
-        desc={t['com.affine.settings.password.message']()}
+        name={t['com.arms.settings.password']()}
+        desc={t['com.arms.settings.password.message']()}
       >
         <Button onClick={onPasswordButtonClick}>
           {account.info?.hasPassword
-            ? t['com.affine.settings.password.action.change']()
-            : t['com.affine.settings.password.action.set']()}
+            ? t['com.arms.settings.password.action.change']()
+            : t['com.arms.settings.password.action.set']()}
         </Button>
       </SettingRow>
       <StoragePanel />
       {serverFeatures?.copilot && <AIUsagePanel />}
       <SettingRow
         name={t[`Sign out`]()}
-        desc={t['com.affine.setting.sign.out.message']()}
+        desc={t['com.arms.setting.sign.out.message']()}
         style={{ cursor: 'pointer' }}
         data-testid="sign-out-button"
         onClick={onOpenSignOutModal}
@@ -252,10 +248,10 @@ export const AccountSetting: FC = () => {
       {/*<SettingRow*/}
       {/*  name={*/}
       {/*    <span style={{ color: 'var(--affine-warning-color)' }}>*/}
-      {/*      {t['com.affine.setting.account.delete']()}*/}
+      {/*      {t['com.arms.setting.account.delete']()}*/}
       {/*    </span>*/}
       {/*  }*/}
-      {/*  desc={t['com.affine.setting.account.delete.message']()}*/}
+      {/*  desc={t['com.arms.setting.account.delete.message']()}*/}
       {/*  style={{ cursor: 'pointer' }}*/}
       {/*  onClick={useCallback(() => {*/}
       {/*    toast('Function coming soon');*/}

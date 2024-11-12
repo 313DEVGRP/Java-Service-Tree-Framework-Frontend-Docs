@@ -45,7 +45,7 @@ export const PageDisplayMenu = () => {
       {
         key: 'bodyNotes',
         onClick: () => handleSetDocDisplayProperties('bodyNotes'),
-        label: t['com.affine.page.display.display-properties.body-notes'](),
+        label: t['com.arms.page.display.display-properties.body-notes'](),
       },
       {
         key: 'tags',
@@ -77,15 +77,15 @@ export const PageDisplayMenu = () => {
       },
       {
         value: 'tag',
-        label: t['com.affine.page.display.grouping.group-by-tag'](),
+        label: t['com.arms.page.display.grouping.group-by-tag'](),
       },
       {
         value: 'favourites',
-        label: t['com.affine.page.display.grouping.group-by-favourites'](),
+        label: t['com.arms.page.display.grouping.group-by-favourites'](),
       },
       {
         value: 'none',
-        label: t['com.affine.page.display.grouping.no-grouping'](),
+        label: t['com.arms.page.display.grouping.no-grouping'](),
       },
     ];
 
@@ -124,16 +124,16 @@ export const PageDisplayMenu = () => {
             className={styles.subMenuTriggerContent}
             data-testid="page-display-grouping-menuItem"
           >
-            <span>{t['com.affine.page.display.grouping']()}</span>
+            <span>{t['com.arms.page.display.grouping']()}</span>
             <span className={styles.currentGroupType}>{currentGroupType}</span>
           </div>
         </MenuSub>
         <MenuSeparator />
         <div className={styles.listOption}>
-          {t['com.affine.page.display.list-option']()}
+          {t['com.arms.page.display.list-option']()}
         </div>
         <div className={styles.properties}>
-          {t['com.affine.page.display.display-properties']()}
+          {t['com.arms.page.display.display-properties']()}
         </div>
         <div className={styles.propertiesWrapper}>
           {propertyOptions.map(option => (
@@ -171,7 +171,7 @@ export const PageDisplayMenu = () => {
         className={styles.headerDisplayButton}
         data-testid="page-display-menu-button"
       >
-        {t['com.affine.page.display']()}
+        {t['com.arms.page.display']()}
       </Button>
     </Menu>
   );

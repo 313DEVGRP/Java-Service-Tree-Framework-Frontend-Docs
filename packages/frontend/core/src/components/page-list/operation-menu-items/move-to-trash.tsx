@@ -16,7 +16,7 @@ export const MoveToTrash = (props: MenuItemProps) => {
       type="danger"
       {...props}
     >
-      {t['com.affine.moveToTrash.title']()}
+      {t['com.arms.moveToTrash.title']()}
     </MenuItem>
   );
 };
@@ -30,22 +30,22 @@ const MoveToTrashConfirm = ({
   const t = useI18n();
   const multiple = titles.length > 1;
   const title = multiple
-    ? t['com.affine.moveToTrash.confirmModal.title.multiple']({
+    ? t['com.arms.moveToTrash.confirmModal.title.multiple']({
         number: titles.length.toString(),
       })
-    : t['com.affine.moveToTrash.confirmModal.title']();
+    : t['com.arms.moveToTrash.confirmModal.title']();
   const description = multiple
-    ? t['com.affine.moveToTrash.confirmModal.description.multiple']({
+    ? t['com.arms.moveToTrash.confirmModal.description.multiple']({
         number: titles.length.toString(),
       })
-    : t['com.affine.moveToTrash.confirmModal.description']({
+    : t['com.arms.moveToTrash.confirmModal.description']({
         title: titles[0] || t['Untitled'](),
       });
   return (
     <ConfirmModal
       title={title}
       description={description}
-      cancelText={t['com.affine.confirmModal.button.cancel']()}
+      cancelText={t['com.arms.confirmModal.button.cancel']()}
       confirmText={t.Delete()}
       confirmButtonOptions={{
         ['data-testid' as string]: 'confirm-delete-page',

@@ -22,7 +22,7 @@ export function registerAffineUpdatesCommands({
       id: 'affine:restart-to-upgrade',
       category: 'affine:updates',
       icon: <ResetIcon />,
-      label: t['com.affine.cmdk.affine.restart-to-upgrade'](),
+      label: t['com.arms.cmdk.affine.restart-to-upgrade'](),
       preconditionStrategy: () => !!store.get(updateReadyAtom),
       run() {
         track.$.cmdk.updates.quitAndInstall();

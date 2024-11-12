@@ -129,10 +129,10 @@ export const PropertyTypeMenuItem = ({
   const t = useI18n();
   return (
     <div className={styles.propertyRowTypeItem}>
-      {t['com.affine.page-properties.create-property.menu.header']()}
+      {t['com.arms.page-properties.create-property.menu.header']()}
       <div className={styles.propertyTypeName}>
         <Icon />
-        {t[`com.affine.page-properties.property.${property.type}`]()}
+        {t[`com.arms.page-properties.property.${property.type}`]()}
       </div>
     </div>
   );

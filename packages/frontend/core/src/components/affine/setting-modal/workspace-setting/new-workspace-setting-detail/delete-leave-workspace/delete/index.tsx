@@ -34,9 +34,9 @@ export const WorkspaceDeleteModal = ({
 
   return (
     <ConfirmModal
-      title={`${t['com.affine.workspaceDelete.title']()}?`}
-      cancelText={t['com.affine.workspaceDelete.button.cancel']()}
-      confirmText={t['com.affine.workspaceDelete.button.delete']()}
+      title={`${t['com.arms.workspaceDelete.title']()}?`}
+      cancelText={t['com.arms.workspaceDelete.button.cancel']()}
+      confirmText={t['com.arms.workspaceDelete.button.delete']()}
       confirmButtonOptions={{
         variant: 'error',
         disabled: !allowDelete,
@@ -45,7 +45,7 @@ export const WorkspaceDeleteModal = ({
       {...props}
     >
       {workspaceMetadata.flavour === WorkspaceFlavour.LOCAL ? (
-        <Trans i18nKey="com.affine.workspaceDelete.description">
+        <Trans i18nKey="com.arms.workspaceDelete.description">
           Deleting (
           <span className={styles.workspaceName}>
             {{ workspace: workspaceName } as any}
@@ -54,7 +54,7 @@ export const WorkspaceDeleteModal = ({
           lost.
         </Trans>
       ) : (
-        <Trans i18nKey="com.affine.workspaceDelete.description2">
+        <Trans i18nKey="com.arms.workspaceDelete.description2">
           Deleting (
           <span className={styles.workspaceName}>
             {{ workspace: workspaceName } as any}
@@ -69,7 +69,7 @@ export const WorkspaceDeleteModal = ({
           onChange={setDeleteStr}
           data-testid="delete-workspace-input"
           onEnter={handleOnEnter}
-          placeholder={t['com.affine.workspaceDelete.placeholder']()}
+          placeholder={t['com.arms.workspaceDelete.placeholder']()}
           size="large"
         />
       </div>

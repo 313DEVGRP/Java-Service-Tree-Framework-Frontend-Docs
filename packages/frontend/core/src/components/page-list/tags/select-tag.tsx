@@ -25,8 +25,8 @@ const FavoriteOperation = ({ tag }: { tag: ListItem }) => {
     favoriteService.favoriteList.toggle('tag', tag.id);
     toast(
       isFavorite
-        ? t['com.affine.toastMessage.removedFavorites']()
-        : t['com.affine.toastMessage.addedFavorites']()
+        ? t['com.arms.toastMessage.removedFavorites']()
+        : t['com.arms.toastMessage.addedFavorites']()
     );
   }, [favoriteService.favoriteList, tag.id, isFavorite, t]);
 
@@ -74,7 +74,7 @@ export const SelectTag = ({
 
   return (
     <SelectorLayout
-      searchPlaceholder={t['com.affine.selector-tag.search.placeholder']()}
+      searchPlaceholder={t['com.arms.selector-tag.search.placeholder']()}
       selectedCount={selection.length}
       onSearch={setKeyword}
       onConfirm={() => onConfirm?.(selection)}

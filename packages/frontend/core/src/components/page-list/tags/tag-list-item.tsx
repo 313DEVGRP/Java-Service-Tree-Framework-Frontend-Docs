@@ -28,7 +28,7 @@ const TagListTitleCell = ({
         data-testid="page-list-item-preview-text"
         className={styles.titleCellPreview}
       >
-        {` · ${t['com.affine.tags.count']({ count: pageCount || 0 })}`}
+        {` · ${t['com.arms.tags.count']({ count: pageCount || 0 })}`}
       </div>
     </div>
   );

@@ -29,17 +29,15 @@ export const AICancel = (btnProps: ButtonProps) => {
       });
     }
     openConfirmModal({
-      title: t['com.affine.payment.ai.action.cancel.confirm.title'](),
-      description:
-        t['com.affine.payment.ai.action.cancel.confirm.description'](),
+      title: t['com.arms.payment.ai.action.cancel.confirm.title'](),
+      description: t['com.arms.payment.ai.action.cancel.confirm.description'](),
       reverseFooter: true,
       confirmText:
-        t['com.affine.payment.ai.action.cancel.confirm.confirm-text'](),
+        t['com.arms.payment.ai.action.cancel.confirm.confirm-text'](),
       confirmButtonOptions: {
         variant: 'secondary',
       },
-      cancelText:
-        t['com.affine.payment.ai.action.cancel.confirm.cancel-text'](),
+      cancelText: t['com.arms.payment.ai.action.cancel.confirm.cancel-text'](),
       cancelButtonOptions: {
         variant: 'primary',
       },
@@ -89,7 +87,7 @@ export const AICancel = (btnProps: ButtonProps) => {
       variant="primary"
       {...btnProps}
     >
-      {t['com.affine.payment.ai.action.cancel.button-label']()}
+      {t['com.arms.payment.ai.action.cancel.button-label']()}
     </Button>
   );
 };

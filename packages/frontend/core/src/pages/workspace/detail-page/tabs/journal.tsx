@@ -144,9 +144,9 @@ export const EditorJournalPanel = () => {
     <div className={styles.journalPanel} data-is-journal={isJournal}>
       <div className={styles.calendar}>
         <DatePicker
-          weekDays={t['com.affine.calendar-date-picker.week-days']()}
-          monthNames={t['com.affine.calendar-date-picker.month-names']()}
-          todayLabel={t['com.affine.calendar-date-picker.today']()}
+          weekDays={t['com.arms.calendar-date-picker.week-days']()}
+          monthNames={t['com.arms.calendar-date-picker.month-names']()}
+          todayLabel={t['com.arms.calendar-date-picker.today']()}
           customDayRenderer={customDayRenderer}
           value={date}
           onChange={onDateSelect}
@@ -177,8 +177,8 @@ const DailyCountEmptyFallback = ({ name }: { name: NavItemName }) => {
   return (
     <div className={styles.dailyCountEmpty}>
       {name === 'createdToday'
-        ? t['com.affine.journal.daily-count-created-empty-tips']()
-        : t['com.affine.journal.daily-count-updated-empty-tips']()}
+        ? t['com.arms.journal.daily-count-created-empty-tips']()
+        : t['com.arms.journal.daily-count-updated-empty-tips']()}
     </div>
   );
 };
@@ -215,12 +215,12 @@ const JournalDailyCountBlock = ({ date }: JournalBlockProps) => {
     () => [
       {
         name: 'createdToday',
-        label: t['com.affine.journal.created-today'](),
+        label: t['com.arms.journal.created-today'](),
         count: createdToday.length,
       },
       {
         name: 'updatedToday',
-        label: t['com.affine.journal.updated-today'](),
+        label: t['com.arms.journal.updated-today'](),
         count: updatedToday.length,
       },
     ],
@@ -369,7 +369,7 @@ const JournalConflictBlock = ({ date }: JournalBlockProps) => {
           }
         >
           <div className={styles.journalConflictMoreTrigger}>
-            {t['com.affine.journal.conflict-show-more']({
+            {t['com.arms.journal.conflict-show-more']({
               count: (docRecords.length - MAX_CONFLICT_COUNT).toFixed(0),
             })}
           </div>

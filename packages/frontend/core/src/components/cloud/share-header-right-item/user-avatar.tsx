@@ -74,7 +74,7 @@ export const PublishPageUserAvatar = () => {
           data-testid="share-page-sign-out-option"
           onClick={handleSignOut}
         >
-          {t['com.affine.workspace.cloud.account.logout']()}
+          {t['com.arms.workspace.cloud.account.logout']()}
         </MenuItem>
       </>
     );

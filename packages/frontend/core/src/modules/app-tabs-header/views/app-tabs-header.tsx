@@ -457,7 +457,7 @@ export const AppTabsHeader = ({
         <IconButton
           size={22.86}
           onClick={onAddTab}
-          tooltip={t['com.affine.multi-tab.new-tab']()}
+          tooltip={t['com.arms.multi-tab.new-tab']()}
           tooltipShortcut={['$mod', 'T']}
           data-testid="add-tab-view-button"
           style={{ width: 32, height: 32 }}

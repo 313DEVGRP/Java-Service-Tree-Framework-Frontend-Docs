@@ -62,12 +62,12 @@ export const useExplorerDocNodeOperations = (
       return;
     }
     openConfirmModal({
-      title: t['com.affine.moveToTrash.title'](),
-      description: t['com.affine.moveToTrash.confirmModal.description']({
+      title: t['com.arms.moveToTrash.title'](),
+      description: t['com.arms.moveToTrash.confirmModal.description']({
         title: docRecord.title$.value,
       }),
-      confirmText: t['com.affine.moveToTrash.confirmModal.confirm'](),
-      cancelText: t['com.affine.moveToTrash.confirmModal.cancel'](),
+      confirmText: t['com.arms.moveToTrash.confirmModal.confirm'](),
+      cancelText: t['com.arms.moveToTrash.confirmModal.cancel'](),
       confirmButtonOptions: {
         variant: 'error',
       },
@@ -76,7 +76,7 @@ export const useExplorerDocNodeOperations = (
         track.$.navigationPanel.docs.deleteDoc({
           control: 'button',
         });
-        toast(t['com.affine.toastMessage.movedTrash']());
+        toast(t['com.arms.toastMessage.movedTrash']());
       },
     });
   }, [docRecord, openConfirmModal, t]);
@@ -125,7 +125,7 @@ export const useExplorerDocNodeOperations = (
           <IconButton
             size="16"
             icon={<PlusIcon />}
-            tooltip={t['com.affine.rootAppSidebar.explorer.doc-add-tooltip']()}
+            tooltip={t['com.arms.rootAppSidebar.explorer.doc-add-tooltip']()}
             onClick={handleAddLinkedPage}
           />
         ),
@@ -143,7 +143,7 @@ export const useExplorerDocNodeOperations = (
                   }
                   onClick={handleOpenInfoModal}
                 >
-                  {t['com.affine.page-properties.page-info.view']()}
+                  {t['com.arms.page-properties.page-info.view']()}
                 </MenuItem>
               ),
             },
@@ -160,7 +160,7 @@ export const useExplorerDocNodeOperations = (
             }
             onClick={handleAddLinkedPage}
           >
-            {t['com.affine.page-operation.add-linked-page']()}
+            {t['com.arms.page-operation.add-linked-page']()}
           </MenuItem>
         ),
       },
@@ -175,7 +175,7 @@ export const useExplorerDocNodeOperations = (
             }
             onClick={handleOpenInNewTab}
           >
-            {t['com.affine.workbench.tab.page-menu-open']()}
+            {t['com.arms.workbench.tab.page-menu-open']()}
           </MenuItem>
         ),
       },
@@ -192,7 +192,7 @@ export const useExplorerDocNodeOperations = (
                   }
                   onClick={handleOpenInSplitView}
                 >
-                  {t['com.affine.workbench.split-view.page-menu-open']()}
+                  {t['com.arms.workbench.split-view.page-menu-open']()}
                 </MenuItem>
               ),
             },
@@ -216,8 +216,8 @@ export const useExplorerDocNodeOperations = (
             onClick={handleToggleFavoriteDoc}
           >
             {favorite
-              ? t['com.affine.favoritePageOperation.remove']()
-              : t['com.affine.favoritePageOperation.add']()}
+              ? t['com.arms.favoritePageOperation.remove']()
+              : t['com.arms.favoritePageOperation.add']()}
           </MenuItem>
         ),
       },
@@ -237,7 +237,7 @@ export const useExplorerDocNodeOperations = (
             }
             onClick={handleMoveToTrash}
           >
-            {t['com.affine.moveToTrash.title']()}
+            {t['com.arms.moveToTrash.title']()}
           </MenuItem>
         ),
       },

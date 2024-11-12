@@ -34,16 +34,14 @@ export const AIResume = (btnProps: ButtonProps) => {
     }
 
     openConfirmModal({
-      title: t['com.affine.payment.ai.action.resume.confirm.title'](),
-      description:
-        t['com.affine.payment.ai.action.resume.confirm.description'](),
+      title: t['com.arms.payment.ai.action.resume.confirm.title'](),
+      description: t['com.arms.payment.ai.action.resume.confirm.description'](),
       confirmText:
-        t['com.affine.payment.ai.action.resume.confirm.confirm-text'](),
+        t['com.arms.payment.ai.action.resume.confirm.confirm-text'](),
       confirmButtonOptions: {
         variant: 'primary',
       },
-      cancelText:
-        t['com.affine.payment.ai.action.resume.confirm.cancel-text'](),
+      cancelText: t['com.arms.payment.ai.action.resume.confirm.cancel-text'](),
       onConfirm: async () => {
         setIsMutating(true);
         await subscription.resumeSubscription(
@@ -59,10 +57,8 @@ export const AIResume = (btnProps: ButtonProps) => {
         notify({
           icon: <SingleSelectSelectSolidIcon />,
           iconColor: cssVar('processingColor'),
-          title:
-            t['com.affine.payment.ai.action.resume.confirm.notify.title'](),
-          message:
-            t['com.affine.payment.ai.action.resume.confirm.notify.msg'](),
+          title: t['com.arms.payment.ai.action.resume.confirm.notify.title'](),
+          message: t['com.arms.payment.ai.action.resume.confirm.notify.msg'](),
         });
         setIdempotencyKey(nanoid());
       },
@@ -76,7 +72,7 @@ export const AIResume = (btnProps: ButtonProps) => {
       variant="primary"
       {...btnProps}
     >
-      {t['com.affine.payment.ai.action.resume.button-label']()}
+      {t['com.arms.payment.ai.action.resume.button-label']()}
     </Button>
   );
 };

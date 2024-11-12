@@ -20,8 +20,8 @@ export const useFavorite = (pageId: string) => {
     favAdapter.toggle(pageId, 'doc');
     toast(
       favorite
-        ? t['com.affine.toastMessage.removedFavorites']()
-        : t['com.affine.toastMessage.addedFavorites']()
+        ? t['com.arms.toastMessage.removedFavorites']()
+        : t['com.arms.toastMessage.addedFavorites']()
     );
   }, [favorite, pageId, t, favAdapter]);
 

@@ -73,10 +73,10 @@ export const StorageProgress = ({ onUpgrade }: StorageProgressProgress) => {
     <div className={styles.storageProgressContainer}>
       <div className={styles.storageProgressWrapper}>
         <div className="storage-progress-desc">
-          <span>{t['com.affine.storage.used.hint']()}</span>
+          <span>{t['com.arms.storage.used.hint']()}</span>
           <span>
             {usedFormatted}/{maxFormatted}
-            {` (${quotaName} ${t['com.affine.storage.plan']()})`}
+            {` (${quotaName} ${t['com.arms.storage.plan']()})`}
           </span>
         </div>
 
@@ -96,15 +96,15 @@ export const StorageProgress = ({ onUpgrade }: StorageProgressProgress) => {
           options={{ hidden: percent < 100 }}
           content={
             isFreeUser
-              ? t['com.affine.storage.maximum-tips']()
-              : t['com.affine.storage.maximum-tips.pro']()
+              ? t['com.arms.storage.maximum-tips']()
+              : t['com.arms.storage.maximum-tips.pro']()
           }
         >
           <span tabIndex={0}>
             <Button variant={buttonType} onClick={onUpgrade}>
               {isFreeUser
-                ? t['com.affine.storage.upgrade']()
-                : t['com.affine.storage.change-plan']()}
+                ? t['com.arms.storage.upgrade']()
+                : t['com.arms.storage.change-plan']()}
             </Button>
           </span>
         </Tooltip>

@@ -42,10 +42,10 @@ import { BelieverBenefits } from '../plans/lifetime/benefits';
 import * as styles from './style.css';
 
 enum DescriptionI18NKey {
-  Basic = 'com.affine.payment.billing-setting.current-plan.description',
-  Monthly = 'com.affine.payment.billing-setting.current-plan.description.monthly',
-  Yearly = 'com.affine.payment.billing-setting.current-plan.description.yearly',
-  Lifetime = 'com.affine.payment.billing-setting.current-plan.description.lifetime',
+  Basic = 'com.arms.payment.billing-setting.current-plan.description',
+  Monthly = 'com.arms.payment.billing-setting.current-plan.description.monthly',
+  Yearly = 'com.arms.payment.billing-setting.current-plan.description.yearly',
+  Lifetime = 'com.arms.payment.billing-setting.current-plan.description.lifetime',
 }
 
 const INVOICE_PAGE_SIZE = 12;
@@ -66,13 +66,13 @@ export const BillingSettings = () => {
   return (
     <>
       <SettingHeader
-        title={t['com.affine.payment.billing-setting.title']()}
-        subtitle={t['com.affine.payment.billing-setting.subtitle']()}
+        title={t['com.arms.payment.billing-setting.title']()}
+        subtitle={t['com.arms.payment.billing-setting.subtitle']()}
       />
       <SWRErrorBoundary FallbackComponent={SubscriptionSettingSkeleton}>
         <Suspense fallback={<SubscriptionSettingSkeleton />}>
           <SettingWrapper
-            title={t['com.affine.payment.billing-setting.information']()}
+            title={t['com.arms.payment.billing-setting.information']()}
           >
             <SubscriptionSettings />
           </SettingWrapper>
@@ -81,7 +81,7 @@ export const BillingSettings = () => {
       <SWRErrorBoundary FallbackComponent={BillingHistorySkeleton}>
         <Suspense fallback={<BillingHistorySkeleton />}>
           <SettingWrapper
-            title={t['com.affine.payment.billing-setting.history']()}
+            title={t['com.arms.payment.billing-setting.history']()}
           >
             <BillingHistory />
           </SettingWrapper>
@@ -150,7 +150,7 @@ const SubscriptionSettings = () => {
             <div className={styles.currentPlan}>
               <SettingRow
                 spreadCol={false}
-                name={t['com.affine.payment.billing-setting.current-plan']()}
+                name={t['com.arms.payment.billing-setting.current-plan']()}
                 desc={
                   <Trans
                     i18nKey={getMessageKey(currentPlan, currentRecurring)}
@@ -178,8 +178,8 @@ const SubscriptionSettings = () => {
               <span className={styles.billingFrequency}>
                 /
                 {currentRecurring === SubscriptionRecurring.Monthly
-                  ? t['com.affine.payment.billing-setting.month']()
-                  : t['com.affine.payment.billing-setting.year']()}
+                  ? t['com.arms.payment.billing-setting.month']()
+                  : t['com.arms.payment.billing-setting.year']()}
               </span>
             </p>
           </div>
@@ -195,18 +195,18 @@ const SubscriptionSettings = () => {
           <>
             <SettingRow
               className={styles.paymentMethod}
-              name={t['com.affine.payment.billing-setting.payment-method']()}
+              name={t['com.arms.payment.billing-setting.payment-method']()}
               desc={t[
-                'com.affine.payment.billing-setting.payment-method.description'
+                'com.arms.payment.billing-setting.payment-method.description'
               ]()}
             >
               <PaymentMethodUpdater />
             </SettingRow>
             {proSubscription.nextBillAt && (
               <SettingRow
-                name={t['com.affine.payment.billing-setting.renew-date']()}
+                name={t['com.arms.payment.billing-setting.renew-date']()}
                 desc={t[
-                  'com.affine.payment.billing-setting.renew-date.description'
+                  'com.arms.payment.billing-setting.renew-date.description'
                 ]({
                   renewDate: new Date(
                     proSubscription.nextBillAt
@@ -217,9 +217,9 @@ const SubscriptionSettings = () => {
             {isBeliever ? null : proSubscription.end &&
               proSubscription.canceledAt ? (
               <SettingRow
-                name={t['com.affine.payment.billing-setting.expiration-date']()}
+                name={t['com.arms.payment.billing-setting.expiration-date']()}
                 desc={t[
-                  'com.affine.payment.billing-setting.expiration-date.description'
+                  'com.arms.payment.billing-setting.expiration-date.description'
                 ]({
                   expirationDate: new Date(
                     proSubscription.end
@@ -240,10 +240,10 @@ const SubscriptionSettings = () => {
                   }}
                   className="dangerous-setting"
                   name={t[
-                    'com.affine.payment.billing-setting.cancel-subscription'
+                    'com.arms.payment.billing-setting.cancel-subscription'
                   ]()}
                   desc={t[
-                    'com.affine.payment.billing-setting.cancel-subscription.description'
+                    'com.arms.payment.billing-setting.cancel-subscription.description'
                   ]()}
                 >
                   <CancelSubscription />
@@ -286,11 +286,11 @@ const TypeFormLink = () => {
   return (
     <SettingRow
       className={styles.paymentMethod}
-      name={t['com.affine.payment.billing-type-form.title']()}
-      desc={t['com.affine.payment.billing-type-form.description']()}
+      name={t['com.arms.payment.billing-type-form.title']()}
+      desc={t['com.arms.payment.billing-type-form.description']()}
     >
       <a target="_blank" href={link} rel="noreferrer">
-        <Button>{t['com.affine.payment.billing-type-form.go']()}</Button>
+        <Button>{t['com.arms.payment.billing-type-form.go']()}</Button>
       </a>
     </SettingRow>
   );
@@ -310,13 +310,11 @@ const BelieverIdentifier = ({ onOpenPlans }: { onOpenPlans?: () => void }) => {
       <header className={styles.believerHeader}>
         <div>
           <div className={styles.believerTitle}>
-            {t['com.affine.payment.billing-setting.believer.title']()}
+            {t['com.arms.payment.billing-setting.believer.title']()}
           </div>
           <div className={styles.believerSubtitle}>
             <Trans
-              i18nKey={
-                'com.affine.payment.billing-setting.believer.description'
-              }
+              i18nKey={'com.arms.payment.billing-setting.believer.description'}
               components={{
                 a: <a href="#" onClick={onOpenPlans} />,
               }}
@@ -326,7 +324,7 @@ const BelieverIdentifier = ({ onOpenPlans }: { onOpenPlans?: () => void }) => {
         <div className={styles.believerPriceWrapper}>
           <div className={styles.believerPrice}>{readableLifetimePrice}</div>
           <div className={styles.believerPriceCaption}>
-            {t['com.affine.payment.billing-setting.believer.price-caption']()}
+            {t['com.arms.payment.billing-setting.believer.price-caption']()}
           </div>
         </div>
       </header>
@@ -348,7 +346,7 @@ const AIPlanCard = ({ onClick }: { onClick: () => void }) => {
   const priceReadable = price?.yearlyAmount
     ? `$${(price.yearlyAmount / 100).toFixed(2)}`
     : '?';
-  const priceFrequency = t['com.affine.payment.billing-setting.year']();
+  const priceFrequency = t['com.arms.payment.billing-setting.year']();
 
   if (subscription === null) {
     return <Skeleton height={100} />;
@@ -357,7 +355,7 @@ const AIPlanCard = ({ onClick }: { onClick: () => void }) => {
   const billingTip =
     subscription === undefined ? (
       <Trans
-        i18nKey={'com.affine.payment.billing-setting.ai.free-desc'}
+        i18nKey={'com.arms.payment.billing-setting.ai.free-desc'}
         components={{
           a: (
             <a href="#" onClick={onClick} className={styles.currentPlanName} />
@@ -365,13 +363,13 @@ const AIPlanCard = ({ onClick }: { onClick: () => void }) => {
         }}
       />
     ) : subscription?.nextBillAt ? (
-      t['com.affine.payment.ai.billing-tip.next-bill-at']({
+      t['com.arms.payment.ai.billing-tip.next-bill-at']({
         due: i18nTime(subscription.nextBillAt, {
           absolute: { accuracy: 'day' },
         }),
       })
     ) : subscription?.canceledAt && subscription.end ? (
-      t['com.affine.payment.ai.billing-tip.end-at']({
+      t['com.arms.payment.ai.billing-tip.end-at']({
         end: i18nTime(subscription.end, { absolute: { accuracy: 'day' } }),
       })
     ) : null;
@@ -381,7 +379,7 @@ const AIPlanCard = ({ onClick }: { onClick: () => void }) => {
       <div className={styles.currentPlan}>
         <SettingRow
           spreadCol={false}
-          name={t['com.affine.payment.billing-setting.ai-plan']()}
+          name={t['com.arms.payment.billing-setting.ai-plan']()}
           desc={billingTip}
         />
         {price?.yearlyAmount ? (
@@ -393,7 +391,7 @@ const AIPlanCard = ({ onClick }: { onClick: () => void }) => {
             )
           ) : (
             <AISubscribe className={styles.planAction}>
-              {t['com.affine.payment.billing-setting.ai.purchase']()}
+              {t['com.arms.payment.billing-setting.ai.purchase']()}
             </AISubscribe>
           )
         ) : null}
@@ -422,8 +420,8 @@ const PlanAction = ({
       onClick={gotoPlansSetting}
     >
       {plan === SubscriptionPlan.Pro
-        ? t['com.affine.payment.billing-setting.change-plan']()
-        : t['com.affine.payment.billing-setting.upgrade']()}
+        ? t['com.arms.payment.billing-setting.change-plan']()
+        : t['com.arms.payment.billing-setting.upgrade']()}
     </Button>
   );
 };
@@ -444,7 +442,7 @@ const PaymentMethodUpdater = () => {
 
   return (
     <Button onClick={update} loading={isMutating} disabled={isMutating}>
-      {t['com.affine.payment.billing-setting.update']()}
+      {t['com.arms.payment.billing-setting.update']()}
     </Button>
   );
 };
@@ -465,7 +463,7 @@ const ResumeSubscription = () => {
         data-event-args-type={subscription.pro$.value?.plan}
         data-event-args-category={subscription.pro$.value?.recurring}
       >
-        {t['com.affine.payment.billing-setting.resume-subscription']()}
+        {t['com.arms.payment.billing-setting.resume-subscription']()}
       </Button>
     </ResumeAction>
   );
@@ -504,7 +502,7 @@ const BillingHistory = () => {
       <div className={styles.historyContent}>
         {invoices.length === 0 ? (
           <p className={styles.noInvoice}>
-            {t['com.affine.payment.billing-setting.no-invoice']()}
+            {t['com.arms.payment.billing-setting.no-invoice']()}
           </p>
         ) : (
           invoices.map(invoice => (
@@ -552,12 +550,12 @@ const InvoiceLine = ({
       name={new Date(invoice.createdAt).toLocaleDateString()}
       desc={`${
         invoice.status === InvoiceStatus.Paid
-          ? t['com.affine.payment.billing-setting.paid']()
+          ? t['com.arms.payment.billing-setting.paid']()
           : ''
       } $${invoice.amount / 100} - ${planText}`}
     >
       <Button onClick={open}>
-        {t['com.affine.payment.billing-setting.view-invoice']()}
+        {t['com.arms.payment.billing-setting.view-invoice']()}
       </Button>
     </SettingRow>
   );
@@ -566,9 +564,7 @@ const InvoiceLine = ({
 const SubscriptionSettingSkeleton = () => {
   const t = useI18n();
   return (
-    <SettingWrapper
-      title={t['com.affine.payment.billing-setting.information']()}
-    >
+    <SettingWrapper title={t['com.arms.payment.billing-setting.information']()}>
       <div className={styles.subscriptionSettingSkeleton}>
         <Skeleton variant="rounded" height="104px" />
         <Skeleton variant="rounded" height="46px" />
@@ -580,7 +576,7 @@ const SubscriptionSettingSkeleton = () => {
 const BillingHistorySkeleton = () => {
   const t = useI18n();
   return (
-    <SettingWrapper title={t['com.affine.payment.billing-setting.history']()}>
+    <SettingWrapper title={t['com.arms.payment.billing-setting.history']()}>
       <div className={styles.billingHistorySkeleton}>
         <Loading />
       </div>

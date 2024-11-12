@@ -99,7 +99,7 @@ export const ExplorerCollectionNode = ({
         track.$.navigationPanel.organize.renameOrganizeItem({
           type: 'collection',
         });
-        toast(t['com.affine.toastMessage.rename']());
+        toast(t['com.arms.toastMessage.rename']());
       }
     },
     [collection, collectionId, collectionService, t]
@@ -111,7 +111,7 @@ export const ExplorerCollectionNode = ({
         return;
       }
       if (collection.allowList.includes(docId)) {
-        toast(t['com.affine.collection.addPage.alreadyExists']());
+        toast(t['com.arms.collection.addPage.alreadyExists']());
       } else {
         collectionService.addPageToCollection(collection.id, docId);
       }
@@ -201,7 +201,7 @@ export const ExplorerCollectionNode = ({
     () => args => {
       const entityType = args.source.data.entity?.type;
       return args.treeInstruction?.type !== 'make-child'
-        ? ((typeof canDrop === 'function' ? canDrop(args) : canDrop) ?? true)
+        ? (typeof canDrop === 'function' ? canDrop(args) : canDrop) ?? true
         : entityType === 'doc';
     },
     [canDrop]
@@ -283,7 +283,7 @@ const ExplorerCollectionNodeChildren = ({
     (id: string) => {
       track.$.navigationPanel.collections.removeOrganizeItem({ type: 'doc' });
       collectionService.deletePageFromCollection(collection.id, id);
-      toast(t['com.affine.collection.removePage.success']());
+      toast(t['com.arms.collection.removePage.success']());
     },
     [collection.id, collectionService, t]
   );

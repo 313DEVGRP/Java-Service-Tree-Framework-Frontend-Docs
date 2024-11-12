@@ -55,7 +55,7 @@ export const AIUsagePanel = () => {
     if (loadError) {
       return (
         <SettingRow
-          name={t['com.affine.payment.ai.usage-title']()}
+          name={t['com.arms.payment.ai.usage-title']()}
           desc={''}
           spreadCol={false}
         >
@@ -66,7 +66,7 @@ export const AIUsagePanel = () => {
     }
     return (
       <SettingRow
-        name={t['com.affine.payment.ai.usage-title']()}
+        name={t['com.arms.payment.ai.usage-title']()}
         desc={''}
         spreadCol={false}
       >
@@ -93,26 +93,26 @@ export const AIUsagePanel = () => {
       spreadCol={aiSubscription ? true : false}
       desc={
         aiSubscription
-          ? t['com.affine.payment.ai.usage-description-purchased']()
+          ? t['com.arms.payment.ai.usage-description-purchased']()
           : ''
       }
-      name={t['com.affine.payment.ai.usage-title']()}
+      name={t['com.arms.payment.ai.usage-title']()}
     >
       {copilotActionLimit === 'unlimited' ? (
         hasPaymentFeature && aiSubscription?.canceledAt ? (
           <AIResume />
         ) : (
           <Button onClick={openBilling}>
-            {t['com.affine.payment.ai.usage.change-button-label']()}
+            {t['com.arms.payment.ai.usage.change-button-label']()}
           </Button>
         )
       ) : (
         <div className={styles.storageProgressContainer}>
           <div className={styles.storageProgressWrapper}>
             <div className="storage-progress-desc">
-              <span>{t['com.affine.payment.ai.usage.used-caption']()}</span>
+              <span>{t['com.arms.payment.ai.usage.used-caption']()}</span>
               <span>
-                {t['com.affine.payment.ai.usage.used-detail']({
+                {t['com.arms.payment.ai.usage.used-detail']({
                   used: copilotActionUsed.toString(),
                   limit: copilotActionLimit.toString(),
                 })}
@@ -129,7 +129,7 @@ export const AIUsagePanel = () => {
 
           {hasPaymentFeature && (
             <AISubscribe variant="primary">
-              {t['com.affine.payment.ai.usage.purchase-button-label']()}
+              {t['com.arms.payment.ai.usage.purchase-button-label']()}
             </AISubscribe>
           )}
         </div>

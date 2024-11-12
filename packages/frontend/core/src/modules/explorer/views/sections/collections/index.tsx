@@ -26,7 +26,7 @@ export const ExplorerCollections = () => {
   const explorerSection = explorerService.sections.collections;
   const collections = useLiveData(collectionService.collections$);
   const { node, open: openCreateCollectionModel } = useEditCollectionName({
-    title: t['com.affine.editCollection.createCollection'](),
+    title: t['com.arms.editCollection.createCollection'](),
     showTips: true,
   });
 
@@ -56,14 +56,14 @@ export const ExplorerCollections = () => {
       <CollapsibleSection
         name="collections"
         testId="explorer-collections"
-        title={t['com.affine.rootAppSidebar.collections']()}
+        title={t['com.arms.rootAppSidebar.collections']()}
         actions={
           <IconButton
             data-testid="explorer-bar-add-collection-button"
             onClick={handleCreateCollection}
             size="16"
             tooltip={t[
-              'com.affine.rootAppSidebar.explorer.collection-section-add-tooltip'
+              'com.arms.rootAppSidebar.explorer.collection-section-add-tooltip'
             ]()}
           >
             <PlusIcon />

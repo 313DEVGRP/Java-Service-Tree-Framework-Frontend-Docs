@@ -110,8 +110,8 @@ export const SelectPage = ({
       compatibleFavoriteItemsAdapter.toggle(page.id, 'doc');
       toast(
         status
-          ? t['com.affine.toastMessage.removedFavorites']()
-          : t['com.affine.toastMessage.addedFavorites']()
+          ? t['com.arms.toastMessage.removedFavorites']()
+          : t['com.arms.toastMessage.addedFavorites']()
       );
     },
     [compatibleFavoriteItemsAdapter, isFavorite, t]
@@ -159,7 +159,7 @@ export const SelectPage = ({
 
   return (
     <SelectorLayout
-      searchPlaceholder={t['com.affine.editCollection.search.placeholder']()}
+      searchPlaceholder={t['com.arms.editCollection.search.placeholder']()}
       selectedCount={value.length}
       onSearch={updateSearchText}
       onClear={clearSelected}
@@ -171,7 +171,7 @@ export const SelectPage = ({
         <div className={styles.pagesTabContent}>
           {header ?? (
             <div style={{ fontSize: 12, lineHeight: '20px', fontWeight: 600 }}>
-              {t['com.affine.selectPage.title']()}
+              {t['com.arms.selectPage.title']()}
             </div>
           )}
           {!showFilter && filters.length === 0 ? (
@@ -240,14 +240,14 @@ export const EmptyList = ({ search }: { search?: string }) => {
           fontWeight: 600,
         }}
       >
-        {t['com.affine.selectPage.empty']()}
+        {t['com.arms.selectPage.empty']()}
       </div>
       {search ? (
         <div
           className={styles.ellipsis}
           style={{ maxWidth: 300, fontSize: 15, lineHeight: '24px' }}
         >
-          <Trans i18nKey="com.affine.selectPage.empty.tips" values={{ search }}>
+          <Trans i18nKey="com.arms.selectPage.empty.tips" values={{ search }}>
             No page titles contain
             <span
               style={{ fontWeight: 600, color: 'var(--affine-primary-color)' }}

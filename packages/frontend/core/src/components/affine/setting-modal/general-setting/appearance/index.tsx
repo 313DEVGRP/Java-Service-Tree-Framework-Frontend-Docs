@@ -15,7 +15,6 @@ import { useAppSettingHelper } from '../../../../../hooks/affine/use-app-setting
 import { LanguageMenu } from '../../../language-menu';
 import { DateFormatSetting } from './date-format-setting';
 import { settingWrapper } from './style.css';
-import { ThemeEditorSetting } from './theme-editor-setting';
 
 export const ThemeSettings = () => {
   const t = useI18n();
@@ -25,17 +24,17 @@ export const ThemeSettings = () => {
     () => [
       {
         value: 'system',
-        label: t['com.affine.themeSettings.system'](),
+        label: t['com.arms.themeSettings.system'](),
         testId: 'system-theme-trigger',
       },
       {
         value: 'light',
-        label: t['com.affine.themeSettings.light'](),
+        label: t['com.arms.themeSettings.light'](),
         testId: 'light-theme-trigger',
       },
       {
         value: 'dark',
-        label: t['com.affine.themeSettings.dark'](),
+        label: t['com.arms.themeSettings.dark'](),
         testId: 'dark-theme-trigger',
       },
     ],
@@ -66,11 +65,11 @@ const FontFamilySettings = () => {
     return fontStyleOptions.map(({ key, value }) => {
       const label =
         key === 'Mono'
-          ? t[`com.affine.appearanceSettings.fontStyle.mono`]()
+          ? t[`com.arms.appearanceSettings.fontStyle.mono`]()
           : key === 'Sans'
-            ? t['com.affine.appearanceSettings.fontStyle.sans']()
+            ? t['com.arms.appearanceSettings.fontStyle.sans']()
             : key === 'Serif'
-              ? t['com.affine.appearanceSettings.fontStyle.serif']()
+              ? t['com.arms.appearanceSettings.fontStyle.serif']()
               : '';
       return {
         value: key,
@@ -105,26 +104,26 @@ export const AppearanceSettings = () => {
   return (
     <>
       <SettingHeader
-        title={t['com.affine.appearanceSettings.title']()}
-        subtitle={t['com.affine.appearanceSettings.subtitle']()}
+        title={t['com.arms.appearanceSettings.title']()}
+        subtitle={t['com.arms.appearanceSettings.subtitle']()}
       />
 
-      <SettingWrapper title={t['com.affine.appearanceSettings.theme.title']()}>
+      <SettingWrapper title={t['com.arms.appearanceSettings.theme.title']()}>
         <SettingRow
-          name={t['com.affine.appearanceSettings.color.title']()}
-          desc={t['com.affine.appearanceSettings.color.description']()}
+          name={t['com.arms.appearanceSettings.color.title']()}
+          desc={t['com.arms.appearanceSettings.color.description']()}
         >
           <ThemeSettings />
         </SettingRow>
         <SettingRow
-          name={t['com.affine.appearanceSettings.font.title']()}
-          desc={t['com.affine.appearanceSettings.font.description']()}
+          name={t['com.arms.appearanceSettings.font.title']()}
+          desc={t['com.arms.appearanceSettings.font.description']()}
         >
           <FontFamilySettings />
         </SettingRow>
         <SettingRow
-          name={t['com.affine.appearanceSettings.language.title']()}
-          desc={t['com.affine.appearanceSettings.language.description']()}
+          name={t['com.arms.appearanceSettings.language.title']()}
+          desc={t['com.arms.appearanceSettings.language.description']()}
         >
           <div className={settingWrapper}>
             <LanguageMenu />
@@ -132,8 +131,8 @@ export const AppearanceSettings = () => {
         </SettingRow>
         {environment.isDesktop ? (
           <SettingRow
-            name={t['com.affine.appearanceSettings.clientBorder.title']()}
-            desc={t['com.affine.appearanceSettings.clientBorder.description']()}
+            name={t['com.arms.appearanceSettings.clientBorder.title']()}
+            desc={t['com.arms.appearanceSettings.clientBorder.description']()}
             data-testid="client-border-style-trigger"
           >
             <Switch
@@ -144,8 +143,8 @@ export const AppearanceSettings = () => {
         ) : null}
 
         <SettingRow
-          name={t['com.affine.appearanceSettings.fullWidth.title']()}
-          desc={t['com.affine.appearanceSettings.fullWidth.description']()}
+          name={t['com.arms.appearanceSettings.fullWidth.title']()}
+          desc={t['com.arms.appearanceSettings.fullWidth.description']()}
         >
           <Switch
             data-testid="full-width-layout-trigger"
@@ -155,14 +154,13 @@ export const AppearanceSettings = () => {
         </SettingRow>
         {runtimeConfig.enableNewSettingUnstableApi && environment.isDesktop ? (
           <SettingRow
-            name={t['com.affine.appearanceSettings.windowFrame.title']()}
-            desc={t['com.affine.appearanceSettings.windowFrame.description']()}
+            name={t['com.arms.appearanceSettings.windowFrame.title']()}
+            desc={t['com.arms.appearanceSettings.windowFrame.description']()}
           >
             <RadioGroup
               items={windowFrameStyleOptions.map(option => ({
                 value: option,
-                label:
-                  t[`com.affine.appearanceSettings.windowFrame.${option}`](),
+                label: t[`com.arms.appearanceSettings.windowFrame.${option}`](),
               }))}
               value={appSettings.windowFrameStyle}
               className={settingWrapper}
@@ -176,18 +174,18 @@ export const AppearanceSettings = () => {
         {/* 테마 수정 삭제 {runtimeConfig.enableThemeEditor ? <ThemeEditorSetting /> : null} */}
       </SettingWrapper>
       {runtimeConfig.enableNewSettingUnstableApi ? (
-        <SettingWrapper title={t['com.affine.appearanceSettings.date.title']()}>
+        <SettingWrapper title={t['com.arms.appearanceSettings.date.title']()}>
           <SettingRow
-            name={t['com.affine.appearanceSettings.dateFormat.title']()}
-            desc={t['com.affine.appearanceSettings.dateFormat.description']()}
+            name={t['com.arms.appearanceSettings.dateFormat.title']()}
+            desc={t['com.arms.appearanceSettings.dateFormat.description']()}
           >
             <div className={settingWrapper}>
               <DateFormatSetting />
             </div>
           </SettingRow>
           <SettingRow
-            name={t['com.affine.appearanceSettings.startWeek.title']()}
-            desc={t['com.affine.appearanceSettings.startWeek.description']()}
+            name={t['com.arms.appearanceSettings.startWeek.title']()}
+            desc={t['com.arms.appearanceSettings.startWeek.description']()}
           >
             <Switch
               checked={appSettings.startWeekOnMonday}
@@ -199,12 +197,12 @@ export const AppearanceSettings = () => {
 
       {environment.isDesktop ? (
         <SettingWrapper
-          title={t['com.affine.appearanceSettings.sidebar.title']()}
+          title={t['com.arms.appearanceSettings.sidebar.title']()}
         >
           <SettingRow
-            name={t['com.affine.appearanceSettings.noisyBackground.title']()}
+            name={t['com.arms.appearanceSettings.noisyBackground.title']()}
             desc={t[
-              'com.affine.appearanceSettings.noisyBackground.description'
+              'com.arms.appearanceSettings.noisyBackground.description'
             ]()}
           >
             <Switch
@@ -216,9 +214,9 @@ export const AppearanceSettings = () => {
           </SettingRow>
           {environment.isMacOs && (
             <SettingRow
-              name={t['com.affine.appearanceSettings.translucentUI.title']()}
+              name={t['com.arms.appearanceSettings.translucentUI.title']()}
               desc={t[
-                'com.affine.appearanceSettings.translucentUI.description'
+                'com.arms.appearanceSettings.translucentUI.description'
               ]()}
             >
               <Switch

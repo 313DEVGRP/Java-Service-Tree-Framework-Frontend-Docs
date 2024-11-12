@@ -56,10 +56,10 @@ export const UserPlanButton = () => {
     return;
   }
 
-  const planLabel = isBeliever ? 'Believer' : (plan ?? SubscriptionPlan.Free);
+  const planLabel = isBeliever ? 'Believer' : plan ?? SubscriptionPlan.Free;
 
   return (
-    <Tooltip content={t['com.affine.payment.tag-tooltips']()} side="top">
+    <Tooltip content={t['com.arms.payment.tag-tooltips']()} side="top">
       <div
         data-is-believer={isBeliever ? 'true' : undefined}
         className={styles.userPlanButton}

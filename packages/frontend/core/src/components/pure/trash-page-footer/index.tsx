@@ -21,12 +21,12 @@ export const TrashPageFooter = () => {
   const { jumpToSubPath } = useNavigateHelper();
   const { restoreFromTrash } = useBlockSuiteMetaHelper(docCollection);
   const [open, setOpen] = useState(false);
-  const hintText = t['com.affine.cmdk.affine.editor.trash-footer-hint']();
+  const hintText = t['com.arms.cmdk.affine.editor.trash-footer-hint']();
 
   const onRestore = useCallback(() => {
     restoreFromTrash(doc.id);
     toast(
-      t['com.affine.toastMessage.restored']({
+      t['com.arms.toastMessage.restored']({
         title: doc.meta$.value.title || 'Untitled',
       })
     );
@@ -35,7 +35,7 @@ export const TrashPageFooter = () => {
   const onConfirmDelete = useCallback(() => {
     jumpToSubPath(workspace.id, WorkspaceSubPath.ALL);
     docCollection.removeDoc(doc.id);
-    toast(t['com.affine.toastMessage.permanentlyDeleted']());
+    toast(t['com.arms.toastMessage.permanentlyDeleted']());
   }, [jumpToSubPath, workspace.id, docCollection, doc.id, t]);
 
   const onDelete = useCallback(() => {
@@ -50,7 +50,7 @@ export const TrashPageFooter = () => {
       <div className={styles.deleteHintText}>{hintText}</div>
       <div className={styles.group}>
         <Button
-          tooltip={t['com.affine.trashOperation.restoreIt']()}
+          tooltip={t['com.arms.trashOperation.restoreIt']()}
           data-testid="page-restore-button"
           variant="primary"
           onClick={onRestore}
@@ -59,7 +59,7 @@ export const TrashPageFooter = () => {
           prefixClassName={styles.icon}
         />
         <Button
-          tooltip={t['com.affine.trashOperation.deletePermanently']()}
+          tooltip={t['com.arms.trashOperation.deletePermanently']()}
           variant="error"
           onClick={onDelete}
           className={styles.buttonContainer}
@@ -68,10 +68,10 @@ export const TrashPageFooter = () => {
         />
       </div>
       <ConfirmModal
-        title={t['com.affine.trashOperation.delete.title']()}
-        cancelText={t['com.affine.confirmModal.button.cancel']()}
-        description={t['com.affine.trashOperation.delete.description']()}
-        confirmText={t['com.affine.trashOperation.delete']()}
+        title={t['com.arms.trashOperation.delete.title']()}
+        cancelText={t['com.arms.confirmModal.button.cancel']()}
+        description={t['com.arms.trashOperation.delete.description']()}
+        confirmText={t['com.arms.trashOperation.delete']()}
         confirmButtonOptions={{
           variant: 'error',
         }}

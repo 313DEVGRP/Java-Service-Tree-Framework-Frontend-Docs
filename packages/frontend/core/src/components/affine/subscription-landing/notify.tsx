@@ -61,10 +61,10 @@ export const useUpgradeNotify = () => {
         {
           title: (
             <span className={notifyHeader}>
-              {t['com.affine.payment.upgrade-success-notify.title']()}
+              {t['com.arms.payment.upgrade-success-notify.title']()}
             </span>
           ),
-          message: t['com.affine.payment.upgrade-success-notify.content'](),
+          message: t['com.arms.payment.upgrade-success-notify.content'](),
           alignMessage: 'title',
           icon: null,
           footer: (
@@ -72,12 +72,10 @@ export const useUpgradeNotify = () => {
               to={link}
               okText={
                 isDesktop
-                  ? t['com.affine.payment.upgrade-success-notify.ok-client']()
-                  : t['com.affine.payment.upgrade-success-notify.ok-web']()
+                  ? t['com.arms.payment.upgrade-success-notify.ok-client']()
+                  : t['com.arms.payment.upgrade-success-notify.ok-web']()
               }
-              cancelText={t[
-                'com.affine.payment.upgrade-success-notify.later'
-              ]()}
+              cancelText={t['com.arms.payment.upgrade-success-notify.later']()}
               onCancel={() => notify.dismiss(id)}
               onConfirm={() => notify.dismiss(id)}
             />
@@ -102,10 +100,10 @@ export const useDowngradeNotify = () => {
         {
           title: (
             <span className={notifyHeader}>
-              {t['com.affine.payment.downgraded-notify.title']()}
+              {t['com.arms.payment.downgraded-notify.title']()}
             </span>
           ),
-          message: t['com.affine.payment.downgraded-notify.content'](),
+          message: t['com.arms.payment.downgraded-notify.content'](),
           alignMessage: 'title',
           icon: null,
           footer: (
@@ -113,10 +111,10 @@ export const useDowngradeNotify = () => {
               to={link}
               okText={
                 isDesktop
-                  ? t['com.affine.payment.downgraded-notify.ok-client']()
-                  : t['com.affine.payment.downgraded-notify.ok-web']()
+                  ? t['com.arms.payment.downgraded-notify.ok-client']()
+                  : t['com.arms.payment.downgraded-notify.ok-web']()
               }
-              cancelText={t['com.affine.payment.downgraded-notify.later']()}
+              cancelText={t['com.arms.payment.downgraded-notify.later']()}
               onCancel={() => notify.dismiss(id)}
               onConfirm={() => notify.dismiss(id)}
             />

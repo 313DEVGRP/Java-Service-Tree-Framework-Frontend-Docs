@@ -38,7 +38,7 @@ const RootEmptyReady = ({ onDrop }: Omit<RootEmptyProps, 'isLoading'>) => {
     <ExplorerEmptySection
       ref={dropTargetRef}
       icon={FavoriteIcon}
-      message={t['com.affine.rootAppSidebar.favorites.empty']()}
+      message={t['com.arms.rootAppSidebar.favorites.empty']()}
       messageTestId="slider-bar-favorites-empty-message"
     >
       {draggedOverDraggable && (

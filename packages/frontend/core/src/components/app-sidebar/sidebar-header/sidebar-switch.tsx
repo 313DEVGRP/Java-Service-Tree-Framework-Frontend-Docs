@@ -16,8 +16,8 @@ export const SidebarSwitch = ({
   const [open, setOpen] = useAtom(appSidebarOpenAtom);
   const t = useI18n();
   const tooltipContent = open
-    ? t['com.affine.sidebarSwitch.collapse']()
-    : t['com.affine.sidebarSwitch.expand']();
+    ? t['com.arms.sidebarSwitch.collapse']()
+    : t['com.arms.sidebarSwitch.expand']();
 
   return (
     <div

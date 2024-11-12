@@ -26,8 +26,8 @@ export const LocalQuotaModal = () => {
   return (
     <ConfirmModal
       open={open}
-      title={t['com.affine.payment.blob-limit.title']()}
-      description={t['com.affine.payment.blob-limit.description.local']({
+      title={t['com.arms.payment.blob-limit.title']()}
+      description={t['com.arms.payment.blob-limit.description.local']({
         quota: '100MB',
       })}
       onOpenChange={setOpen}

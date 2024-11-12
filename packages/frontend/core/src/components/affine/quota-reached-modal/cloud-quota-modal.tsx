@@ -56,20 +56,20 @@ export const CloudQuotaModal = () => {
 
   const description = useMemo(() => {
     if (userQuota && isFreePlanOwner) {
-      return t['com.affine.payment.blob-limit.description.owner.free']({
+      return t['com.arms.payment.blob-limit.description.owner.free']({
         planName: userQuota.name,
         currentQuota: userQuota.blobLimit,
         upgradeQuota: '100MB',
       });
     }
     if (isOwner && userQuota && userQuota.name.toLowerCase() === 'pro') {
-      return t['com.affine.payment.blob-limit.description.owner.pro']({
+      return t['com.arms.payment.blob-limit.description.owner.pro']({
         planName: userQuota.name,
         quota: userQuota.blobLimit,
       });
     }
     if (workspaceQuota) {
-      return t['com.affine.payment.blob-limit.description.member']({
+      return t['com.arms.payment.blob-limit.description.member']({
         quota: workspaceQuota.humanReadable.blobLimit,
       });
     } else {
@@ -97,7 +97,7 @@ export const CloudQuotaModal = () => {
   return (
     <ConfirmModal
       open={open}
-      title={t['com.affine.payment.blob-limit.title']()}
+      title={t['com.arms.payment.blob-limit.title']()}
       onOpenChange={setOpen}
       description={description}
       cancelButtonOptions={{
@@ -105,7 +105,7 @@ export const CloudQuotaModal = () => {
       }}
       onConfirm={handleUpgradeConfirm}
       confirmText={
-        isFreePlanOwner ? t['com.affine.payment.upgrade']() : t['Got it']()
+        isFreePlanOwner ? t['com.arms.payment.upgrade']() : t['Got it']()
       }
       confirmButtonOptions={{
         variant: 'primary',

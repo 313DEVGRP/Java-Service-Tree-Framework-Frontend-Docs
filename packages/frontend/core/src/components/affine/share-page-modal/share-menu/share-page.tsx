@@ -35,7 +35,7 @@ export const LocalSharePage = (props: ShareMenuProps) => {
     <div className={styles.localSharePage}>
       <div className={styles.columnContainerStyle} style={{ gap: '12px' }}>
         <div className={styles.descriptionStyle} style={{ maxWidth: '230px' }}>
-          {t['com.affine.share-menu.EnableCloudDescription']()}
+          {t['com.arms.share-menu.EnableCloudDescription']()}
         </div>
         <div>
           <Button
@@ -92,10 +92,10 @@ export const AffineSharePage = (props: ShareMenuProps) => {
 
   const modeOptions = useMemo(
     () => [
-      { value: 'page', label: t['com.affine.pageMode.page']() },
+      { value: 'page', label: t['com.arms.pageMode.page']() },
       {
         value: 'edgeless',
-        label: t['com.affine.pageMode.edgeless'](),
+        label: t['com.arms.pageMode.edgeless'](),
       },
     ],
     [t]
@@ -112,11 +112,11 @@ export const AffineSharePage = (props: ShareMenuProps) => {
       notify.success({
         title:
           t[
-            'com.affine.share-menu.create-public-link.notification.success.title'
+            'com.arms.share-menu.create-public-link.notification.success.title'
           ](),
         message:
           t[
-            'com.affine.share-menu.create-public-link.notification.success.message'
+            'com.arms.share-menu.create-public-link.notification.success.message'
           ](),
         style: 'normal',
         icon: <SingleSelectSelectSolidIcon color={cssVar('primaryColor')} />,
@@ -130,11 +130,11 @@ export const AffineSharePage = (props: ShareMenuProps) => {
       notify.error({
         title:
           t[
-            'com.affine.share-menu.confirm-modify-mode.notification.fail.title'
+            'com.arms.share-menu.confirm-modify-mode.notification.fail.title'
           ](),
         message:
           t[
-            'com.affine.share-menu.confirm-modify-mode.notification.fail.message'
+            'com.arms.share-menu.confirm-modify-mode.notification.fail.message'
           ](),
       });
       console.error(err);
@@ -147,22 +147,22 @@ export const AffineSharePage = (props: ShareMenuProps) => {
       notify.error({
         title:
           t[
-            'com.affine.share-menu.disable-publish-link.notification.success.title'
+            'com.arms.share-menu.disable-publish-link.notification.success.title'
           ](),
         message:
           t[
-            'com.affine.share-menu.disable-publish-link.notification.success.message'
+            'com.arms.share-menu.disable-publish-link.notification.success.message'
           ](),
       });
     } catch (err) {
       notify.error({
         title:
           t[
-            'com.affine.share-menu.disable-publish-link.notification.fail.title'
+            'com.arms.share-menu.disable-publish-link.notification.fail.title'
           ](),
         message:
           t[
-            'com.affine.share-menu.disable-publish-link.notification.fail.message'
+            'com.arms.share-menu.disable-publish-link.notification.fail.message'
           ](),
       });
       console.log(err);
@@ -180,10 +180,10 @@ export const AffineSharePage = (props: ShareMenuProps) => {
           notify.success({
             title:
               t[
-                'com.affine.share-menu.confirm-modify-mode.notification.success.title'
+                'com.arms.share-menu.confirm-modify-mode.notification.success.title'
               ](),
             message: t[
-              'com.affine.share-menu.confirm-modify-mode.notification.success.message'
+              'com.arms.share-menu.confirm-modify-mode.notification.success.message'
             ]({
               preMode: value === 'edgeless' ? t['Page']() : t['Edgeless'](),
               currentMode: value === 'edgeless' ? t['Edgeless']() : t['Page'](),
@@ -198,11 +198,11 @@ export const AffineSharePage = (props: ShareMenuProps) => {
         notify.error({
           title:
             t[
-              'com.affine.share-menu.confirm-modify-mode.notification.fail.title'
+              'com.arms.share-menu.confirm-modify-mode.notification.fail.title'
             ](),
           message:
             t[
-              'com.affine.share-menu.confirm-modify-mode.notification.fail.message'
+              'com.arms.share-menu.confirm-modify-mode.notification.fail.message'
             ](),
         });
         console.error(err);
@@ -224,11 +224,11 @@ export const AffineSharePage = (props: ShareMenuProps) => {
   return (
     <>
       <div className={styles.titleContainerStyle}>
-        {t['com.affine.share-menu.publish-to-web']()}
+        {t['com.arms.share-menu.publish-to-web']()}
       </div>
       <div className={styles.columnContainerStyle}>
         <div className={styles.descriptionStyle}>
-          {t['com.affine.share-menu.publish-to-web.description']()}
+          {t['com.arms.share-menu.publish-to-web.description']()}
         </div>
       </div>
       <div className={styles.rowContainerStyle}>
@@ -263,7 +263,7 @@ export const AffineSharePage = (props: ShareMenuProps) => {
       </div>
       <div className={styles.rowContainerStyle}>
         <div className={styles.subTitleStyle}>
-          {t['com.affine.share-menu.ShareMode']()}
+          {t['com.arms.share-menu.ShareMode']()}
         </div>
         <div>
           <RadioGroup

@@ -65,7 +65,7 @@ export const EditCollectionModal = ({
     >
       <EditCollection
         title={title}
-        onConfirmText={t['com.affine.editCollection.save']()}
+        onConfirmText={t['com.arms.editCollection.save']()}
         init={init}
         mode={mode}
         onCancel={onCancel}
@@ -120,7 +120,7 @@ export const EditCollection = ({
     () => (
       <>
         <Button onClick={onCancel} className={styles.actionButton}>
-          {t['com.affine.editCollection.button.cancel']()}
+          {t['com.arms.editCollection.button.cancel']()}
         </Button>
         <Button
           className={styles.actionButton}
@@ -129,7 +129,7 @@ export const EditCollection = ({
           disabled={isNameEmpty}
           onClick={onSaveCollection}
         >
-          {onConfirmText ?? t['com.affine.editCollection.button.create']()}
+          {onConfirmText ?? t['com.arms.editCollection.button.create']()}
         </Button>
       </>
     ),
@@ -145,12 +145,12 @@ export const EditCollection = ({
         items={[
           {
             value: 'page',
-            label: t['com.affine.editCollection.pages'](),
+            label: t['com.arms.editCollection.pages'](),
             testId: 'edit-collection-pages-button',
           },
           {
             value: 'rule',
-            label: t['com.affine.editCollection.rules'](),
+            label: t['com.arms.editCollection.rules'](),
             testId: 'edit-collection-rules-button',
           },
         ]}

@@ -31,7 +31,7 @@ const TrashHeader = () => {
       left={
         <div className={styles.trashTitle}>
           <DeleteIcon className={styles.trashIcon} />
-          {t['com.affine.workspaceSubPath.trash']()}
+          {t['com.arms.workspaceSubPath.trash']()}
         </div>
       }
     />

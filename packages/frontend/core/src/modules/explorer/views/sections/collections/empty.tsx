@@ -13,9 +13,9 @@ export const RootEmpty = ({
   return (
     <ExplorerEmptySection
       icon={ViewLayersIcon}
-      message={t['com.affine.collections.empty.message']()}
+      message={t['com.arms.collections.empty.message']()}
       messageTestId="slider-bar-collection-empty-message"
-      actionText={t['com.affine.collections.empty.new-collection-button']()}
+      actionText={t['com.arms.collections.empty.new-collection-button']()}
       onActionClick={onClickCreate}
     />
   );

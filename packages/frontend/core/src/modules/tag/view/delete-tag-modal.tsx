@@ -29,8 +29,8 @@ export const DeleteTagConfirmModal = ({
 
     toast(
       selectedTagIds.length > 1
-        ? t['com.affine.delete-tags.count']({ count: selectedTagIds.length })
-        : t['com.affine.tags.delete-tags.toast']()
+        ? t['com.arms.delete-tags.count']({ count: selectedTagIds.length })
+        : t['com.arms.tags.delete-tags.toast']()
     );
 
     onOpenChange(false);
@@ -40,16 +40,16 @@ export const DeleteTagConfirmModal = ({
     <ConfirmModal
       open={open}
       onOpenChange={onOpenChange}
-      title={t['com.affine.delete-tags.confirm.title']()}
+      title={t['com.arms.delete-tags.confirm.title']()}
       description={
         selectedTags.length === 1 ? (
           <Trans
-            i18nKey={'com.affine.delete-tags.confirm.description'}
+            i18nKey={'com.arms.delete-tags.confirm.description'}
             values={{ tag: tagName }}
             components={{ 1: <strong /> }}
           />
         ) : (
-          t['com.affine.delete-tags.confirm.multi-tag-description']({
+          t['com.arms.delete-tags.confirm.multi-tag-description']({
             count: selectedTags.length.toString(),
           })
         )

@@ -78,7 +78,7 @@ export class CMDKQuickSearchService extends Service {
         },
         {
           placeholder: {
-            key: 'com.affine.cmdk.docs.placeholder',
+            key: 'com.arms.cmdk.docs.placeholder',
           },
         }
       );

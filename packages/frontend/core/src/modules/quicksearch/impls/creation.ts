@@ -7,7 +7,7 @@ import type { QuickSearchItem } from '../types/item';
 
 const group = {
   id: 'creation',
-  label: { key: 'com.affine.quicksearch.group.creation' },
+  label: { key: 'com.arms.quicksearch.group.creation' },
   score: 0,
 } as QuickSearchGroup;
 
@@ -29,7 +29,7 @@ export class CreationQuickSearchSession
         id: 'creation:create-page',
         source: 'creation',
         label: {
-          key: 'com.affine.cmdk.affine.create-new-page-as',
+          key: 'com.arms.cmdk.affine.create-new-page-as',
           options: { keyWord: query },
         },
         group,
@@ -40,7 +40,7 @@ export class CreationQuickSearchSession
         id: 'creation:create-edgeless',
         source: 'creation',
         label: {
-          key: 'com.affine.cmdk.affine.create-new-edgeless-as',
+          key: 'com.arms.cmdk.affine.create-new-edgeless-as',
           options: { keyWord: query },
         },
         group,

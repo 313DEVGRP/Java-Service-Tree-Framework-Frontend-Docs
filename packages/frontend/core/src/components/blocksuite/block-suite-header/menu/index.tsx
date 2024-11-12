@@ -1,4 +1,3 @@
-import { toast } from '@affine/component';
 import {
   Menu,
   MenuIcon,
@@ -26,7 +25,6 @@ import { WorkspaceFlavour } from '@affine/env/workspace';
 import { useI18n } from '@affine/i18n';
 import {
   DuplicateIcon,
-  EdgelessIcon,
   EditIcon,
   FavoritedIcon,
   FavoriteIcon,
@@ -35,7 +33,6 @@ import {
   ImportIcon,
   InformationIcon,
   OpenInNewIcon,
-  PageIcon,
   ShareIcon,
   SplitViewIcon,
   TocIcon,
@@ -156,8 +153,8 @@ export const PageHeaderMenuButton = ({
   //   });
   //   toast(
   //     currentMode === 'page'
-  //       ? t['com.affine.toastMessage.edgelessMode']()
-  //       : t['com.affine.toastMessage.pageMode']()
+  //       ? t['com.arms.toastMessage.edgelessMode']()
+  //       : t['com.arms.toastMessage.pageMode']()
   //   );
   // }, [currentMode, doc, t]);
   const menuItemStyle = {
@@ -238,7 +235,7 @@ export const PageHeaderMenuButton = ({
             onOpenChange: handleShareMenuOpenChange,
           }}
         >
-          {t['com.affine.share-menu.shareButton']()}
+          {t['com.arms.share-menu.shareButton']()}
         </MenuSub>
       ) : null}
       <MenuSeparator />
@@ -274,8 +271,8 @@ export const PageHeaderMenuButton = ({
       >
         {t['Convert to ']()}
         {currentMode === 'page'
-          ? t['com.affine.pageMode.edgeless']()
-          : t['com.affine.pageMode.page']()}
+          ? t['com.arms.pageMode.edgeless']()
+          : t['com.arms.pageMode.page']()}
       </MenuItem> */}
       <MenuItem
         data-testid="editor-option-menu-favorite"
@@ -292,8 +289,8 @@ export const PageHeaderMenuButton = ({
         }
       >
         {favorite
-          ? t['com.affine.favoritePageOperation.remove']()
-          : t['com.affine.favoritePageOperation.add']()}
+          ? t['com.arms.favoritePageOperation.remove']()
+          : t['com.arms.favoritePageOperation.add']()}
       </MenuItem>
       <MenuSeparator />
       <MenuItem
@@ -306,7 +303,7 @@ export const PageHeaderMenuButton = ({
         onSelect={handleOpenInNewTab}
         style={menuItemStyle}
       >
-        {t['com.affine.workbench.tab.page-menu-open']()}
+        {t['com.arms.workbench.tab.page-menu-open']()}
       </MenuItem>
 
       {environment.isDesktop && (
@@ -320,7 +317,7 @@ export const PageHeaderMenuButton = ({
           onSelect={handleOpenInSplitView}
           style={menuItemStyle}
         >
-          {t['com.affine.workbench.split-view.page-menu-open']()}
+          {t['com.arms.workbench.split-view.page-menu-open']()}
         </MenuItem>
       )}
 
@@ -337,7 +334,7 @@ export const PageHeaderMenuButton = ({
           onSelect={openInfoModal}
           style={menuItemStyle}
         >
-          {t['com.affine.page-properties.page-info.view']()}
+          {t['com.arms.page-properties.page-info.view']()}
         </MenuItem>
       )}
       {currentMode === 'page' ? (
@@ -351,7 +348,7 @@ export const PageHeaderMenuButton = ({
           onSelect={openOutlinePanel}
           style={menuItemStyle}
         >
-          {t['com.affine.header.option.view-toc']()}
+          {t['com.arms.header.option.view-toc']()}
         </MenuItem>
       ) : (
         <MenuItem
@@ -364,7 +361,7 @@ export const PageHeaderMenuButton = ({
           onSelect={openAllFrames}
           style={menuItemStyle}
         >
-          {t['com.affine.header.option.view-frame']()}
+          {t['com.arms.header.option.view-frame']()}
         </MenuItem>
       )}
       <MenuItem
@@ -377,7 +374,7 @@ export const PageHeaderMenuButton = ({
         onSelect={openHistoryModal}
         style={menuItemStyle}
       >
-        {t['com.affine.history.view-history-version']()}
+        {t['com.arms.history.view-history-version']()}
       </MenuItem>
       <MenuSeparator />
       {!isJournal && (
@@ -391,7 +388,7 @@ export const PageHeaderMenuButton = ({
           onSelect={handleDuplicate}
           style={menuItemStyle}
         >
-          {t['com.affine.header.option.duplicate']()}
+          {t['com.arms.header.option.duplicate']()}
         </MenuItem>
       )}
       <MenuItem

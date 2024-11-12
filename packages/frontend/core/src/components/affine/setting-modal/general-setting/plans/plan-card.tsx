@@ -122,8 +122,8 @@ const ActionButton = ({ detail, recurring }: PlanCardProps) => {
     return (
       <SignUpAction>
         {detail.plan === SubscriptionPlan.Free
-          ? t['com.affine.payment.sign-up-free']()
-          : t['com.affine.payment.buy-pro']()}
+          ? t['com.arms.payment.sign-up-free']()
+          : t['com.arms.payment.buy-pro']()}
       </SignUpAction>
     );
   }
@@ -132,7 +132,7 @@ const ActionButton = ({ detail, recurring }: PlanCardProps) => {
   if (isBeliever) {
     return (
       <Button className={styles.planAction} disabled>
-        {t['com.affine.payment.cloud.lifetime.included']()}
+        {t['com.arms.payment.cloud.lifetime.included']()}
       </Button>
     );
   }
@@ -171,7 +171,7 @@ const CurrentPlan = () => {
   const t = useI18n();
   return (
     <Button className={styles.planAction}>
-      {t['com.affine.payment.current-plan']()}
+      {t['com.arms.payment.current-plan']()}
     </Button>
   );
 };
@@ -181,7 +181,7 @@ const Downgrade = ({ disabled }: { disabled?: boolean }) => {
   const [open, setOpen] = useState(false);
 
   const tooltipContent = disabled
-    ? t['com.affine.payment.downgraded-tooltip']()
+    ? t['com.arms.payment.downgraded-tooltip']()
     : null;
 
   const handleClick = useCallback(() => {
@@ -198,7 +198,7 @@ const Downgrade = ({ disabled }: { disabled?: boolean }) => {
             onClick={handleClick}
             disabled={disabled}
           >
-            {t['com.affine.payment.downgrade']()}
+            {t['com.arms.payment.downgrade']()}
           </Button>
         </div>
       </Tooltip>
@@ -232,7 +232,7 @@ const BookDemo = ({ plan }: { plan: SubscriptionPlan }) => {
         data-event-props="$.settingsPanel.billing.bookDemo"
         data-event-args-url={url}
       >
-        {t['com.affine.payment.tell-us-use-case']()}
+        {t['com.arms.payment.tell-us-use-case']()}
       </Button>
     </a>
   );
@@ -309,7 +309,7 @@ export const Upgrade = ({
       loading={isMutating}
       {...btnProps}
     >
-      {children ?? t['com.affine.payment.upgrade']()}
+      {children ?? t['com.arms.payment.upgrade']()}
     </Button>
   );
 };
@@ -369,7 +369,7 @@ const ChangeRecurring = ({
         disabled={disabled || isMutating}
         loading={isMutating}
       >
-        {t['com.affine.payment.change-to']({ to })}
+        {t['com.arms.payment.change-to']({ to })}
       </Button>
 
       <ConfirmLoadingModal
@@ -425,10 +425,10 @@ const ResumeButton = () => {
     <ResumeAction open={open} onOpenChange={setOpen}>
       <Button className={styles.resumeAction} onClick={handleClick}>
         <span data-show-hover="true" className={clsx(styles.resumeContent)}>
-          {t['com.affine.payment.resume-renewal']()}
+          {t['com.arms.payment.resume-renewal']()}
         </span>
         <span data-show-hover="false" className={clsx(styles.resumeContent)}>
-          {t['com.affine.payment.current-plan']()}
+          {t['com.arms.payment.current-plan']()}
         </span>
       </Button>
     </ResumeAction>

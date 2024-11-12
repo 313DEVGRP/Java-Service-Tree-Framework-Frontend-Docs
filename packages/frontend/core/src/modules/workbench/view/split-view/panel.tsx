@@ -141,7 +141,7 @@ const SplitViewMenu = ({ view }: { view: View }) => {
         preFix={<MenuIcon icon={<ExpandCloseIcon />} />}
         onClick={handleClose}
       >
-        {t['com.affine.workbench.split-view-menu.close']()}
+        {t['com.arms.workbench.split-view-menu.close']()}
       </MenuItem>
     ) : null;
 
@@ -151,7 +151,7 @@ const SplitViewMenu = ({ view }: { view: View }) => {
         onClick={handleMoveLeft}
         preFix={<MenuIcon icon={<MoveToLeftDuotoneIcon />} />}
       >
-        {t['com.affine.workbench.split-view-menu.move-left']()}
+        {t['com.arms.workbench.split-view-menu.move-left']()}
       </MenuItem>
     ) : null;
 
@@ -161,7 +161,7 @@ const SplitViewMenu = ({ view }: { view: View }) => {
         onClick={handleCloseOthers}
         preFix={<MenuIcon icon={<SoloViewIcon />} />}
       >
-        {t['com.affine.workbench.split-view-menu.keep-this-one']()}
+        {t['com.arms.workbench.split-view-menu.keep-this-one']()}
       </MenuItem>
     ) : null;
 
@@ -171,7 +171,7 @@ const SplitViewMenu = ({ view }: { view: View }) => {
         onClick={handleMoveRight}
         preFix={<MenuIcon icon={<MoveToRightDuotoneIcon />} />}
       >
-        {t['com.affine.workbench.split-view-menu.move-right']()}
+        {t['com.arms.workbench.split-view-menu.move-right']()}
       </MenuItem>
     ) : null;
   return (

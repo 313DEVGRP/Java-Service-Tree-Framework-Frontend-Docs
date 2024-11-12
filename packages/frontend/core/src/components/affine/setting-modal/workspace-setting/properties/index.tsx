@@ -89,20 +89,20 @@ const EditPropertyButton = ({
   const defaultMenuItems = useMemo(() => {
     const options: MenuItemOption[] = [];
     options.push({
-      text: t['com.affine.settings.workspace.properties.set-as-required'](),
+      text: t['com.arms.settings.workspace.properties.set-as-required'](),
       onClick: handleToggleRequired,
       checked: localPropertyMeta.required,
     });
     options.push('-');
     options.push({
-      text: t['com.affine.settings.workspace.properties.edit-property'](),
+      text: t['com.arms.settings.workspace.properties.edit-property'](),
       onClick: e => {
         e.preventDefault();
         setEditing(true);
       },
     });
     options.push({
-      text: t['com.affine.settings.workspace.properties.delete-property'](),
+      text: t['com.arms.settings.workspace.properties.delete-property'](),
       onClick: () => setShowDeleteModal(true),
       type: 'danger',
       icon: <DeleteIcon />,
@@ -149,7 +149,7 @@ const EditPropertyButton = ({
     options.push(<PropertyTypeMenuItem property={localPropertyMeta} />);
     options.push('-');
     options.push({
-      text: t['com.affine.settings.workspace.properties.delete-property'](),
+      text: t['com.arms.settings.workspace.properties.delete-property'](),
       onClick: handleDelete,
       type: 'danger',
       icon: <DeleteIcon />,
@@ -216,8 +216,8 @@ const CustomPropertyRow = ({
           <Trans
             i18nKey={
               relatedPages.length > 1
-                ? 'com.affine.settings.workspace.properties.doc_others'
-                : 'com.affine.settings.workspace.properties.doc'
+                ? 'com.arms.settings.workspace.properties.doc_others'
+                : 'com.arms.settings.workspace.properties.doc'
             }
             count={relatedPages.length}
           >
@@ -228,7 +228,7 @@ const CustomPropertyRow = ({
       <div className={styles.spacer} />
       {required ? (
         <div className={styles.propertyRequired}>
-          {t['com.affine.page-properties.property.required']()}
+          {t['com.arms.page-properties.property.required']()}
         </div>
       ) : null}
       <EditPropertyButton property={property} />
@@ -287,7 +287,7 @@ const CustomPropertyRowsList = ({
           <>
             <div className={styles.subListHeader}>
               {t[
-                'com.affine.settings.workspace.properties.required-properties'
+                'com.arms.settings.workspace.properties.required-properties'
               ]()}
             </div>
             <CustomPropertyRows properties={required} statistics={statistics} />
@@ -297,9 +297,7 @@ const CustomPropertyRowsList = ({
         {optional.length > 0 ? (
           <>
             <div className={styles.subListHeader}>
-              {t[
-                'com.affine.settings.workspace.properties.general-properties'
-              ]()}
+              {t['com.arms.settings.workspace.properties.general-properties']()}
             </div>
             <CustomPropertyRows properties={optional} statistics={statistics} />
           </>
@@ -321,7 +319,7 @@ const WorkspaceSettingPropertiesMain = () => {
       return mode === '-'
         ? '-'
         : {
-            text: t[`com.affine.settings.workspace.properties.${mode}`](),
+            text: t[`com.arms.settings.workspace.properties.${mode}`](),
             onClick: () => setFilterMode(mode),
             checked: filterMode === mode,
           };
@@ -350,8 +348,8 @@ const WorkspaceSettingPropertiesMain = () => {
           <Menu items={filterMenuItems}>
             <Button prefix={<FilterIcon />}>
               {filterMode === 'all'
-                ? t['com.affine.filter']()
-                : t[`com.affine.settings.workspace.properties.${filterMode}`]()}
+                ? t['com.arms.filter']()
+                : t[`com.arms.settings.workspace.properties.${filterMode}`]()}
             </Button>
           </Menu>
         ) : null}
@@ -364,7 +362,7 @@ const WorkspaceSettingPropertiesMain = () => {
           }
         >
           <Button variant="primary">
-            {t['com.affine.settings.workspace.properties.add_property']()}
+            {t['com.arms.settings.workspace.properties.add_property']()}
           </Button>
         </Menu>
       </div>
@@ -399,13 +397,13 @@ export const WorkspaceSettingProperties = ({
   return (
     <FrameworkScope scope={workspace.scope}>
       <SettingHeader
-        title={t['com.affine.settings.workspace.properties.header.title']()}
+        title={t['com.arms.settings.workspace.properties.header.title']()}
         subtitle={
           <Trans
             values={{
               name: title,
             }}
-            i18nKey="com.affine.settings.workspace.properties.header.subtitle"
+            i18nKey="com.arms.settings.workspace.properties.header.subtitle"
           >
             Manage workspace <strong>name</strong> properties
           </Trans>

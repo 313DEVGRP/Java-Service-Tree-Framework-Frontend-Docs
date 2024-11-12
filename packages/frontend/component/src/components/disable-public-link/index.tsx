@@ -8,10 +8,10 @@ export const PublicLinkDisableModal = (props: ConfirmModalProps) => {
 
   return (
     <ConfirmModal
-      title={t['com.affine.publicLinkDisableModal.title']()}
-      description={t['com.affine.publicLinkDisableModal.description']()}
-      cancelText={t['com.affine.publicLinkDisableModal.button.cancel']()}
-      confirmText={t['com.affine.publicLinkDisableModal.button.disable']()}
+      title={t['com.arms.publicLinkDisableModal.title']()}
+      description={t['com.arms.publicLinkDisableModal.description']()}
+      cancelText={t['com.arms.publicLinkDisableModal.button.cancel']()}
+      confirmText={t['com.arms.publicLinkDisableModal.button.disable']()}
       confirmButtonOptions={{
         variant: 'error',
         ['data-testid' as string]: 'confirm-enable-affine-cloud-button',

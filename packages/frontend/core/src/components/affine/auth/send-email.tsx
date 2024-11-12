@@ -26,13 +26,13 @@ const useEmailTitle = (emailType: AuthPanelProps['emailType']) => {
 
   switch (emailType) {
     case 'setPassword':
-      return t['com.affine.auth.set.password']();
+      return t['com.arms.auth.set.password']();
     case 'changePassword':
-      return t['com.affine.auth.reset.password']();
+      return t['com.arms.auth.reset.password']();
     case 'changeEmail':
-      return t['com.affine.settings.email.action.change']();
+      return t['com.arms.settings.email.action.change']();
     case 'verifyEmail':
-      return t['com.affine.settings.email.action.verify']();
+      return t['com.arms.settings.email.action.verify']();
   }
 };
 
@@ -41,12 +41,12 @@ const useNotificationHint = (emailType: AuthPanelProps['emailType']) => {
 
   switch (emailType) {
     case 'setPassword':
-      return t['com.affine.auth.sent.set.password.hint']();
+      return t['com.arms.auth.sent.set.password.hint']();
     case 'changePassword':
-      return t['com.affine.auth.sent.change.password.hint']();
+      return t['com.arms.auth.sent.change.password.hint']();
     case 'changeEmail':
     case 'verifyEmail':
-      return t['com.affine.auth.sent.verify.email.hint']();
+      return t['com.arms.auth.sent.verify.email.hint']();
   }
 };
 const useButtonContent = (emailType: AuthPanelProps['emailType']) => {
@@ -54,12 +54,12 @@ const useButtonContent = (emailType: AuthPanelProps['emailType']) => {
 
   switch (emailType) {
     case 'setPassword':
-      return t['com.affine.auth.send.set.password.link']();
+      return t['com.arms.auth.send.set.password.link']();
     case 'changePassword':
-      return t['com.affine.auth.send.reset.password.link']();
+      return t['com.arms.auth.send.reset.password.link']();
     case 'changeEmail':
     case 'verifyEmail':
-      return t['com.affine.auth.send.verify.email.hint']();
+      return t['com.arms.auth.send.verify.email.hint']();
   }
 };
 
@@ -170,22 +170,19 @@ export const SendEmail = ({
 
   const content =
     emailType === 'setPassword'
-      ? t['com.affine.auth.set.password.message']({
+      ? t['com.arms.auth.set.password.message']({
           min: String(passwordLimits.minLength),
           max: String(passwordLimits.maxLength),
         })
       : emailType === 'changePassword'
-        ? t['com.affine.auth.reset.password.message']()
+        ? t['com.arms.auth.reset.password.message']()
         : emailType === 'changeEmail' || emailType === 'verifyEmail'
-          ? t['com.affine.auth.verify.email.message']({ email })
+          ? t['com.arms.auth.verify.email.message']({ email })
           : null;
 
   return (
     <>
-      <ModalHeader
-        title={t['com.affine.brand.affineCloud']()}
-        subTitle={title}
-      />
+      <ModalHeader title={t['com.arms.brand.affineCloud']()} subTitle={title} />
       <AuthContent>{content}</AuthContent>
 
       <Wrapper
@@ -196,7 +193,7 @@ export const SendEmail = ({
         }}
       >
         <AuthInput
-          label={t['com.affine.settings.email']()}
+          label={t['com.arms.settings.email']()}
           disabled={true}
           value={email}
         />
@@ -210,7 +207,7 @@ export const SendEmail = ({
         loading={loading}
         onClick={onSendEmail}
       >
-        {hasSentEmail ? t['com.affine.auth.sent']() : buttonContent}
+        {hasSentEmail ? t['com.arms.auth.sent']() : buttonContent}
       </Button>
       <BackButton onClick={onBack} />
     </>

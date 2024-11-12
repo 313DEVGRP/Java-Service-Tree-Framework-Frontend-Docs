@@ -237,7 +237,7 @@ export const ExplorerTreeNode = ({
                     }
                     onClick={() => setRenaming(true)}
                   >
-                    {t['com.affine.menu.rename']()}
+                    {t['com.arms.menu.rename']()}
                   </MenuItem>
                 ),
               }

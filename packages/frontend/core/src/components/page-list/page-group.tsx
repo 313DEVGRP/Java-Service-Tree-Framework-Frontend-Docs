@@ -113,8 +113,8 @@ export const ItemGroupHeader = <T extends ListItem>({
       <button className={styles.selectAllButton} onClick={onSelectAll}>
         {t[
           allSelected
-            ? 'com.affine.page.group-header.clear'
-            : 'com.affine.page.group-header.select-all'
+            ? 'com.arms.page.group-header.clear'
+            : 'com.arms.page.group-header.select-all'
         ]()}
       </button>
     </div>
@@ -178,7 +178,7 @@ export const ItemGroup = <T extends ListItem>({
           <div className={styles.spacer} />
           {selectionState.selectionActive ? (
             <button className={styles.selectAllButton} onClick={onSelectAll}>
-              {t['com.affine.page.group-header.select-all']()}
+              {t['com.arms.page.group-header.select-all']()}
             </button>
           ) : null}
         </div>

@@ -11,11 +11,11 @@ export const ConfirmChangeEmail: FC<{
 
   return (
     <AuthPageContainer
-      title={t['com.affine.auth.change.email.page.success.title']()}
-      subtitle={t['com.affine.auth.change.email.page.success.subtitle']()}
+      title={t['com.arms.auth.change.email.page.success.title']()}
+      subtitle={t['com.arms.auth.change.email.page.success.subtitle']()}
     >
       <Button variant="primary" size="large" onClick={onOpenAffine}>
-        {t['com.affine.auth.open.affine']()}
+        {t['com.arms.auth.open.affine']()}
       </Button>
     </AuthPageContainer>
   );

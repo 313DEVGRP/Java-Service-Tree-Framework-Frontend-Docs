@@ -17,14 +17,14 @@ export const CollectionListHeader = ({
     <>
       <div className={styles.collectionListHeader}>
         <div className={styles.collectionListHeaderTitle}>
-          {t['com.affine.collections.header']()}
+          {t['com.arms.collections.header']()}
         </div>
         <Button
           className={styles.newCollectionButton}
           onClick={onCreate}
           data-testid="all-collection-new-button"
         >
-          {t['com.affine.collections.empty.new-collection-button']()}
+          {t['com.arms.collections.empty.new-collection-button']()}
         </Button>
       </div>
       {node}

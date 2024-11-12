@@ -112,19 +112,17 @@ const useSyncEngineSyncProgress = () => {
           setIsOverCapacity(true);
           if (isOwner) {
             notify.warning({
-              title: t['com.affine.payment.storage-limit.title'](),
-              message:
-                t['com.affine.payment.storage-limit.description.owner'](),
+              title: t['com.arms.payment.storage-limit.title'](),
+              message: t['com.arms.payment.storage-limit.description.owner'](),
               action: {
-                label: t['com.affine.payment.storage-limit.view'](),
+                label: t['com.arms.payment.storage-limit.view'](),
                 onClick: jumpToPricePlan,
               },
             });
           } else {
             notify.warning({
-              title: t['com.affine.payment.storage-limit.title'](),
-              message:
-                t['com.affine.payment.storage-limit.description.member'](),
+              title: t['com.arms.payment.storage-limit.title'](),
+              message: t['com.arms.payment.storage-limit.description.member'](),
             });
           }
         })

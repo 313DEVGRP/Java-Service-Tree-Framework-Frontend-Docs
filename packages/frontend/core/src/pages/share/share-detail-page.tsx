@@ -246,7 +246,7 @@ export const Component = () => {
                     rel="noreferrer"
                   >
                     <span className={styles.linkText}>
-                      {t['com.affine.share-page.footer.built-with']()}
+                      {t['com.arms.share-page.footer.built-with']()}
                     </span>
                     <Logo1Icon fontSize={20} />
                   </a>

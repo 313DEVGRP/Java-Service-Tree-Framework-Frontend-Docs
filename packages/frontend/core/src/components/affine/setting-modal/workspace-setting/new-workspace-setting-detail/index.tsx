@@ -51,19 +51,19 @@ export const WorkspaceSettingDetail = ({
         title={t[`Workspace Settings with name`]({
           name: workspaceInfo?.name ?? UNTITLED_WORKSPACE_NAME,
         })}
-        subtitle={t['com.affine.settings.workspace.description']()}
+        subtitle={t['com.arms.settings.workspace.description']()}
       />
       <SettingWrapper title={t['Info']()}>
         <SettingRow
           name={t['Workspace Profile']()}
-          desc={t['com.affine.settings.workspace.not-owner']()}
+          desc={t['com.arms.settings.workspace.not-owner']()}
           spreadCol={false}
         >
           <ProfilePanel />
           <LabelsPanel />
         </SettingRow>
       </SettingWrapper>
-      <SettingWrapper title={t['com.affine.brand.affineCloud']()}>
+      <SettingWrapper title={t['com.arms.brand.affineCloud']()}>
         <EnableCloudPanel />
         <MembersPanel />
       </SettingWrapper>
@@ -80,10 +80,10 @@ export const WorkspaceSettingDetail = ({
         <SettingRow
           name={
             <span style={{ color: 'var(--affine-text-secondary-color)' }}>
-              {t['com.affine.resetSyncStatus.button']()}
+              {t['com.arms.resetSyncStatus.button']()}
             </span>
           }
-          desc={t['com.affine.resetSyncStatus.description']()}
+          desc={t['com.arms.resetSyncStatus.description']()}
           style={{ cursor: 'pointer' }}
           onClick={handleResetSyncStatus}
           data-testid="reset-sync-status"

@@ -85,7 +85,7 @@ export const VariableSelect = ({
   return (
     <div data-testid="variable-select">
       <div className={styles.variableSelectTitleStyle}>
-        {t['com.affine.filter']()}
+        {t['com.arms.filter']()}
       </div>
       <MenuSeparator />
       {vars

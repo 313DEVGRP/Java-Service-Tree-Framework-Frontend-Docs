@@ -53,7 +53,7 @@ export const AppSidebarJournalButton = ({
       onAuxClick={handleOpenToday}
       icon={<Icon />}
     >
-      {t['com.affine.journal.app-sidebar-title']()}
+      {t['com.arms.journal.app-sidebar-title']()}
     </MenuItem>
   );
 };

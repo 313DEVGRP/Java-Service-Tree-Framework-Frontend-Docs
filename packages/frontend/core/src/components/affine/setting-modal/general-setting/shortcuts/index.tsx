@@ -51,8 +51,8 @@ export const Shortcuts = () => {
   return (
     <>
       <SettingHeader
-        title={t['com.affine.keyboardShortcuts.title']()}
-        subtitle={t['com.affine.keyboardShortcuts.subtitle']()}
+        title={t['com.arms.keyboardShortcuts.title']()}
+        subtitle={t['com.arms.keyboardShortcuts.subtitle']()}
         data-testid="keyboard-shortcuts-title"
       />
       <ShortcutsPanel shortcutsInfo={generalShortcutsInfo} />

@@ -163,7 +163,7 @@ export const ExplorerFavorites = () => {
   return (
     <CollapsibleSection
       name="favorites"
-      title={t['com.affine.rootAppSidebar.favorites']()}
+      title={t['com.arms.rootAppSidebar.favorites']()}
       headerRef={dropTargetRef}
       testId="explorer-favorites"
       headerTestId="explorer-favorite-category-divider"
@@ -177,7 +177,7 @@ export const ExplorerFavorites = () => {
             onAuxClick={handleCreateNewFavoriteDoc}
             size="16"
             tooltip={t[
-              'com.affine.rootAppSidebar.explorer.fav-section-add-tooltip'
+              'com.arms.rootAppSidebar.explorer.fav-section-add-tooltip'
             ]()}
           >
             <PlusIcon />

@@ -18,7 +18,7 @@ export const SaveAsCollectionButton = ({
 }: SaveAsCollectionButtonProps) => {
   const t = useI18n();
   const { open, node } = useEditCollectionName({
-    title: t['com.affine.editCollection.saveCollection'](),
+    title: t['com.arms.editCollection.saveCollection'](),
     showTips: true,
   });
   const handleClick = useCallback(() => {
@@ -38,7 +38,7 @@ export const SaveAsCollectionButton = ({
         prefix={<SaveIcon />}
         className={styles.button}
       >
-        {t['com.affine.editCollection.saveCollection']()}
+        {t['com.arms.editCollection.saveCollection']()}
       </Button>
       {node}
     </>

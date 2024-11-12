@@ -380,7 +380,7 @@ export function patchQuickSearchService(
                           source: 'link',
                           icon: LinkIcon,
                           label: {
-                            key: 'com.affine.cmdk.affine.insert-link',
+                            key: 'com.arms.cmdk.affine.insert-link',
                           },
                           payload: { url: query },
                         } as QuickSearchItem<'link', { url: string }>,
@@ -424,10 +424,10 @@ export function patchQuickSearchService(
                 {
                   defaultQuery: options.userInput,
                   label: {
-                    key: 'com.affine.cmdk.insert-links',
+                    key: 'com.arms.cmdk.insert-links',
                   },
                   placeholder: {
-                    key: 'com.affine.cmdk.docs.placeholder',
+                    key: 'com.arms.cmdk.docs.placeholder',
                   },
                 }
               )

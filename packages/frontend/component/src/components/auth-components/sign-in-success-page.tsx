@@ -10,11 +10,11 @@ export const SignInSuccessPage: FC<{
   const t = useI18n();
   return (
     <AuthPageContainer
-      title={t['com.affine.auth.signed.success.title']()}
-      subtitle={t['com.affine.auth.signed.success.subtitle']()}
+      title={t['com.arms.auth.signed.success.title']()}
+      subtitle={t['com.arms.auth.signed.success.subtitle']()}
     >
       <Button variant="primary" size="large" onClick={onOpenAffine}>
-        {t['com.affine.auth.open.affine']()}
+        {t['com.arms.auth.open.affine']()}
       </Button>
     </AuthPageContainer>
   );

@@ -44,7 +44,7 @@ export const PageListHeader = () => {
   );
 
   const title = useMemo(() => {
-    return t['com.affine.all-pages.header']();
+    return t['com.arms.all-pages.header']();
   }, [t]);
 
   const onImportFile = useAsyncCallback(async () => {
@@ -114,8 +114,8 @@ export const CollectionPageListHeader = ({
   const onConfirmAddDocument = useCallback(
     (createDocumentFn: () => BlockSuiteDoc) => {
       openConfirmModal({
-        title: t['com.affine.collection.add-doc.confirm.title'](),
-        description: t['com.affine.collection.add-doc.confirm.description'](),
+        title: t['com.arms.collection.add-doc.confirm.title'](),
+        description: t['com.arms.collection.add-doc.confirm.description'](),
         cancelText: t['Cancel'](),
         confirmText: t['Confirm'](),
         confirmButtonOptions: {
@@ -142,7 +142,7 @@ export const CollectionPageListHeader = ({
       <div className={styles.docListHeader}>
         <div className={styles.docListHeaderTitle}>
           <div style={{ cursor: 'pointer' }} onClick={handleJumpToCollections}>
-            {t['com.affine.collections.header']()} /
+            {t['com.arms.collections.header']()} /
           </div>
           <div className={styles.titleIcon}>
             <ViewLayersIcon />
@@ -180,7 +180,7 @@ export const TagPageListHeader = ({
   const collectionService = useService(CollectionService);
   const [openMenu, setOpenMenu] = useState(false);
   const { open, node } = useEditCollectionName({
-    title: t['com.affine.editCollection.saveCollection'](),
+    title: t['com.arms.editCollection.saveCollection'](),
     showTips: true,
   });
 
@@ -246,7 +246,7 @@ export const TagPageListHeader = ({
           </Menu>
         </div>
         <Button onClick={handleClick}>
-          {t['com.affine.editCollection.saveCollection']()}
+          {t['com.arms.editCollection.saveCollection']()}
         </Button>
       </div>
     </>
@@ -286,7 +286,7 @@ export const SwitchTag = ({ onClick }: SwitchTagProps) => {
           onChange={onInputChange}
           autoFocus
           className={styles.searchInput}
-          placeholder={t['com.affine.search-tags.placeholder']()}
+          placeholder={t['com.arms.search-tags.placeholder']()}
         />
       </div>
       <Divider />

@@ -32,8 +32,8 @@ export const FavoriteFolderOperation = ({ id }: { id: string }) => {
       onClick={() => compatibleFavoriteItemsAdapter.toggle(id, 'folder')}
     >
       {favorite
-        ? t['com.affine.rootAppSidebar.organize.folder-rm-favorite']()
-        : t['com.affine.rootAppSidebar.organize.folder-add-favorite']()}
+        ? t['com.arms.rootAppSidebar.organize.folder-rm-favorite']()
+        : t['com.arms.rootAppSidebar.organize.folder-add-favorite']()}
     </MenuItem>
   );
 };

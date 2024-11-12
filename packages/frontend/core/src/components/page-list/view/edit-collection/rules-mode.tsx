@@ -77,9 +77,9 @@ export const RulesMode = ({
   const tips = useMemo(
     () => (
       <Trans
-        i18nKey="com.affine.editCollection.rules.tips"
+        i18nKey="com.arms.editCollection.rules.tips"
         values={{
-          highlight: t['com.affine.editCollection.rules.tips.highlight'](),
+          highlight: t['com.arms.editCollection.rules.tips.highlight'](),
         }}
         components={{
           2: <span className={styles.rulesTitleHighlight} />,
@@ -133,7 +133,7 @@ export const RulesMode = ({
                       icon={<ToggleCollapseIcon />}
                     />
                     <div style={{ color: cssVar('textSecondaryColor') }}>
-                      {t['com.affine.editCollection.rules.include.title']()}
+                      {t['com.arms.editCollection.rules.include.title']()}
                     </div>
                   </div>
                 ) : null}
@@ -163,12 +163,10 @@ export const RulesMode = ({
                             ) : (
                               <PageIcon style={{ width: 16, height: 16 }} />
                             )}
-                            {t[
-                              'com.affine.editCollection.rules.include.page'
-                            ]()}
+                            {t['com.arms.editCollection.rules.include.page']()}
                           </div>
                           <div className={styles.includeItemContentIs}>
-                            {t['com.affine.editCollection.rules.include.is']()}
+                            {t['com.arms.editCollection.rules.include.is']()}
                           </div>
                           <div
                             className={clsx(
@@ -223,7 +221,7 @@ export const RulesMode = ({
           {allowListPages.length > 0 ? (
             <div>
               <div className={styles.includeListTitle}>
-                {t['com.affine.editCollection.rules.include.title']()}
+                {t['com.arms.editCollection.rules.include.title']()}
               </div>
               <List
                 hideHeader
@@ -244,14 +242,14 @@ export const RulesMode = ({
               setShowPreview(!showPreview);
             }}
           >
-            {t['com.affine.editCollection.rules.preview']()}
+            {t['com.arms.editCollection.rules.preview']()}
           </Button>
           <Button variant="plain" onClick={reset}>
-            {t['com.affine.editCollection.rules.reset']()}
+            {t['com.arms.editCollection.rules.reset']()}
           </Button>
           <div className={styles.previewCountTips}>
             <Trans
-              i18nKey="com.affine.editCollection.rules.countTips"
+              i18nKey="com.arms.editCollection.rules.countTips"
               values={{
                 selectedCount: allowListPages.length,
                 filteredCount: rulesPages.length,
@@ -294,8 +292,8 @@ const RulesEmpty = ({
       <AffineShapeIcon />
       <strong style={{ fontSize: 20, lineHeight: '28px' }}>
         {noRules
-          ? t['com.affine.editCollection.rules.empty.noRules']()
-          : t['com.affine.editCollection.rules.empty.noResults']()}
+          ? t['com.arms.editCollection.rules.empty.noRules']()
+          : t['com.arms.editCollection.rules.empty.noResults']()}
       </strong>
       <div
         style={{
@@ -306,12 +304,12 @@ const RulesEmpty = ({
         }}
       >
         {noRules ? (
-          <Trans i18nKey="com.affine.editCollection.rules.empty.noRules.tips">
+          <Trans i18nKey="com.arms.editCollection.rules.empty.noRules.tips">
             Please <strong>add rules</strong> to save this collection or switch
             to <strong>Pages</strong>, use manual selection mode
           </Trans>
         ) : (
-          t['com.affine.editCollection.rules.empty.noResults.tips']()
+          t['com.arms.editCollection.rules.empty.noResults.tips']()
         )}
       </div>
     </div>

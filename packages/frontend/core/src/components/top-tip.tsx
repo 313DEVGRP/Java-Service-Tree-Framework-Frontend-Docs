@@ -40,7 +40,7 @@ const OSWarningMessage = () => {
 
   // TODO(@L-Sun): remove this message when mobile version is able to edit.
   if ('isMobile' in environment && environment.isMobile) {
-    return <span>{t['com.affine.top-tip.mobile']()}</span>;
+    return <span>{t['com.arms.top-tip.mobile']()}</span>;
   }
 
   if (notChrome) {

@@ -65,7 +65,7 @@ const CloudWorkSpaceList = ({
           height={14}
           className={styles.workspaceTypeIcon}
         />
-        {t['com.affine.workspaceList.workspaceListType.cloud']()}
+        {t['com.arms.workspaceList.workspaceListType.cloud']()}
       </div>
       <WorkspaceList
         disabled={disabled}
@@ -101,7 +101,7 @@ const LocalWorkspaces = ({
           height={14}
           className={styles.workspaceTypeIcon}
         />
-        {t['com.affine.workspaceList.workspaceListType.local']()}
+        {t['com.arms.workspaceList.workspaceListType.local']()}
       </div>
       <WorkspaceList
         openingId={openingId}

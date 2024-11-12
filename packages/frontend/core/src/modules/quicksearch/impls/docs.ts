@@ -96,7 +96,7 @@ export class DocsQuickSearchSession
                   group: {
                     id: 'docs',
                     label: {
-                      key: 'com.affine.quicksearch.group.searchfor',
+                      key: 'com.arms.quicksearch.group.searchfor',
                       options: { query: truncate(query) },
                     },
                     score: 5,

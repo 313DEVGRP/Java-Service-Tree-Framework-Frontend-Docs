@@ -101,7 +101,7 @@ export const ExplorerTagNode = ({
             control: 'drag',
           });
         } else {
-          toast(t['com.affine.rootAppSidebar.tag.doc-only']());
+          toast(t['com.arms.rootAppSidebar.tag.doc-only']());
         }
       } else {
         onDrop?.(data);
@@ -130,7 +130,7 @@ export const ExplorerTagNode = ({
         if (data.source.data.entity?.type === 'doc') {
           tagRecord.tag(data.source.data.entity.id);
         } else {
-          toast(t['com.affine.rootAppSidebar.tag.doc-only']());
+          toast(t['com.arms.rootAppSidebar.tag.doc-only']());
         }
       }
     },
@@ -141,7 +141,7 @@ export const ExplorerTagNode = ({
     () => args => {
       const entityType = args.source.data.entity?.type;
       return args.treeInstruction?.type !== 'make-child'
-        ? ((typeof canDrop === 'function' ? canDrop(args) : canDrop) ?? true)
+        ? (typeof canDrop === 'function' ? canDrop(args) : canDrop) ?? true
         : entityType === 'doc';
     },
     [canDrop]

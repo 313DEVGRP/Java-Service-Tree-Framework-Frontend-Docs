@@ -114,8 +114,8 @@ export const PageOperationCell = ({
     favAdapter.toggle(page.id, 'doc');
     toast(
       status
-        ? t['com.affine.toastMessage.removedFavorites']()
-        : t['com.affine.toastMessage.addedFavorites']()
+        ? t['com.arms.toastMessage.removedFavorites']()
+        : t['com.arms.toastMessage.addedFavorites']()
     );
   }, [page.id, favAdapter, t]);
 
@@ -174,8 +174,8 @@ export const PageOperationCell = ({
         }
       >
         {favourite
-          ? t['com.affine.favoritePageOperation.remove']()
-          : t['com.affine.favoritePageOperation.add']()}
+          ? t['com.arms.favoritePageOperation.remove']()
+          : t['com.arms.favoritePageOperation.add']()}
       </MenuItem>
       {runtimeConfig.enableInfoModal ? (
         <MenuItem
@@ -186,7 +186,7 @@ export const PageOperationCell = ({
             </MenuIcon>
           }
         >
-          {t['com.affine.page-properties.page-info.view']()}
+          {t['com.arms.page-properties.page-info.view']()}
         </MenuItem>
       ) : null}
 
@@ -198,7 +198,7 @@ export const PageOperationCell = ({
           </MenuIcon>
         }
       >
-        {t['com.affine.workbench.tab.page-menu-open']()}
+        {t['com.arms.workbench.tab.page-menu-open']()}
       </MenuItem>
 
       {environment.isDesktop && appSettings.enableMultiView ? (
@@ -210,7 +210,7 @@ export const PageOperationCell = ({
             </MenuIcon>
           }
         >
-          {t['com.affine.workbench.split-view.page-menu-open']()}
+          {t['com.arms.workbench.split-view.page-menu-open']()}
         </MenuItem>
       ) : null}
 
@@ -222,7 +222,7 @@ export const PageOperationCell = ({
         }
         onSelect={onDuplicate}
       >
-        {t['com.affine.header.option.duplicate']()}
+        {t['com.arms.header.option.duplicate']()}
       </MenuItem>
 
       <MoveToTrash data-testid="move-to-trash" onSelect={onRemoveToTrash} />
@@ -282,10 +282,10 @@ export const TrashOperationCell = ({
     e => {
       e.preventDefault();
       openConfirmModal({
-        title: `${t['com.affine.trashOperation.deletePermanently']()}?`,
-        description: t['com.affine.trashOperation.deleteDescription'](),
+        title: `${t['com.arms.trashOperation.deletePermanently']()}?`,
+        description: t['com.arms.trashOperation.deleteDescription'](),
         cancelText: t['Cancel'](),
-        confirmText: t['com.affine.trashOperation.delete'](),
+        confirmText: t['com.arms.trashOperation.delete'](),
         confirmButtonOptions: {
           variant: 'error',
         },
@@ -306,7 +306,7 @@ export const TrashOperationCell = ({
   return (
     <ColWrapper flex={1}>
       <IconButton
-        tooltip={t['com.affine.trashOperation.restoreIt']()}
+        tooltip={t['com.arms.trashOperation.restoreIt']()}
         tooltipOptions={tooltipSideTop}
         data-testid="restore-page-button"
         style={{ marginRight: '12px' }}
@@ -316,7 +316,7 @@ export const TrashOperationCell = ({
         <ResetIcon />
       </IconButton>
       <IconButton
-        tooltip={t['com.affine.trashOperation.deletePermanently']()}
+        tooltip={t['com.arms.trashOperation.deletePermanently']()}
         tooltipOptions={tooltipSideTopAlignEnd}
         data-testid="delete-page-button"
         onClick={onConfirmPermanentlyDelete}
@@ -356,7 +356,7 @@ export const CollectionOperationCell = ({
 
   const { open: openEditCollectionNameModal, node: editNameModal } =
     useEditCollectionName({
-      title: t['com.affine.editCollection.renameCollection'](),
+      title: t['com.arms.editCollection.renameCollection'](),
     });
 
   const handleEditName = useCallback(() => {
@@ -392,8 +392,8 @@ export const CollectionOperationCell = ({
     favAdapter.toggle(collection.id, 'collection');
     toast(
       status
-        ? t['com.affine.toastMessage.removedFavorites']()
-        : t['com.affine.toastMessage.addedFavorites']()
+        ? t['com.arms.toastMessage.removedFavorites']()
+        : t['com.arms.toastMessage.addedFavorites']()
     );
   }, [favAdapter, collection.id, t]);
 
@@ -404,8 +404,8 @@ export const CollectionOperationCell = ({
 
   const onConfirmAddDocToCollection = useCallback(() => {
     openConfirmModal({
-      title: t['com.affine.collection.add-doc.confirm.title'](),
-      description: t['com.affine.collection.add-doc.confirm.description'](),
+      title: t['com.arms.collection.add-doc.confirm.title'](),
+      description: t['com.arms.collection.add-doc.confirm.description'](),
       cancelText: t['Cancel'](),
       confirmText: t['Confirm'](),
       confirmButtonOptions: {
@@ -429,14 +429,14 @@ export const CollectionOperationCell = ({
       </ColWrapper>
       <IconButton
         onClick={handleEditName}
-        tooltip={t['com.affine.collection.menu.rename']()}
+        tooltip={t['com.arms.collection.menu.rename']()}
         tooltipOptions={tooltipSideTop}
       >
         <EditIcon />
       </IconButton>
       <IconButton
         onClick={handleEdit}
-        tooltip={t['com.affine.collection.menu.edit']()}
+        tooltip={t['com.arms.collection.menu.edit']()}
         tooltipOptions={tooltipSideTop}
       >
         <FilterIcon />
@@ -460,8 +460,8 @@ export const CollectionOperationCell = ({
                 }
               >
                 {favourite
-                  ? t['com.affine.favoritePageOperation.remove']()
-                  : t['com.affine.favoritePageOperation.add']()}
+                  ? t['com.arms.favoritePageOperation.remove']()
+                  : t['com.arms.favoritePageOperation.add']()}
               </MenuItem>
               <MenuItem
                 onClick={onConfirmAddDocToCollection}

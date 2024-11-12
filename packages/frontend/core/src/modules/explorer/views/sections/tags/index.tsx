@@ -28,7 +28,7 @@ export const ExplorerTags = () => {
 
   const handleCreateNewFavoriteDoc = useCallback(() => {
     const newTags = tagService.tagList.createTag(
-      t['com.affine.rootAppSidebar.tags.new-tag'](),
+      t['com.arms.rootAppSidebar.tags.new-tag'](),
       tagService.randomTagColor()
     );
     setCreatedTag(newTags);
@@ -44,14 +44,14 @@ export const ExplorerTags = () => {
     <CollapsibleSection
       name="tags"
       headerClassName={styles.draggedOverHighlight}
-      title={t['com.affine.rootAppSidebar.tags']()}
+      title={t['com.arms.rootAppSidebar.tags']()}
       actions={
         <IconButton
           data-testid="explorer-bar-add-favorite-button"
           onClick={handleCreateNewFavoriteDoc}
           size="16"
           tooltip={t[
-            'com.affine.rootAppSidebar.explorer.tag-section-add-tooltip'
+            'com.arms.rootAppSidebar.explorer.tag-section-add-tooltip'
           ]()}
         >
           <PlusIcon />

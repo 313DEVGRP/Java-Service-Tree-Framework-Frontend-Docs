@@ -32,7 +32,7 @@ export const ShareMenuContent = (props: ShareMenuProps) => {
         <div className={styles.shareIconStyle}>
           <WebIcon />
         </div>
-        {t['com.affine.share-menu.SharePage']()}
+        {t['com.arms.share-menu.SharePage']()}
       </div>
       <SharePage {...props} />
       <div className={styles.columnContainerStyle}>
@@ -58,8 +58,8 @@ const DefaultShareButton = forwardRef(function DefaultShareButton(
   return (
     <Button ref={ref} className={styles.shareButton} variant="primary">
       {shared
-        ? t['com.affine.share-menu.sharedButton']()
-        : t['com.affine.share-menu.shareButton']()}
+        ? t['com.arms.share-menu.sharedButton']()
+        : t['com.arms.share-menu.shareButton']()}
     </Button>
   );
 });

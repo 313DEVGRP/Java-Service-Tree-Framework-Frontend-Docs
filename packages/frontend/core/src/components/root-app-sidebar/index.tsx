@@ -130,7 +130,7 @@ export const RootAppSidebar = (): ReactElement => {
         </div>
         <MenuLinkItem icon={<AllDocsIcon />} active={allPageActive} to={'/all'}>
           <span data-testid="all-pages">
-            {t['com.affine.workspaceSubPath.all']()}
+            {t['com.arms.workspaceSubPath.all']()}
           </span>
         </MenuLinkItem>
         <AppSidebarJournalButton
@@ -142,7 +142,7 @@ export const RootAppSidebar = (): ReactElement => {
           onClick={onOpenSettingModal}
         >
           <span data-testid="settings-modal-trigger">
-            {t['com.affine.settingSidebar.title']()}
+            {t['com.arms.settingSidebar.title']()}
           </span>
         </MenuItem>
       </SidebarContainer>
@@ -152,7 +152,7 @@ export const RootAppSidebar = (): ReactElement => {
         <ExplorerMigrationFavorites />
         <ExplorerCollections />
         <ExplorerTags />
-        <CategoryDivider label={t['com.affine.rootAppSidebar.others']()} />
+        <CategoryDivider label={t['com.arms.rootAppSidebar.others']()} />
         <div style={{ padding: '0 8px' }}>
           <TrashButton />
           <ImportPage docCollection={docCollection} />

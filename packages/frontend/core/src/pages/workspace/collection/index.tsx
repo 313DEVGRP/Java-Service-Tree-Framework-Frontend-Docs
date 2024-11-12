@@ -189,7 +189,7 @@ const Placeholder = ({ collection }: { collection: Collection }) => {
               style={{ color: 'var(--affine-icon-color)' }}
               fontSize={14}
             />
-            {t['com.affine.collection.allCollections']()}
+            {t['com.arms.collection.allCollections']()}
             <div>/</div>
           </div>
           <div
@@ -235,7 +235,7 @@ const Placeholder = ({ collection }: { collection: Collection }) => {
                 color: 'var(--affine-text-primary-color)',
               }}
             >
-              {t['com.affine.collection.emptyCollection']()}
+              {t['com.arms.collection.emptyCollection']()}
             </div>
             <div
               style={{
@@ -245,7 +245,7 @@ const Placeholder = ({ collection }: { collection: Collection }) => {
                 textAlign: 'center',
               }}
             >
-              {t['com.affine.collection.emptyCollectionDescription']()}
+              {t['com.arms.collection.emptyCollectionDescription']()}
             </div>
             <div
               style={{
@@ -265,7 +265,7 @@ const Placeholder = ({ collection }: { collection: Collection }) => {
                   }}
                 />
                 <span style={{ padding: '0 4px' }}>
-                  {t['com.affine.collection.addPages']()}
+                  {t['com.arms.collection.addPages']()}
                 </span>
               </div>
               <div onClick={openRuleEdit} className={styles.placeholderButton}>
@@ -277,7 +277,7 @@ const Placeholder = ({ collection }: { collection: Collection }) => {
                   }}
                 />
                 <span style={{ padding: '0 4px' }}>
-                  {t['com.affine.collection.addRules']()}
+                  {t['com.arms.collection.addRules']()}
                 </span>
               </div>
             </div>
@@ -306,7 +306,7 @@ const Placeholder = ({ collection }: { collection: Collection }) => {
                   justifyContent: 'space-between',
                 }}
               >
-                <div>{t['com.affine.collection.helpInfo']()}</div>
+                <div>{t['com.arms.collection.helpInfo']()}</div>
                 <CloseIcon
                   className={styles.button}
                   style={{ width: 16, height: 16 }}
@@ -323,13 +323,13 @@ const Placeholder = ({ collection }: { collection: Collection }) => {
                 }}
               >
                 <div>
-                  <Trans i18nKey="com.affine.collection.addPages.tips">
+                  <Trans i18nKey="com.arms.collection.addPages.tips">
                     <span style={{ fontWeight: 600 }}>Add pages:</span> You can
                     freely select pages and add them to the collection.
                   </Trans>
                 </div>
                 <div>
-                  <Trans i18nKey="com.affine.collection.addRules.tips">
+                  <Trans i18nKey="com.arms.collection.addRules.tips">
                     <span style={{ fontWeight: 600 }}>Add rules:</span> Rules
                     are based on filtering. After adding rules, pages that meet
                     the requirements will be automatically added to the current

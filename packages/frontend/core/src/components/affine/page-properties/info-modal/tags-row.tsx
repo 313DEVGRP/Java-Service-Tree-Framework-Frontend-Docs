@@ -47,7 +47,7 @@ export const TagsRow = ({
           data-testid="info-modal-tags-value"
         >
           {empty ? (
-            t['com.affine.page-properties.property-value-placeholder']()
+            t['com.arms.page-properties.property-value-placeholder']()
           ) : (
             <InlineTagsList pageId={docId} readonly />
           )}

@@ -120,7 +120,7 @@ const OpenAppImpl = ({ urlToOpen, channel }: OpenAppProps) => {
         </div>
 
         <Button onClick={openDownloadLink}>
-          {t['com.affine.auth.open.affine.download-app']()}
+          {t['com.arms.auth.open.affine.download-app']()}
         </Button>
       </div>
 
@@ -128,7 +128,7 @@ const OpenAppImpl = ({ urlToOpen, channel }: OpenAppProps) => {
         <img src={appIcon} alt={appName} width={120} height={120} />
 
         <div className={styles.prompt}>
-          <Trans i18nKey="com.affine.auth.open.affine.prompt">
+          <Trans i18nKey="com.arms.auth.open.affine.prompt">
             Open {appName} app now
           </Trans>
         </div>
@@ -139,7 +139,7 @@ const OpenAppImpl = ({ urlToOpen, channel }: OpenAppProps) => {
           target="_blank"
           rel="noreferrer"
         >
-          {t['com.affine.auth.open.affine.try-again']()}
+          {t['com.arms.auth.open.affine.try-again']()}
         </a>
       </div>
     </div>

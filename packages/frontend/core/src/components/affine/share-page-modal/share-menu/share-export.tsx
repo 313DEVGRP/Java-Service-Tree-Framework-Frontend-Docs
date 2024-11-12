@@ -31,10 +31,10 @@ export const ShareExport = ({
   return (
     <>
       <div className={styles.titleContainerStyle}>
-        {t['com.affine.share-menu.ShareViaExport']()}
+        {t['com.arms.share-menu.ShareViaExport']()}
       </div>
       <div className={styles.descriptionStyle}>
-        {t['com.affine.share-menu.ShareViaExportDescription']()}
+        {t['com.arms.share-menu.ShareViaExportDescription']()}
       </div>
       <div>
         <ExportMenuItems
@@ -47,10 +47,10 @@ export const ShareExport = ({
         <div className={styles.columnContainerStyle}>
           <Divider size="thinner" />
           <div className={styles.titleContainerStyle}>
-            {t['com.affine.share-menu.share-privately']()}
+            {t['com.arms.share-menu.share-privately']()}
           </div>
           <div className={styles.descriptionStyle}>
-            {t['com.affine.share-menu.share-privately.description']()}
+            {t['com.arms.share-menu.share-privately.description']()}
           </div>
           <div>
             <MenuItem
@@ -69,7 +69,7 @@ export const ShareExport = ({
                 </div>
               }
             >
-              {t['com.affine.share-menu.copy-private-link']()}
+              {t['com.arms.share-menu.copy-private-link']()}
             </MenuItem>
           </div>
         </div>

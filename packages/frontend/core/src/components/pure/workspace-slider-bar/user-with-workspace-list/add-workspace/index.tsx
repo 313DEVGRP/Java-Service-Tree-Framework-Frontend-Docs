@@ -24,7 +24,7 @@ export const AddWorkspace = ({
           className={styles.ItemContainer}
         >
           <div className={styles.ItemText}>
-            {t['com.affine.workspace.local.import']()}
+            {t['com.arms.workspace.local.import']()}
           </div>
         </MenuItem>
       ) : null}
@@ -37,8 +37,8 @@ export const AddWorkspace = ({
       >
         <div className={styles.ItemText}>
           {runtimeConfig.allowLocalWorkspace
-            ? t['com.affine.workspaceList.addWorkspace.create']()
-            : t['com.affine.workspaceList.addWorkspace.create-cloud']()}
+            ? t['com.arms.workspaceList.addWorkspace.create']()
+            : t['com.arms.workspaceList.addWorkspace.create-cloud']()}
         </div>
       </MenuItem>
     </div>

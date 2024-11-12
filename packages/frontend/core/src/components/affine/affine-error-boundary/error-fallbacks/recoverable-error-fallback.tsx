@@ -15,9 +15,9 @@ export const RecoverableErrorFallback = createErrorFallback(
     const canRetry = error.canRetry();
     const buttonDesc = useMemo(() => {
       if (canRetry) {
-        return t['com.affine.error.refetch']();
+        return t['com.arms.error.refetch']();
       }
-      return t['com.affine.error.reload']();
+      return t['com.arms.error.reload']();
     }, [canRetry, t]);
     const onRetry = useCallback(async () => {
       if (canRetry) {
@@ -30,7 +30,7 @@ export const RecoverableErrorFallback = createErrorFallback(
 
     return (
       <ErrorDetail
-        title={t['com.affine.error.unexpected-error.title']()}
+        title={t['com.arms.error.unexpected-error.title']()}
         resetError={resetError}
         buttonText={buttonDesc}
         onButtonClick={onRetry}

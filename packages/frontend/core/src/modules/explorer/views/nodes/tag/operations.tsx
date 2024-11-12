@@ -60,7 +60,7 @@ export const useExplorerTagNodeOperations = (
   const handleMoveToTrash = useCallback(() => {
     tagService.tagList.deleteTag(tagId);
     track.$.navigationPanel.organize.deleteOrganizeItem({ type: 'tag' });
-    toast(t['com.affine.tags.delete-tags.toast']());
+    toast(t['com.arms.tags.delete-tags.toast']());
   }, [t, tagId, tagService.tagList]);
 
   const handleOpenInSplitView = useCallback(() => {
@@ -93,7 +93,7 @@ export const useExplorerTagNodeOperations = (
           <IconButton
             size="16"
             onClick={handleNewDoc}
-            tooltip={t['com.affine.rootAppSidebar.explorer.tag-add-tooltip']()}
+            tooltip={t['com.arms.rootAppSidebar.explorer.tag-add-tooltip']()}
           >
             <PlusIcon />
           </IconButton>
@@ -110,7 +110,7 @@ export const useExplorerTagNodeOperations = (
             }
             onClick={handleOpenInNewTab}
           >
-            {t['com.affine.workbench.tab.page-menu-open']()}
+            {t['com.arms.workbench.tab.page-menu-open']()}
           </MenuItem>
         ),
       },
@@ -127,7 +127,7 @@ export const useExplorerTagNodeOperations = (
                   }
                   onClick={handleOpenInSplitView}
                 >
-                  {t['com.affine.workbench.split-view.page-menu-open']()}
+                  {t['com.arms.workbench.split-view.page-menu-open']()}
                 </MenuItem>
               ),
             },
@@ -151,8 +151,8 @@ export const useExplorerTagNodeOperations = (
             onClick={handleToggleFavoriteTag}
           >
             {favorite
-              ? t['com.affine.favoritePageOperation.remove']()
-              : t['com.affine.favoritePageOperation.add']()}
+              ? t['com.arms.favoritePageOperation.remove']()
+              : t['com.arms.favoritePageOperation.add']()}
           </MenuItem>
         ),
       },

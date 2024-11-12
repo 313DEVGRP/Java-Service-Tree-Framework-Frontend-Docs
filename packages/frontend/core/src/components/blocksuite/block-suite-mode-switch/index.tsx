@@ -47,14 +47,14 @@ export const EditorModeSwitch = ({
   const togglePage = useCallback(() => {
     if (currentMode === 'page' || isPublic || trash) return;
     doc?.setMode('page');
-    toast(t['com.affine.toastMessage.pageMode']());
+    toast(t['com.arms.toastMessage.pageMode']());
     track.$.header.actions.switchPageMode({ mode: 'page' });
   }, [currentMode, doc, isPublic, t, trash]);
 
   const toggleEdgeless = useCallback(() => {
     if (currentMode === 'edgeless' || isPublic || trash) return;
     doc?.setMode('edgeless');
-    toast(t['com.affine.toastMessage.edgelessMode']());
+    toast(t['com.arms.toastMessage.edgelessMode']());
     track.$.header.actions.switchPageMode({ mode: 'edgeless' });
   }, [currentMode, doc, isPublic, t, trash]);
 
@@ -78,8 +78,8 @@ export const EditorModeSwitch = ({
       category: 'editor:page',
       label:
         currentMode === 'page'
-          ? t['com.affine.cmdk.switch-to-edgeless']()
-          : t['com.affine.cmdk.switch-to-page'](),
+          ? t['com.arms.cmdk.switch-to-edgeless']()
+          : t['com.arms.cmdk.switch-to-page'](),
       icon: currentMode === 'page' ? <EdgelessIcon /> : <PageIcon />,
       keyBinding: {
         binding: 'Alt+KeyS',

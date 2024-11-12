@@ -101,10 +101,10 @@ const NameWorkspaceContent = ({
   return (
     <ConfirmModal
       defaultOpen={true}
-      title={t['com.affine.nameWorkspace.title']()}
-      description={t['com.affine.nameWorkspace.description']()}
-      cancelText={t['com.affine.nameWorkspace.button.cancel']()}
-      confirmText={t['com.affine.nameWorkspace.button.create']()}
+      title={t['com.arms.nameWorkspace.title']()}
+      description={t['com.arms.nameWorkspace.description']()}
+      cancelText={t['com.arms.nameWorkspace.button.cancel']()}
+      confirmText={t['com.arms.nameWorkspace.button.create']()}
       confirmButtonOptions={{
         variant: 'primary',
         loading,
@@ -123,13 +123,13 @@ const NameWorkspaceContent = ({
 
       <div className={styles.workspaceNameWrapper}>
         <div className={styles.subTitle}>
-          {t['com.affine.nameWorkspace.subtitle.workspace-name']()}
+          {t['com.arms.nameWorkspace.subtitle.workspace-name']()}
         </div>
         <Input
           autoFocus
           data-testid="create-workspace-input"
           onKeyDown={handleKeyDown}
-          placeholder={t['com.affine.nameWorkspace.placeholder']()}
+          placeholder={t['com.arms.nameWorkspace.placeholder']()}
           maxLength={64}
           minLength={0}
           onChange={setWorkspaceName}
@@ -141,7 +141,7 @@ const NameWorkspaceContent = ({
         <div className={styles.card}>
           <div className={styles.cardText}>
             <div className={styles.cardTitle}>
-              <span>{t['com.affine.nameWorkspace.affine-cloud.title']()}</span>
+              <span>{t['com.arms.nameWorkspace.affine-cloud.title']()}</span>
               <Switch
                 checked={enable}
                 onChange={onSwitchChange}
@@ -149,7 +149,7 @@ const NameWorkspaceContent = ({
               />
             </div>
             <div className={styles.cardDescription}>
-              {t['com.affine.nameWorkspace.affine-cloud.description']()}
+              {t['com.arms.nameWorkspace.affine-cloud.description']()}
             </div>
           </div>
           <div className={styles.cloudSvgContainer}>
@@ -163,7 +163,7 @@ const NameWorkspaceContent = ({
             target="_blank"
             rel="noreferrer"
           >
-            {t['com.affine.nameWorkspace.affine-cloud.web-tips']()}
+            {t['com.arms.nameWorkspace.affine-cloud.web-tips']()}
           </a>
         ) : null}
       </div>

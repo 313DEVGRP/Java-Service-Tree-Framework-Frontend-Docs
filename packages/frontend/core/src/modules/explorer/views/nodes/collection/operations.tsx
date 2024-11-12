@@ -81,8 +81,8 @@ export const useExplorerCollectionNodeOperations = (
 
   const handleAddDocToCollection = useCallback(() => {
     openConfirmModal({
-      title: t['com.affine.collection.add-doc.confirm.title'](),
-      description: t['com.affine.collection.add-doc.confirm.description'](),
+      title: t['com.arms.collection.add-doc.confirm.title'](),
+      description: t['com.arms.collection.add-doc.confirm.description'](),
       cancelText: t['Cancel'](),
       confirmText: t['Confirm'](),
       confirmButtonOptions: {
@@ -125,7 +125,7 @@ export const useExplorerCollectionNodeOperations = (
             size="16"
             onClick={handleAddDocToCollection}
             tooltip={t[
-              'com.affine.rootAppSidebar.explorer.collection-add-tooltip'
+              'com.arms.rootAppSidebar.explorer.collection-add-tooltip'
             ]()}
           >
             <PlusIcon />
@@ -143,7 +143,7 @@ export const useExplorerCollectionNodeOperations = (
             }
             onClick={handleShowEdit}
           >
-            {t['com.affine.collection.menu.edit']()}
+            {t['com.arms.collection.menu.edit']()}
           </MenuItem>
         ),
       },
@@ -180,8 +180,8 @@ export const useExplorerCollectionNodeOperations = (
             onClick={handleToggleFavoriteCollection}
           >
             {favorite
-              ? t['com.affine.favoritePageOperation.remove']()
-              : t['com.affine.favoritePageOperation.add']()}
+              ? t['com.arms.favoritePageOperation.remove']()
+              : t['com.arms.favoritePageOperation.add']()}
           </MenuItem>
         ),
       },
@@ -196,7 +196,7 @@ export const useExplorerCollectionNodeOperations = (
             }
             onClick={handleOpenInNewTab}
           >
-            {t['com.affine.workbench.tab.page-menu-open']()}
+            {t['com.arms.workbench.tab.page-menu-open']()}
           </MenuItem>
         ),
       },
@@ -213,7 +213,7 @@ export const useExplorerCollectionNodeOperations = (
                   }
                   onClick={handleOpenInSplitView}
                 >
-                  {t['com.affine.workbench.split-view.page-menu-open']()}
+                  {t['com.arms.workbench.split-view.page-menu-open']()}
                 </MenuItem>
               ),
             },

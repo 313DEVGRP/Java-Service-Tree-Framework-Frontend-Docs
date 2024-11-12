@@ -44,7 +44,7 @@ const FooterActions = ({ onDismiss }: { onDismiss: () => void }) => {
           variant="plain"
           onClick={onDismiss}
         >
-          {t['com.affine.ai-onboarding.local.action-learn-more']()}
+          {t['com.arms.ai-onboarding.local.action-learn-more']()}
         </Button>
       </a>
       {loggedIn ? null : (
@@ -56,7 +56,7 @@ const FooterActions = ({ onDismiss }: { onDismiss: () => void }) => {
             jumpToSignIn('', RouteLogic.REPLACE, {}, { initCloud: 'true' });
           }}
         >
-          {t['com.affine.ai-onboarding.local.action-get-started']()}
+          {t['com.arms.ai-onboarding.local.action-get-started']()}
         </Button>
       )}
     </div>
@@ -84,10 +84,10 @@ export const AIOnboardingLocal = () => {
         {
           title: (
             <div className={styles.title}>
-              {t['com.affine.ai-onboarding.local.title']()}
+              {t['com.arms.ai-onboarding.local.title']()}
             </div>
           ),
-          message: t['com.affine.ai-onboarding.local.message'](),
+          message: t['com.arms.ai-onboarding.local.message'](),
           icon: <AiIcon />,
           iconColor: cssVar('brandColor'),
           thumb: <LocalOnboardingAnimation />,

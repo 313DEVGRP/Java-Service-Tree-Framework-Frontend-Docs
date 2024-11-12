@@ -198,10 +198,10 @@ export const ExplorerFolderNodeFolder = ({
       type: 'folder',
     });
     notify.success({
-      title: t['com.affine.rootAppSidebar.organize.delete.notify-title']({
+      title: t['com.arms.rootAppSidebar.organize.delete.notify-title']({
         name,
       }),
-      message: t['com.affine.rootAppSidebar.organize.delete.notify-message'](),
+      message: t['com.arms.rootAppSidebar.organize.delete.notify-message'](),
     });
   }, [name, node, t]);
 
@@ -548,7 +548,7 @@ export const ExplorerFolderNodeFolder = ({
 
   const handleCreateSubfolder = useCallback(() => {
     const newFolderId = node.createFolder(
-      t['com.affine.rootAppSidebar.organize.new-folders'](),
+      t['com.arms.rootAppSidebar.organize.new-folders'](),
       node.indexAt('before')
     );
     track.$.navigationPanel.organize.createOrganizeItem({ type: 'folder' });
@@ -611,7 +611,7 @@ export const ExplorerFolderNodeFolder = ({
             size="16"
             onClick={handleNewDoc}
             tooltip={t[
-              'com.affine.rootAppSidebar.explorer.organize-add-tooltip'
+              'com.arms.rootAppSidebar.explorer.organize-add-tooltip'
             ]()}
           >
             <PlusIcon />
@@ -629,7 +629,7 @@ export const ExplorerFolderNodeFolder = ({
             }
             onClick={handleCreateSubfolder}
           >
-            {t['com.affine.rootAppSidebar.organize.folder.create-subfolder']()}
+            {t['com.arms.rootAppSidebar.organize.folder.create-subfolder']()}
           </MenuItem>
         ),
       },
@@ -644,7 +644,7 @@ export const ExplorerFolderNodeFolder = ({
             }
             onClick={() => handleAddToFolder('doc')}
           >
-            {t['com.affine.rootAppSidebar.organize.folder.add-docs']()}
+            {t['com.arms.rootAppSidebar.organize.folder.add-docs']()}
           </MenuItem>
         ),
       },
@@ -669,7 +669,7 @@ export const ExplorerFolderNodeFolder = ({
                     </MenuIcon>
                   }
                 >
-                  {t['com.affine.rootAppSidebar.organize.folder.add-tags']()}
+                  {t['com.arms.rootAppSidebar.organize.folder.add-tags']()}
                 </MenuItem>
                 <MenuItem
                   onClick={() => handleAddToFolder('collection')}
@@ -680,13 +680,13 @@ export const ExplorerFolderNodeFolder = ({
                   }
                 >
                   {t[
-                    'com.affine.rootAppSidebar.organize.folder.add-collections'
+                    'com.arms.rootAppSidebar.organize.folder.add-collections'
                   ]()}
                 </MenuItem>
               </>
             }
           >
-            {t['com.affine.rootAppSidebar.organize.folder.add-others']()}
+            {t['com.arms.rootAppSidebar.organize.folder.add-others']()}
           </MenuSub>
         ),
       },
@@ -712,7 +712,7 @@ export const ExplorerFolderNodeFolder = ({
             }
             onClick={handleDelete}
           >
-            {t['com.affine.rootAppSidebar.organize.delete']()}
+            {t['com.arms.rootAppSidebar.organize.delete']()}
           </MenuItem>
         ),
       },
@@ -752,7 +752,7 @@ export const ExplorerFolderNodeFolder = ({
                 data-event-args-type={node.type$.value}
                 onClick={() => node.delete()}
               >
-                {t['com.affine.rootAppSidebar.organize.delete-from-folder']()}
+                {t['com.arms.rootAppSidebar.organize.delete-from-folder']()}
               </MenuItem>
             ),
           },

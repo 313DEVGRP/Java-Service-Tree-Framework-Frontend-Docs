@@ -482,9 +482,7 @@ Could you make a new website based on these notes and send back just the html fi
 
   AIProvider.slots.requestRunInEdgeless.on(() => {
     notify.warning({
-      title: (
-        <Trans i18nKey="com.affine.ai.action.edgeless-only.dialog-title" />
-      ),
+      title: <Trans i18nKey="com.arms.ai.action.edgeless-only.dialog-title" />,
     });
   });
 

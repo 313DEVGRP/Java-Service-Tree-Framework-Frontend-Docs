@@ -50,7 +50,7 @@ const useKeyboardShortcutsI18N = () => {
   const t = useI18n();
   return useCallback(
     (key: KeyboardShortcutsI18NKeys) =>
-      t[`com.affine.keyboardShortcuts.${key}`](),
+      t[`com.arms.keyboardShortcuts.${key}`](),
     [t]
   );
 };
@@ -59,7 +59,7 @@ const useKeyboardShortcutsI18N = () => {
 const useHeadingKeyboardShortcutsI18N = () => {
   const t = useI18n();
   return useCallback(
-    (number: string) => t['com.affine.keyboardShortcuts.heading']({ number }),
+    (number: string) => t['com.arms.keyboardShortcuts.heading']({ number }),
     [t]
   );
 };
@@ -248,7 +248,7 @@ export const useWinPageKeyboardShortcuts = (): ShortcutMap => {
       [t('increaseIndent')]: ['Tab'],
       [t('reduceIndent')]: ['Shift+Tab'],
       [t('groupDatabase')]: ['Ctrl + G'],
-      // ['Switch']: ['Alt + S'], 단축키 문구 삭제 page/edgeless 
+      // ['Switch']: ['Alt + S'], 단축키 문구 삭제 page/edgeless
       // not implement yet
       // [t('moveUp')]: 'Ctrl + Alt + ↑',
       // [t('moveDown')]: 'Ctrl + Alt + ↓',
@@ -286,7 +286,7 @@ export const useMarkdownShortcuts = (): ShortcutsInfo => {
   const winMarkdownShortcuts = useWinMarkdownShortcuts();
   const isMac = environment.isBrowser && environment.isMacOs;
   return {
-    title: t['com.affine.shortcutsTitle.markdownSyntax'](),
+    title: t['com.arms.shortcutsTitle.markdownSyntax'](),
     shortcuts: isMac ? macMarkdownShortcuts : winMarkdownShortcuts,
   };
 };
@@ -298,7 +298,7 @@ export const usePageShortcuts = (): ShortcutsInfo => {
   const winPageShortcuts = useWinPageKeyboardShortcuts();
   const isMac = environment.isBrowser && environment.isMacOs;
   return {
-    title: t['com.affine.shortcutsTitle.page'](),
+    title: t['com.arms.shortcutsTitle.page'](),
     shortcuts: isMac ? macPageShortcuts : winPageShortcuts,
   };
 };
@@ -310,7 +310,7 @@ export const useEdgelessShortcuts = (): ShortcutsInfo => {
   const winEdgelessShortcuts = useWinEdgelessKeyboardShortcuts();
   const isMac = environment.isBrowser && environment.isMacOs;
   return {
-    title: t['com.affine.shortcutsTitle.edgeless'](),
+    title: t['com.arms.shortcutsTitle.edgeless'](),
     shortcuts: isMac ? macEdgelessShortcuts : winEdgelessShortcuts,
   };
 };
@@ -322,7 +322,7 @@ export const useGeneralShortcuts = (): ShortcutsInfo => {
   const winGeneralShortcuts = useWinGeneralKeyboardShortcuts();
   const isMac = environment.isBrowser && environment.isMacOs;
   return {
-    title: t['com.affine.shortcutsTitle.general'](),
+    title: t['com.arms.shortcutsTitle.general'](),
     shortcuts: isMac ? macGeneralShortcuts : winGeneralShortcuts,
   };
 };

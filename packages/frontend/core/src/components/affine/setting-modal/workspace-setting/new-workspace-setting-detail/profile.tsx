@@ -181,7 +181,7 @@ export const ProfilePanel = () => {
                 marginLeft: '12px',
               }}
             >
-              {t['com.affine.editCollection.save']()}
+              {t['com.arms.editCollection.save']()}
             </Button>
           )}
         </FlexWrapper>

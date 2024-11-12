@@ -25,8 +25,8 @@ const FavoriteOperation = ({ collection }: { collection: ListItem }) => {
     favAdapter.toggle(collection.id, 'collection');
     toast(
       isFavorite
-        ? t['com.affine.toastMessage.removedFavorites']()
-        : t['com.affine.toastMessage.addedFavorites']()
+        ? t['com.arms.toastMessage.removedFavorites']()
+        : t['com.arms.toastMessage.addedFavorites']()
     );
   }, [collection.id, favAdapter, isFavorite, t]);
 
@@ -81,9 +81,7 @@ export const SelectCollection = ({
 
   return (
     <SelectorLayout
-      searchPlaceholder={t[
-        'com.affine.selector-collection.search.placeholder'
-      ]()}
+      searchPlaceholder={t['com.arms.selector-collection.search.placeholder']()}
       selectedCount={selection.length}
       onSearch={setKeyword}
       onClear={() => setSelection([])}

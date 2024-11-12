@@ -38,7 +38,7 @@ export const MultiSelect = ({
         >
           {options.length === 0 ? (
             <MenuItem checked={true}>
-              {t['com.affine.filter.empty-tag']()}
+              {t['com.arms.filter.empty-tag']()}
             </MenuItem>
           ) : (
             options.map(option => {
@@ -74,15 +74,13 @@ export const MultiSelect = ({
     <Menu items={items}>
       <div className={styles.content}>
         <Tooltip
-          content={
-            content.length ? content : t['com.affine.filter.empty-tag']()
-          }
+          content={content.length ? content : t['com.arms.filter.empty-tag']()}
         >
           {value.length ? (
             <div className={styles.text}>{content}</div>
           ) : (
             <div className={clsx(styles.text, 'empty')}>
-              {t['com.affine.filter.empty-tag']()}
+              {t['com.arms.filter.empty-tag']()}
             </div>
           )}
         </Tooltip>

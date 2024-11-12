@@ -60,7 +60,7 @@ export const FilterList = ({
       >
         {value.length === 0 ? (
           <Button suffix={<PlusIcon />}>
-            {t['com.affine.filterList.button.add']()}
+            {t['com.arms.filterList.button.add']()}
           </Button>
         ) : (
           <IconButton size="16">

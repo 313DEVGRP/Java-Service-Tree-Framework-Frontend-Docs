@@ -95,8 +95,8 @@ export const AISubscribe = ({
   ).toFixed(2)}`;
   const priceFrequency =
     displayedFrequency === 'yearly'
-      ? t['com.affine.payment.billing-setting.year']()
-      : t['com.affine.payment.billing-setting.month']();
+      ? t['com.arms.payment.billing-setting.year']()
+      : t['com.arms.payment.billing-setting.month']();
 
   return (
     <Button
@@ -115,7 +115,7 @@ export const AISubscribe = ({
             paddingLeft: 4,
           }}
         >
-          {t['com.affine.payment.ai.subscribe.billed-annually']()}
+          {t['com.arms.payment.ai.subscribe.billed-annually']()}
         </span>
       ) : null}
     </Button>

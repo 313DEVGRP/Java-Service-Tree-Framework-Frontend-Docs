@@ -214,11 +214,9 @@ const PlanPrompt = () => {
           isProWorkspace !== null
             ? !isProWorkspace
               ? t[
-                  'com.affine.history.confirm-restore-modal.plan-prompt.limited-title'
+                  'com.arms.history.confirm-restore-modal.plan-prompt.limited-title'
                 ]()
-              : t[
-                  'com.affine.history.confirm-restore-modal.plan-prompt.title'
-                ]()
+              : t['com.arms.history.confirm-restore-modal.plan-prompt.title']()
             : '' /* TODO(@catsjuice): loading UI */
         }
 
@@ -233,7 +231,7 @@ const PlanPrompt = () => {
     if (!isProWorkspace) {
       return (
         <>
-          <Trans i18nKey="com.affine.history.confirm-restore-modal.free-plan-prompt.description">
+          <Trans i18nKey="com.arms.history.confirm-restore-modal.free-plan-prompt.description">
             With the workspace creator&apos;s Free account, every member can
             access up to <b>7 days</b> of version history.
           </Trans>
@@ -243,7 +241,7 @@ const PlanPrompt = () => {
               onClick={onClickUpgrade}
             >
               {t[
-                'com.affine.history.confirm-restore-modal.pro-plan-prompt.upgrade'
+                'com.arms.history.confirm-restore-modal.pro-plan-prompt.upgrade'
               ]()}
             </span>
           ) : null}
@@ -251,7 +249,7 @@ const PlanPrompt = () => {
       );
     } else {
       return (
-        <Trans i18nKey="com.affine.history.confirm-restore-modal.pro-plan-prompt.description">
+        <Trans i18nKey="com.arms.history.confirm-restore-modal.pro-plan-prompt.description">
           With the workspace creator&apos;s Pro account, every member enjoys the
           privilege of accessing up to <b>30 days</b> of version history.
         </Trans>
@@ -300,7 +298,7 @@ const PageHistoryList = ({
   return (
     <div className={styles.historyList}>
       <div className={styles.historyListHeader}>
-        {t['com.affine.history.version-history']()}
+        {t['com.arms.history.version-history']()}
       </div>
       <Scrollable.Root className={styles.historyListScrollable}>
         <Scrollable.Viewport className={styles.historyListScrollableInner}>
@@ -368,7 +366,7 @@ const PageHistoryList = ({
               className={styles.historyItemLoadMore}
               onClick={onLoadMore}
             >
-              {t['com.affine.history.confirm-restore-modal.load-more']()}
+              {t['com.arms.history.confirm-restore-modal.load-more']()}
             </Button>
           ) : null}
         </Scrollable.Viewport>
@@ -388,10 +386,10 @@ const EmptyHistoryPrompt = () => {
     >
       <EmptyHistoryShape />
       <div className={styles.emptyHistoryPromptTitle}>
-        {t['com.affine.history.empty-prompt.title']()}
+        {t['com.arms.history.empty-prompt.title']()}
       </div>
       <div className={styles.emptyHistoryPromptDescription}>
-        {t['com.affine.history.empty-prompt.description']()}
+        {t['com.arms.history.empty-prompt.description']()}
       </div>
     </div>
   );
@@ -440,14 +438,14 @@ const PageHistoryManager = ({
 
   const onConfirmRestore = useCallback(() => {
     openConfirmModal({
-      title: t['com.affine.history.restore-current-version'](),
-      description: t['com.affine.history.confirm-restore-modal.hint'](),
+      title: t['com.arms.history.restore-current-version'](),
+      description: t['com.arms.history.confirm-restore-modal.hint'](),
       cancelText: t['Cancel'](),
       contentOptions: {
         ['data-testid' as string]: 'confirm-restore-history-modal',
         style: { padding: '20px 26px' },
       },
-      confirmText: t['com.affine.history.confirm-restore-modal.restore'](),
+      confirmText: t['com.arms.history.confirm-restore-modal.restore'](),
       confirmButtonOptions: {
         variant: 'primary',
         ['data-testid' as string]: 'confirm-restore-history-button',
@@ -490,7 +488,7 @@ const PageHistoryManager = ({
 
       <div className={styles.historyFooter}>
         <Button onClick={onClose}>
-          {t['com.affine.history.back-to-page']()}
+          {t['com.arms.history.back-to-page']()}
         </Button>
         <div className={styles.spacer} />
         <Button
@@ -498,7 +496,7 @@ const PageHistoryManager = ({
           onClick={onConfirmRestore}
           disabled={isMutating || !activeVersion}
         >
-          {t['com.affine.history.restore-current-version']()}
+          {t['com.arms.history.restore-current-version']()}
         </Button>
       </div>
     </div>

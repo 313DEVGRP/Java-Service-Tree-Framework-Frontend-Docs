@@ -40,9 +40,9 @@ const PlansErrorBoundary = ({ resetErrorBoundary }: FallbackProps) => {
 
   const scroll = (
     <div className={styles.errorTip}>
-      <span>{t['com.affine.payment.plans-error-tip']()}</span>
+      <span>{t['com.arms.payment.plans-error-tip']()}</span>
       <a onClick={resetErrorBoundary} className={styles.errorTipRetry}>
-        {t['com.affine.payment.plans-error-retry']()}
+        {t['com.arms.payment.plans-error-retry']()}
       </a>
     </div>
   );

@@ -79,7 +79,7 @@ export function useRegisterBlocksuiteEditorCommands() {
     //     preconditionStrategy: () => PreconditionStrategy.InEdgeless && !trash,
     //     category: 'editor:edgeless',
     //     icon: <EdgelessIcon />,
-    //     label: t['com.affine.cmdk.affine.editor.edgeless.presentation-start'](),
+    //     label: t['com.arms.cmdk.affine.editor.edgeless.presentation-start'](),
     //     run() {
     //       document
     //         .querySelector<HTMLElement>('edgeless-toolbar')
@@ -100,7 +100,7 @@ export function useRegisterBlocksuiteEditorCommands() {
           runtimeConfig.enableInfoModal,
         category: `editor:${mode}`,
         icon: mode === 'page' ? <PageIcon /> : <EdgelessIcon />,
-        label: t['com.affine.page-properties.page-info.view'](),
+        label: t['com.arms.page-properties.page-info.view'](),
         run() {
           track.$.cmdk.docInfo.open();
 
@@ -116,16 +116,16 @@ export function useRegisterBlocksuiteEditorCommands() {
         category: `editor:${mode}`,
         icon: mode === 'page' ? <PageIcon /> : <EdgelessIcon />,
         label: favorite
-          ? t['com.affine.favoritePageOperation.remove']()
-          : t['com.affine.favoritePageOperation.add'](),
+          ? t['com.arms.favoritePageOperation.remove']()
+          : t['com.arms.favoritePageOperation.add'](),
         run() {
           favAdapter.toggle(docId, 'doc');
           track.$.cmdk.editor.toggleFavorite();
 
           toast(
             favorite
-              ? t['com.affine.cmdk.affine.editor.remove-from-favourites']()
-              : t['com.affine.cmdk.affine.editor.add-to-favourites']()
+              ? t['com.arms.cmdk.affine.editor.remove-from-favourites']()
+              : t['com.arms.cmdk.affine.editor.add-to-favourites']()
           );
         },
       })
@@ -141,8 +141,8 @@ export function useRegisterBlocksuiteEditorCommands() {
         icon: mode === 'page' ? <PageIcon /> : <EdgelessIcon />,
         label: `${t['Convert to ']()}${
           mode === 'page'
-            ? t['com.affine.pageMode.edgeless']()
-            : t['com.affine.pageMode.page']()
+            ? t['com.arms.pageMode.edgeless']()
+            : t['com.arms.pageMode.page']()
         }`,
         run() {
           track.$.cmdk.editor.switchPageMode({
@@ -152,8 +152,8 @@ export function useRegisterBlocksuiteEditorCommands() {
           doc.toggleMode();
           toast(
             mode === 'page'
-              ? t['com.affine.toastMessage.edgelessMode']()
-              : t['com.affine.toastMessage.pageMode']()
+              ? t['com.arms.toastMessage.edgelessMode']()
+              : t['com.arms.toastMessage.pageMode']()
           );
         },
       })
@@ -166,7 +166,7 @@ export function useRegisterBlocksuiteEditorCommands() {
         preconditionStrategy,
         category: `editor:${mode}`,
         icon: mode === 'page' ? <PageIcon /> : <EdgelessIcon />,
-        label: t['com.affine.header.option.duplicate'](),
+        label: t['com.arms.header.option.duplicate'](),
         run() {
           duplicate(docId);
           track.$.cmdk.editor.createDoc({
@@ -250,7 +250,7 @@ export function useRegisterBlocksuiteEditorCommands() {
         preconditionStrategy,
         category: `editor:${mode}`,
         icon: mode === 'page' ? <PageIcon /> : <EdgelessIcon />,
-        label: t['com.affine.moveToTrash.title'](),
+        label: t['com.arms.moveToTrash.title'](),
         run() {
           track.$.cmdk.editor.deleteDoc();
 
@@ -266,7 +266,7 @@ export function useRegisterBlocksuiteEditorCommands() {
           PreconditionStrategy.InPaperOrEdgeless && trash,
         category: `editor:${mode}`,
         icon: mode === 'page' ? <PageIcon /> : <EdgelessIcon />,
-        label: t['com.affine.cmdk.affine.editor.restore-from-trash'](),
+        label: t['com.arms.cmdk.affine.editor.restore-from-trash'](),
         run() {
           track.$.cmdk.editor.restoreDoc();
 
@@ -281,7 +281,7 @@ export function useRegisterBlocksuiteEditorCommands() {
           id: `editor:${mode}-page-history`,
           category: `editor:${mode}`,
           icon: <HistoryIcon />,
-          label: t['com.affine.cmdk.affine.editor.reveal-page-history-modal'](),
+          label: t['com.arms.cmdk.affine.editor.reveal-page-history-modal'](),
           run() {
             track.$.cmdk.docHistory.open();
 

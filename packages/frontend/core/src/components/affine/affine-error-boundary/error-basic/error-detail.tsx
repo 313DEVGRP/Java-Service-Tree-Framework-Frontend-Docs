@@ -86,7 +86,7 @@ export const ErrorDetail: FC<ErrorDetailProps> = props => {
             loading={isBtnLoading}
             size="extraLarge"
           >
-            {props.buttonText ?? t['com.affine.error.retry']()}
+            {props.buttonText ?? t['com.arms.error.retry']()}
           </Button>
         </div>
       </div>

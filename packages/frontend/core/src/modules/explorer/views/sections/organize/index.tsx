@@ -68,7 +68,7 @@ export const ExplorerOrganize = () => {
           );
           track.$.navigationPanel.organize.moveOrganizeItem({ type: 'folder' });
         } else {
-          toast(t['com.affine.rootAppSidebar.organize.root-folder-only']());
+          toast(t['com.arms.rootAppSidebar.organize.root-folder-only']());
         }
       } else {
         return; // not supported
@@ -106,14 +106,14 @@ export const ExplorerOrganize = () => {
   return (
     <CollapsibleSection
       name="organize"
-      title={t['com.affine.rootAppSidebar.organize']()}
+      title={t['com.arms.rootAppSidebar.organize']()}
       actions={
         <IconButton
           data-testid="explorer-bar-add-organize-button"
           onClick={handleCreateFolder}
           size="16"
           tooltip={t[
-            'com.affine.rootAppSidebar.explorer.organize-section-add-tooltip'
+            'com.arms.rootAppSidebar.explorer.organize-section-add-tooltip'
           ]()}
         >
           <PlusIcon />

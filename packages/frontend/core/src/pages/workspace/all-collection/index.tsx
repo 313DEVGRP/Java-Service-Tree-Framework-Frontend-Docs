@@ -41,7 +41,7 @@ export const AllCollection = () => {
 
   const navigateHelper = useNavigateHelper();
   const { open, node } = useEditCollectionName({
-    title: t['com.affine.editCollection.createCollection'](),
+    title: t['com.arms.editCollection.createCollection'](),
     showTips: true,
   });
 

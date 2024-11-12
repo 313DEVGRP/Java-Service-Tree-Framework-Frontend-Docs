@@ -43,7 +43,7 @@ export function pageReferenceRenderer({
   const { isPageJournal, getLocalizedJournalDateString } = journalHelper;
   const referencedPage = pageMetaHelper.getDocMeta(pageId);
   let title =
-    referencedPage?.title ?? t['com.affine.editor.reference-not-found']();
+    referencedPage?.title ?? t['com.arms.editor.reference-not-found']();
 
   let icon = !referencedPage ? (
     <DeleteIcon className={styles.pageReferenceIcon} />

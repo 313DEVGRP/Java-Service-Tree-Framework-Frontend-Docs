@@ -41,22 +41,22 @@ export const ExplorerMigrationFavorites = () => {
 
   const handleClickClear = useCallback(() => {
     openConfirmModal({
-      title: t['com.affine.rootAppSidebar.migration-data.clean-all'](),
+      title: t['com.arms.rootAppSidebar.migration-data.clean-all'](),
       description: (
         <Trans
-          i18nKey="com.affine.rootAppSidebar.migration-data.clean-all.description"
+          i18nKey="com.arms.rootAppSidebar.migration-data.clean-all.description"
           components={{
             b: <b className={styles.descriptionHighlight} />,
           }}
         />
       ),
       confirmText:
-        t['com.affine.rootAppSidebar.migration-data.clean-all.confirm'](),
+        t['com.arms.rootAppSidebar.migration-data.clean-all.confirm'](),
       confirmButtonOptions: {
         variant: 'primary',
       },
       cancelText:
-        t['com.affine.rootAppSidebar.migration-data.clean-all.cancel'](),
+        t['com.arms.rootAppSidebar.migration-data.clean-all.cancel'](),
       onConfirm() {
         migrationFavoriteItemsAdapter.markFavoritesMigrated();
       },
@@ -65,21 +65,20 @@ export const ExplorerMigrationFavorites = () => {
 
   const handleClickHelp = useCallback(() => {
     openConfirmModal({
-      title: t['com.affine.rootAppSidebar.migration-data.help'](),
+      title: t['com.arms.rootAppSidebar.migration-data.help'](),
       description: (
         <Trans
-          i18nKey="com.affine.rootAppSidebar.migration-data.help.description"
+          i18nKey="com.arms.rootAppSidebar.migration-data.help.description"
           components={{
             b: <b className={styles.descriptionHighlight} />,
           }}
         />
       ),
-      confirmText: t['com.affine.rootAppSidebar.migration-data.help.confirm'](),
+      confirmText: t['com.arms.rootAppSidebar.migration-data.help.confirm'](),
       confirmButtonOptions: {
         variant: 'primary',
       },
-      cancelText:
-        t['com.affine.rootAppSidebar.migration-data.help.clean-all'](),
+      cancelText: t['com.arms.rootAppSidebar.migration-data.help.clean-all'](),
       cancelButtonOptions: {
         prefix: <BroomIcon />,
         onClick: () => {
@@ -100,7 +99,7 @@ export const ExplorerMigrationFavorites = () => {
     <CollapsibleSection
       name="migrationFavorites"
       className={styles.container}
-      title={t['com.affine.rootAppSidebar.migration-data']()}
+      title={t['com.arms.rootAppSidebar.migration-data']()}
       actions={
         <>
           <IconButton

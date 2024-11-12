@@ -31,7 +31,7 @@ export const AffineOtherPageLayout = ({
             onClick={openDownloadLink}
             className={styles.hideInSmallScreen}
           >
-            {t['com.affine.auth.open.affine.download-app']()}
+            {t['com.arms.auth.open.affine.download-app']()}
           </Button>
           <MobileNavbar />
         </div>

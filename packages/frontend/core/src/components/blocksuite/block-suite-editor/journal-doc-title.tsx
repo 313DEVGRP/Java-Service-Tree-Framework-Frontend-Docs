@@ -16,7 +16,7 @@ export const BlocksuiteEditorJournalDocTitle = ({ page }: { page: Doc }) => {
     <span className="doc-title-container">
       <span>{localizedJournalDate}</span>
       {isTodayJournal ? (
-        <span className={styles.titleTodayTag}>{t['com.affine.today']()}</span>
+        <span className={styles.titleTodayTag}>{t['com.arms.today']()}</span>
       ) : (
         <span className={styles.titleDayTag}>{day}</span>
       )}

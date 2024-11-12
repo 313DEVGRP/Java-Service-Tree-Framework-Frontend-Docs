@@ -17,7 +17,7 @@ export function useTrashModalHelper(docCollection: DocCollection) {
     pageIds.forEach(pageId => {
       removeToTrash(pageId);
     });
-    toast(t['com.affine.toastMessage.movedTrash']());
+    toast(t['com.arms.toastMessage.movedTrash']());
     setTrashModal({ ...trashModal, open: false });
   }, [pageIds, removeToTrash, setTrashModal, t, trashModal]);
 

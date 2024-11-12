@@ -51,7 +51,7 @@ export const useEnableCloud = () => {
       } catch (e) {
         console.error(e);
         notify.error({
-          title: t['com.affine.workspace.enable-cloud.failed'](),
+          title: t['com.arms.workspace.enable-cloud.failed'](),
         });
       }
     },
@@ -89,7 +89,7 @@ export const useEnableCloud = () => {
         {
           title: t['Enable AFFiNE Cloud'](),
           description: t['Enable AFFiNE Cloud Description'](),
-          cancelText: t['com.affine.enableAffineCloudModal.button.cancel'](),
+          cancelText: t['com.arms.enableAffineCloudModal.button.cancel'](),
           confirmText:
             loginStatus === 'authenticated'
               ? t['Enable']()

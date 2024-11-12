@@ -113,7 +113,7 @@ const WorkspaceLayoutProviders = ({ children }: PropsWithChildren) => {
           }),
           catchError(err => {
             console.error(err);
-            toast(t['com.affine.ai.template-insert.failed']());
+            toast(t['com.arms.ai.template-insert.failed']());
             return EMPTY;
           }),
           finalize(() => {

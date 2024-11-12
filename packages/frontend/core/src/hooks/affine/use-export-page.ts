@@ -71,14 +71,14 @@ export const useExportPage = (page: Doc) => {
           type,
         });
         notify.success({
-          title: t['com.affine.export.success.title'](),
-          message: t['com.affine.export.success.message'](),
+          title: t['com.arms.export.success.title'](),
+          message: t['com.arms.export.success.message'](),
         });
       } catch (err) {
         console.error(err);
         notify.error({
-          title: t['com.affine.export.error.title'](),
-          message: t['com.affine.export.error.message'](),
+          title: t['com.arms.export.error.title'](),
+          message: t['com.arms.export.error.message'](),
         });
       } finally {
         resolveGlobalLoadingEvent(globalLoadingID);

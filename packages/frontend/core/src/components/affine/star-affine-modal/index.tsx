@@ -20,15 +20,15 @@ export const StarAFFiNEModal = () => {
           loop
         />
       }
-      title={t['com.affine.star-affine.title']()}
+      title={t['com.arms.star-affine.title']()}
       onOpenChange={setOpen}
-      description={t['com.affine.star-affine.description']()}
-      cancelText={t['com.affine.star-affine.cancel']()}
+      description={t['com.arms.star-affine.description']()}
+      cancelText={t['com.arms.star-affine.cancel']()}
       to={runtimeConfig.githubUrl}
       confirmButtonOptions={{
         variant: 'primary',
       }}
-      confirmText={t['com.affine.star-affine.confirm']()}
+      confirmText={t['com.arms.star-affine.confirm']()}
       external
     />
   );

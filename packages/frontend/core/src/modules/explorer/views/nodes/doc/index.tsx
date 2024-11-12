@@ -130,7 +130,7 @@ export const ExplorerDocNode = ({
             control: 'drag',
           });
         } else {
-          toast(t['com.affine.rootAppSidebar.doc.link-doc-only']());
+          toast(t['com.arms.rootAppSidebar.doc.link-doc-only']());
         }
       } else {
         onDrop?.(data);
@@ -162,7 +162,7 @@ export const ExplorerDocNode = ({
           control: 'drag',
         });
       } else {
-        toast(t['com.affine.rootAppSidebar.doc.link-doc-only']());
+        toast(t['com.arms.rootAppSidebar.doc.link-doc-only']());
       }
     },
     [docId, docsService, t]
@@ -172,7 +172,7 @@ export const ExplorerDocNode = ({
     () => args => {
       const entityType = args.source.data.entity?.type;
       return args.treeInstruction?.type !== 'make-child'
-        ? ((typeof canDrop === 'function' ? canDrop(args) : canDrop) ?? true)
+        ? (typeof canDrop === 'function' ? canDrop(args) : canDrop) ?? true
         : entityType === 'doc';
     },
     [canDrop]
@@ -218,7 +218,7 @@ export const ExplorerDocNode = ({
           referencesLoading &&
           !collapsed && (
             <Tooltip
-              content={t['com.affine.rootAppSidebar.docs.references-loading']()}
+              content={t['com.arms.rootAppSidebar.docs.references-loading']()}
             >
               <div className={styles.loadingIcon}>
                 <Loading />

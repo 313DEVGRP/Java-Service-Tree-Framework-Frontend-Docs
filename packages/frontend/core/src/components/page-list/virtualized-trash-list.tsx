@@ -50,7 +50,7 @@ export const VirtualizedTrashList = () => {
       permanentlyDeletePage(pageId);
     });
     hideFloatingToolbar();
-    toast(t['com.affine.toastMessage.permanentlyDeleted']());
+    toast(t['com.arms.toastMessage.permanentlyDeleted']());
   }, [filteredSelectedPageIds, hideFloatingToolbar, permanentlyDeletePage, t]);
 
   const handleMultiRestore = useCallback(() => {
@@ -59,7 +59,7 @@ export const VirtualizedTrashList = () => {
     });
     hideFloatingToolbar();
     toast(
-      t['com.affine.toastMessage.restored']({
+      t['com.arms.toastMessage.restored']({
         title: filteredSelectedPageIds.length > 1 ? 'docs' : 'doc',
       })
     );
@@ -70,10 +70,10 @@ export const VirtualizedTrashList = () => {
       return;
     }
     openConfirmModal({
-      title: `${t['com.affine.trashOperation.deletePermanently']()}?`,
-      description: t['com.affine.trashOperation.deleteDescription'](),
+      title: `${t['com.arms.trashOperation.deletePermanently']()}?`,
+      description: t['com.arms.trashOperation.deleteDescription'](),
       cancelText: t['Cancel'](),
-      confirmText: t['com.affine.trashOperation.delete'](),
+      confirmText: t['com.arms.trashOperation.delete'](),
       confirmButtonOptions: {
         variant: 'error',
       },
@@ -87,14 +87,14 @@ export const VirtualizedTrashList = () => {
       const onRestorePage = () => {
         restoreFromTrash(page.id);
         toast(
-          t['com.affine.toastMessage.restored']({
+          t['com.arms.toastMessage.restored']({
             title: page.title || 'Untitled',
           })
         );
       };
       const onPermanentlyDeletePage = () => {
         permanentlyDeletePage(page.id);
-        toast(t['com.affine.toastMessage.permanentlyDeleted']());
+        toast(t['com.arms.toastMessage.permanentlyDeleted']());
       };
 
       return (
@@ -137,7 +137,7 @@ export const VirtualizedTrashList = () => {
         onRestore={handleMultiRestore}
         content={
           <Trans
-            i18nKey="com.affine.page.toolbar.selected"
+            i18nKey="com.arms.page.toolbar.selected"
             count={filteredSelectedPageIds.length}
           >
             <div style={{ color: 'var(--affine-text-secondary-color)' }}>

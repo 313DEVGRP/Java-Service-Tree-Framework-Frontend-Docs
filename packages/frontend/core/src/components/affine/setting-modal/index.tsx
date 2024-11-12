@@ -166,7 +166,7 @@ const SettingModalInner = ({
             <div className={style.footer}>
               <ContactWithUsIcon fontSize={16} />
               <Trans
-                i18nKey={'com.affine.settings.suggestion-2'}
+                i18nKey={'com.arms.settings.suggestion-2'}
                 components={{
                   1: (
                     <span

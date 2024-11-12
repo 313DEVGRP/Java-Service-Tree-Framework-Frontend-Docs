@@ -45,10 +45,10 @@ export const SignInItem = () => {
 
         <div className={styles.signInTextContainer}>
           <div className={styles.signInTextPrimary}>
-            {t['com.affine.workspace.cloud.auth']()}
+            {t['com.arms.workspace.cloud.auth']()}
           </div>
           <div className={styles.signInTextSecondary}>
-            {t['com.affine.workspace.cloud.description']()}
+            {t['com.arms.workspace.cloud.description']()}
           </div>
         </div>
       </div>

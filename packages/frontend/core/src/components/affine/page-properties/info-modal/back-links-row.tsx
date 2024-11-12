@@ -16,7 +16,7 @@ export const BackLinksRow = ({
   return (
     <div>
       <div className={styles.title}>
-        {t['com.affine.page-properties.backlinks']()} · {references.length}
+        {t['com.arms.page-properties.backlinks']()} · {references.length}
       </div>
       {references.map(link => (
         <AffinePageReference

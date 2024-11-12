@@ -36,7 +36,7 @@ export const IconsSelectorPanel = ({
   return (
     <Scrollable.Root>
       <div role="heading" className={styles.menuHeader}>
-        {t['com.affine.page-properties.icons']()}
+        {t['com.arms.page-properties.icons']()}
       </div>
       <Scrollable.Viewport className={styles.iconsContainerScrollable}>
         <div className={styles.iconsContainer} ref={ref}>

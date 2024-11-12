@@ -14,11 +14,11 @@ export const Component = () => {
 
   return (
     <AuthPageContainer
-      title={t['com.affine.expired.page.title']()}
-      subtitle={t['com.affine.expired.page.subtitle']()}
+      title={t['com.arms.expired.page.title']()}
+      subtitle={t['com.arms.expired.page.subtitle']()}
     >
       <Button variant="primary" size="large" onClick={onOpenAffine}>
-        {t['com.affine.auth.open.affine']()}
+        {t['com.arms.auth.open.affine']()}
       </Button>
     </AuthPageContainer>
   );

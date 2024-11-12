@@ -30,27 +30,27 @@ type NotificationKey =
 
 const notificationToI18nKey = {
   enableSuccessTitle:
-    'com.affine.share-menu.create-public-link.notification.success.title',
+    'com.arms.share-menu.create-public-link.notification.success.title',
   enableSuccessMessage:
-    'com.affine.share-menu.create-public-link.notification.success.message',
+    'com.arms.share-menu.create-public-link.notification.success.message',
   enableErrorTitle:
-    'com.affine.share-menu.create-public-link.notification.fail.title',
+    'com.arms.share-menu.create-public-link.notification.fail.title',
   enableErrorMessage:
-    'com.affine.share-menu.create-public-link.notification.fail.message',
+    'com.arms.share-menu.create-public-link.notification.fail.message',
   changeSuccessTitle:
-    'com.affine.share-menu.confirm-modify-mode.notification.success.title',
+    'com.arms.share-menu.confirm-modify-mode.notification.success.title',
   changeErrorTitle:
-    'com.affine.share-menu.confirm-modify-mode.notification.fail.title',
+    'com.arms.share-menu.confirm-modify-mode.notification.fail.title',
   changeErrorMessage:
-    'com.affine.share-menu.confirm-modify-mode.notification.fail.message',
+    'com.arms.share-menu.confirm-modify-mode.notification.fail.message',
   disableSuccessTitle:
-    'com.affine.share-menu.disable-publish-link.notification.success.title',
+    'com.arms.share-menu.disable-publish-link.notification.success.title',
   disableSuccessMessage:
-    'com.affine.share-menu.disable-publish-link.notification.success.message',
+    'com.arms.share-menu.disable-publish-link.notification.success.message',
   disableErrorTitle:
-    'com.affine.share-menu.disable-publish-link.notification.fail.title',
+    'com.arms.share-menu.disable-publish-link.notification.fail.title',
   disableErrorMessage:
-    'com.affine.share-menu.disable-publish-link.notification.fail.message',
+    'com.arms.share-menu.disable-publish-link.notification.fail.message',
 } satisfies Record<NotificationKey, I18nKeys>;
 
 export function useIsSharedPage(
@@ -128,7 +128,7 @@ export function useIsSharedPage(
           notify.success({
             title: t[notificationToI18nKey['changeSuccessTitle']](),
             message: t[
-              'com.affine.share-menu.confirm-modify-mode.notification.success.message'
+              'com.arms.share-menu.confirm-modify-mode.notification.success.message'
             ]({
               preMode:
                 publishMode === PublicPageMode.Edgeless

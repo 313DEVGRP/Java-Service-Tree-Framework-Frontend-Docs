@@ -49,7 +49,7 @@ export const DateValue = ({ property }: PropertyRowValueProps) => {
         data-empty={!property.value}
       >
         {displayValue ??
-          t['com.affine.page-properties.property-value-placeholder']()}
+          t['com.arms.page-properties.property-value-placeholder']()}
       </div>
     </Menu>
   );
@@ -125,9 +125,7 @@ export const TextValue = ({ property }: PropertyRowValueProps) => {
         onChange={handleOnChange}
         onClick={handleClick}
         data-empty={!value}
-        placeholder={t[
-          'com.affine.page-properties.property-value-placeholder'
-        ]()}
+        placeholder={t['com.arms.page-properties.property-value-placeholder']()}
       />
       <div className={styles.propertyRowValueTextareaInvisible}>
         {value}
@@ -170,7 +168,7 @@ export const NumberValue = ({ property }: PropertyRowValueProps) => {
       onClick={handleClick}
       onBlur={handleBlur}
       data-empty={!value}
-      placeholder={t['com.affine.page-properties.property-value-placeholder']()}
+      placeholder={t['com.arms.page-properties.property-value-placeholder']()}
     />
   );
 };
@@ -183,7 +181,7 @@ export const TagsValue = () => {
   return (
     <TagsInlineEditor
       className={styles.propertyRowValueCell}
-      placeholder={t['com.affine.page-properties.property-value-placeholder']()}
+      placeholder={t['com.arms.page-properties.property-value-placeholder']()}
       pageId={doc.id}
       readonly={doc.blockSuiteDoc.readonly}
     />

@@ -16,7 +16,7 @@ export const PresentButton = () => {
       onClick={() => handlePresent()}
       disabled={isPresent}
     >
-      {t['com.affine.share-page.header.present']()}
+      {t['com.arms.share-page.header.present']()}
     </Button>
   );
 };

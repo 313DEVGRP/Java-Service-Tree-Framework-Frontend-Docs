@@ -60,7 +60,7 @@ type OnRevoke = (memberId: string) => void;
 const MembersPanelLocal = () => {
   const t = useI18n();
   return (
-    <Tooltip content={t['com.affine.settings.member-tooltip']()}>
+    <Tooltip content={t['com.arms.settings.member-tooltip']()}>
       <div className={style.fakeWrapper}>
         <SettingRow name={`${t['Members']()} (0)`} desc={t['Members hint']()}>
           <Button>{t['Invite Members']()}</Button>
@@ -179,14 +179,14 @@ export const CloudWorkspaceMembersPanel = () => {
     if (!workspaceQuota) return null;
     return (
       <span>
-        {t['com.affine.payment.member.description2']()}
+        {t['com.arms.payment.member.description2']()}
         {hasPaymentFeature ? (
           <div
             className={style.goUpgradeWrapper}
             onClick={handleUpgradeConfirm}
           >
             <span className={style.goUpgrade}>
-              {t['com.affine.payment.member.description.choose-plan']()}
+              {t['com.arms.payment.member.description.choose-plan']()}
             </span>
           </div>
         ) : null}
@@ -262,7 +262,7 @@ export const MembersPanelFallback = () => {
     <>
       <SettingRow
         name={t['Members']()}
-        desc={t['com.affine.payment.member.description2']()}
+        desc={t['com.arms.payment.member.description2']()}
       />
       <div className={style.membersPanel}>
         <MemberListFallback memberCount={1} />
@@ -290,7 +290,7 @@ const MemberListFallback = ({ memberCount }: { memberCount: number }) => {
       className={style.membersFallback}
     >
       <Loading size={20} />
-      <span>{t['com.affine.settings.member.loading']()}</span>
+      <span>{t['com.arms.settings.member.loading']()}</span>
     </div>
   );
 };

@@ -49,44 +49,44 @@ export interface DynamicPrice extends BasePrice {
 }
 
 const freeBenefits: BenefitsGetter = t => ({
-  [t['com.affine.payment.cloud.free.benefit.g1']()]: ([1, 2, 3] as const).map(
+  [t['com.arms.payment.cloud.free.benefit.g1']()]: ([1, 2, 3] as const).map(
     i => ({
-      title: t[`com.affine.payment.cloud.free.benefit.g1-${i}`](),
+      title: t[`com.arms.payment.cloud.free.benefit.g1-${i}`](),
     })
   ),
-  [t['com.affine.payment.cloud.free.benefit.g2']()]: (
+  [t['com.arms.payment.cloud.free.benefit.g2']()]: (
     [1, 2, 3, 4, 5] as const
   ).map(i => ({
-    title: t[`com.affine.payment.cloud.free.benefit.g2-${i}`](),
+    title: t[`com.arms.payment.cloud.free.benefit.g2-${i}`](),
   })),
 });
 
 const proBenefits: BenefitsGetter = t => ({
-  [t['com.affine.payment.cloud.pro.benefit.g1']()]: [
+  [t['com.arms.payment.cloud.pro.benefit.g1']()]: [
     {
-      title: t['com.affine.payment.cloud.pro.benefit.g1-1'](),
+      title: t['com.arms.payment.cloud.pro.benefit.g1-1'](),
       icon: <AfFiNeIcon />,
     },
     ...([2, 3, 4, 5, 6, 7, 8] as const).map(i => ({
-      title: t[`com.affine.payment.cloud.pro.benefit.g1-${i}`](),
+      title: t[`com.arms.payment.cloud.pro.benefit.g1-${i}`](),
     })),
   ],
 });
 
 const teamBenefits: BenefitsGetter = t => ({
-  [t['com.affine.payment.cloud.team.benefit.g1']()]: [
+  [t['com.arms.payment.cloud.team.benefit.g1']()]: [
     {
-      title: t['com.affine.payment.cloud.team.benefit.g1-1'](),
+      title: t['com.arms.payment.cloud.team.benefit.g1-1'](),
       icon: <AfFiNeIcon />,
     },
     ...([2, 3, 4] as const).map(i => ({
-      title: t[`com.affine.payment.cloud.team.benefit.g1-${i}`](),
+      title: t[`com.arms.payment.cloud.team.benefit.g1-${i}`](),
     })),
   ],
-  [t['com.affine.payment.cloud.team.benefit.g2']()]: [
-    { title: t['com.affine.payment.cloud.team.benefit.g2-1']() },
-    { title: t['com.affine.payment.cloud.team.benefit.g2-2']() },
-    { title: t['com.affine.payment.cloud.team.benefit.g2-3']() },
+  [t['com.arms.payment.cloud.team.benefit.g2']()]: [
+    { title: t['com.arms.payment.cloud.team.benefit.g2-1']() },
+    { title: t['com.arms.payment.cloud.team.benefit.g2-2']() },
+    { title: t['com.arms.payment.cloud.team.benefit.g2-3']() },
   ],
 });
 
@@ -99,9 +99,9 @@ export function getPlanDetail(t: T) {
         plan: SubscriptionPlan.Free,
         price: '0',
         yearlyPrice: '0',
-        name: t['com.affine.payment.cloud.free.name'](),
-        description: t['com.affine.payment.cloud.free.description'](),
-        titleRenderer: () => t['com.affine.payment.cloud.free.title'](),
+        name: t['com.arms.payment.cloud.free.name'](),
+        description: t['com.arms.payment.cloud.free.description'](),
+        titleRenderer: () => t['com.arms.payment.cloud.free.title'](),
         benefits: freeBenefits(t),
       },
     ],
@@ -112,8 +112,8 @@ export function getPlanDetail(t: T) {
         plan: SubscriptionPlan.Pro,
         price: '1',
         yearlyPrice: '1',
-        name: t['com.affine.payment.cloud.pro.name'](),
-        description: t['com.affine.payment.cloud.pro.description'](),
+        name: t['com.arms.payment.cloud.pro.name'](),
+        description: t['com.arms.payment.cloud.pro.description'](),
         titleRenderer: (recurring, detail) => {
           const price =
             recurring === SubscriptionRecurring.Yearly
@@ -121,12 +121,12 @@ export function getPlanDetail(t: T) {
               : detail.price;
           return (
             <>
-              {t['com.affine.payment.cloud.pro.title.price-monthly']({
+              {t['com.arms.payment.cloud.pro.title.price-monthly']({
                 price: '$' + price,
               })}
               {recurring === SubscriptionRecurring.Yearly ? (
                 <span className={planTitleTitleCaption}>
-                  {t['com.affine.payment.cloud.pro.title.billed-yearly']()}
+                  {t['com.arms.payment.cloud.pro.title.billed-yearly']()}
                 </span>
               ) : null}
             </>
@@ -141,9 +141,9 @@ export function getPlanDetail(t: T) {
         type: 'dynamic',
         plan: SubscriptionPlan.Team,
         contact: true,
-        name: t['com.affine.payment.cloud.team.name'](),
-        description: t['com.affine.payment.cloud.team.description'](),
-        titleRenderer: () => t['com.affine.payment.cloud.team.title'](),
+        name: t['com.arms.payment.cloud.team.name'](),
+        description: t['com.arms.payment.cloud.team.description'](),
+        titleRenderer: () => t['com.arms.payment.cloud.team.title'](),
         benefits: teamBenefits(t),
       },
     ],
@@ -158,8 +158,8 @@ const getRecurringLabel = ({
   t: ReturnType<typeof useI18n>;
 }) => {
   return recurring === SubscriptionRecurring.Monthly
-    ? t['com.affine.payment.recurring-monthly']()
-    : t['com.affine.payment.recurring-yearly']();
+    ? t['com.arms.payment.recurring-monthly']()
+    : t['com.arms.payment.recurring-yearly']();
 };
 
 export const CloudPlans = () => {
@@ -242,7 +242,7 @@ export const CloudPlans = () => {
   const cloudCaption = loggedIn ? (
     isCanceled ? (
       <p>
-        {t['com.affine.payment.subtitle-canceled']({
+        {t['com.arms.payment.subtitle-canceled']({
           plan: `${getRecurringLabel({
             recurring: currentRecurring,
             t,
@@ -253,7 +253,7 @@ export const CloudPlans = () => {
       <p>
         <Trans
           plan={currentPlan}
-          i18nKey="com.affine.payment.subtitle-active"
+          i18nKey="com.arms.payment.subtitle-active"
           values={{ currentPlan }}
         >
           You are currently on the {{ currentPlan }} plan. If you have any
@@ -269,7 +269,7 @@ export const CloudPlans = () => {
       </p>
     )
   ) : (
-    <p>{t['com.affine.payment.subtitle-not-signed-in']()}</p>
+    <p>{t['com.arms.payment.subtitle-not-signed-in']()}</p>
   );
 
   // toggle
@@ -278,20 +278,20 @@ export const CloudPlans = () => {
       <div>
         {recurring === SubscriptionRecurring.Yearly ? (
           <div className={styles.recurringToggleRecurring}>
-            {t['com.affine.payment.cloud.pricing-plan.toggle-yearly']()}
+            {t['com.arms.payment.cloud.pricing-plan.toggle-yearly']()}
           </div>
         ) : (
           <>
             <div className={styles.recurringToggleRecurring}>
               <span>
                 {t[
-                  'com.affine.payment.cloud.pricing-plan.toggle-billed-yearly'
+                  'com.arms.payment.cloud.pricing-plan.toggle-billed-yearly'
                 ]()}
               </span>
             </div>
             {yearlyDiscount ? (
               <div className={styles.recurringToggleDiscount}>
-                {t['com.affine.payment.cloud.pricing-plan.toggle-discount']({
+                {t['com.arms.payment.cloud.pricing-plan.toggle-discount']({
                   discount: yearlyDiscount,
                 })}
               </div>
@@ -322,8 +322,8 @@ export const CloudPlans = () => {
 
   const cloudSelect = (
     <div className={styles.cloudSelect}>
-      <b>{t['com.affine.payment.cloud.pricing-plan.select.title']()}</b>
-      <span>{t['com.affine.payment.cloud.pricing-plan.select.caption']()}</span>
+      <b>{t['com.arms.payment.cloud.pricing-plan.select.title']()}</b>
+      <span>{t['com.arms.payment.cloud.pricing-plan.select.caption']()}</span>
     </div>
   );
 

@@ -48,8 +48,8 @@ export const useAllPageListConfig = () => {
       favAdapter.toggle(page.id, 'doc');
       toast(
         status
-          ? t['com.affine.toastMessage.removedFavorites']()
-          : t['com.affine.toastMessage.addedFavorites']()
+          ? t['com.arms.toastMessage.removedFavorites']()
+          : t['com.arms.toastMessage.addedFavorites']()
       );
     },
     [favAdapter, isActive, t]

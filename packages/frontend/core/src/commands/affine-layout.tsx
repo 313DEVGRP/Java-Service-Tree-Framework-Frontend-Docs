@@ -21,8 +21,8 @@ export function registerAffineLayoutCommands({
       icon: <SidebarIcon />,
       label: () =>
         store.get(appSidebarOpenAtom)
-          ? t['com.affine.cmdk.affine.left-sidebar.collapse']()
-          : t['com.affine.cmdk.affine.left-sidebar.expand'](),
+          ? t['com.arms.cmdk.affine.left-sidebar.collapse']()
+          : t['com.arms.cmdk.affine.left-sidebar.expand'](),
 
       keyBinding: {
         binding: '$mod+/',

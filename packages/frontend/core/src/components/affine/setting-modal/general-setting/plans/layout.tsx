@@ -33,7 +33,7 @@ export const SeeAllLink = () => {
       target="_blank"
       rel="noopener noreferrer"
     >
-      {t['com.affine.payment.see-all-plans']()}
+      {t['com.arms.payment.see-all-plans']()}
       {<ArrowRightBigIcon width="16" height="16" />}
     </a>
   );
@@ -140,7 +140,7 @@ export const PlanLayout = ({ cloud, ai, cloudTip }: PlanLayoutProps) => {
       {/* TODO(@catsjuice): SettingHeader component shouldn't have margin itself  */}
       <SettingHeader
         style={{ marginBottom: '0px' }}
-        title={t['com.affine.payment.title']()}
+        title={t['com.arms.payment.title']()}
       />
       {ai ? (
         <>
@@ -155,17 +155,17 @@ export const PlanLayout = ({ cloud, ai, cloudTip }: PlanLayoutProps) => {
             <div className={styles.aiScrollTip} ref={cloudScrollTipRef}>
               <div>
                 <div className={styles.cloudScrollTipTitle}>
-                  {t['com.affine.cloud-scroll-tip.title']()}
+                  {t['com.arms.cloud-scroll-tip.title']()}
                 </div>
                 <div className={styles.cloudScrollTipCaption}>
-                  {t['com.affine.cloud-scroll-tip.caption']()}
+                  {t['com.arms.cloud-scroll-tip.caption']()}
                 </div>
               </div>
               <Button
                 onClick={() => scrollToAnchor('cloudPricingPlan')}
                 variant="primary"
               >
-                {t['com.affine.ai-scroll-tip.view']()}
+                {t['com.arms.ai-scroll-tip.view']()}
               </Button>
             </div>,
             settingModalScrollContainer,

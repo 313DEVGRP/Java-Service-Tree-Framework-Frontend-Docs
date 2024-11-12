@@ -72,16 +72,16 @@ export const AfterSignUpSendEmail: FC<AuthPanelProps> = ({
   return (
     <>
       <ModalHeader
-        title={t['com.affine.auth.sign.up']()}
-        subTitle={t['com.affine.auth.sign.up.sent.email.subtitle']()}
+        title={t['com.arms.auth.sign.up']()}
+        subTitle={t['com.arms.auth.sign.up.sent.email.subtitle']()}
       />
       <AuthContent style={{ height: 100 }}>
         <Trans
-          i18nKey="com.affine.auth.sign.sent.email.message.sent-tips"
+          i18nKey="com.arms.auth.sign.sent.email.message.sent-tips"
           values={{ email }}
           components={{ a: <a href={`mailto:${email}`} /> }}
         />
-        {t['com.affine.auth.sign.sent.email.message.sent-tips.sign-up']()}
+        {t['com.arms.auth.sign.sent.email.message.sent-tips.sign-up']()}
       </AuthContent>
 
       <div className={style.resendWrapper}>
@@ -95,14 +95,12 @@ export const AfterSignUpSendEmail: FC<AuthPanelProps> = ({
               size="large"
               onClick={onResendClick}
             >
-              {t['com.affine.auth.sign.auth.code.resend.hint']()}
+              {t['com.arms.auth.sign.auth.code.resend.hint']()}
             </Button>
           </>
         ) : (
           <div className={style.sentRow}>
-            <div className={style.sentMessage}>
-              {t['com.affine.auth.sent']()}
-            </div>
+            <div className={style.sentMessage}>{t['com.arms.auth.sent']()}</div>
             <CountDownRender
               className={style.resendCountdown}
               timeLeft={resendCountDown}
@@ -112,7 +110,7 @@ export const AfterSignUpSendEmail: FC<AuthPanelProps> = ({
       </div>
 
       <div className={style.authMessage} style={{ marginTop: 20 }}>
-        {t['com.affine.auth.sign.auth.code.message']()}
+        {t['com.arms.auth.sign.auth.code.message']()}
       </div>
 
       <BackButton

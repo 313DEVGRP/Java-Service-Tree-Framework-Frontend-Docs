@@ -108,7 +108,7 @@ const AccountMenu = () => {
         data-testid="workspace-modal-account-settings-option"
         onClick={onOpenAccountSetting}
       >
-        {t['com.affine.workspace.cloud.account.settings']()}
+        {t['com.arms.workspace.cloud.account.settings']()}
       </MenuItem>
       <MenuItem
         preFix={
@@ -119,7 +119,7 @@ const AccountMenu = () => {
         data-testid="workspace-modal-sign-out-option"
         onClick={onOpenSignOutModal}
       >
-        {t['com.affine.workspace.cloud.account.logout']()}
+        {t['com.arms.workspace.cloud.account.logout']()}
       </MenuItem>
     </>
   );
@@ -161,7 +161,7 @@ const CloudUsage = () => {
       <div className={styles.usageLabel}>
         <div>
           <span className={styles.usageLabelTitle}>
-            {t['com.affine.user-info.usage.cloud']()}
+            {t['com.arms.user-info.usage.cloud']()}
           </span>
           <span>{usedFormatted}</span>
           <span>&nbsp;/&nbsp;</span>
@@ -234,11 +234,11 @@ const AIUsage = () => {
       >
         <div className={styles.usageLabel}>
           <div className={styles.usageLabelTitle}>
-            {t['com.affine.user-info.usage.ai']()}
+            {t['com.arms.user-info.usage.ai']()}
           </div>
         </div>
         <div className={styles.usageLabel}>
-          {t['com.affine.payment.ai.usage-description-purchased']()}
+          {t['com.arms.payment.ai.usage-description-purchased']()}
         </div>
       </div>
     );
@@ -265,7 +265,7 @@ const AIUsage = () => {
       <div className={styles.usageLabel}>
         <div>
           <span className={styles.usageLabelTitle}>
-            {t['com.affine.user-info.usage.ai']()}
+            {t['com.arms.user-info.usage.ai']()}
           </span>
           <span>{copilotActionUsed}</span>
           <span>&nbsp;/&nbsp;</span>

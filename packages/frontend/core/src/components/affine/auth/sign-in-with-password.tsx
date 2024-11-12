@@ -75,8 +75,8 @@ export const SignInWithPassword: FC<AuthPanelProps> = ({
   return (
     <>
       <ModalHeader
-        title={t['com.affine.auth.sign.in']()}
-        subTitle={t['com.affine.brand.affineCloud']()}
+        title={t['com.arms.auth.sign.in']()}
+        subTitle={t['com.arms.brand.affineCloud']()}
       />
 
       <Wrapper
@@ -86,21 +86,21 @@ export const SignInWithPassword: FC<AuthPanelProps> = ({
         }}
       >
         <AuthInput
-          label={t['com.affine.settings.email']()}
+          label={t['com.arms.settings.email']()}
           disabled={true}
           value={email}
         />
         <AuthInput
           autoFocus
           data-testid="password-input"
-          label={t['com.affine.auth.password']()}
+          label={t['com.arms.auth.password']()}
           value={password}
           type="password"
           onChange={useCallback((value: string) => {
             setPassword(value);
           }, [])}
           error={passwordError}
-          errorHint={t['com.affine.auth.password.error']()}
+          errorHint={t['com.arms.auth.password.error']()}
           onEnter={onSignIn}
         />
         <div
@@ -115,7 +115,7 @@ export const SignInWithPassword: FC<AuthPanelProps> = ({
               fontSize: 'var(--affine-font-sm)',
             }}
           >
-            {t['com.affine.auth.forget']()}
+            {t['com.arms.auth.forget']()}
           </a>
         </div>
         <div className={styles.sendMagicLinkButtonRow}>
@@ -124,7 +124,7 @@ export const SignInWithPassword: FC<AuthPanelProps> = ({
             className={styles.linkButton}
             onClick={sendMagicLink}
           >
-            {t['com.affine.auth.sign.auth.code.send-email.sign-in']()}
+            {t['com.arms.auth.sign.auth.code.send-email.sign-in']()}
           </a>
         </div>
         <Button
@@ -135,7 +135,7 @@ export const SignInWithPassword: FC<AuthPanelProps> = ({
           disabled={isLoading}
           onClick={onSignIn}
         >
-          {t['com.affine.auth.sign.in']()}
+          {t['com.arms.auth.sign.in']()}
         </Button>
       </Wrapper>
       <BackButton

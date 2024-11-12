@@ -31,17 +31,17 @@ export const MemberLimitModal = ({
     <ConfirmModal
       open={open}
       onOpenChange={setOpen}
-      title={t['com.affine.payment.member-limit.title']()}
+      title={t['com.arms.payment.member-limit.title']()}
       description={t[
         isFreePlan
-          ? 'com.affine.payment.member-limit.free.description'
-          : 'com.affine.payment.member-limit.pro.description'
+          ? 'com.arms.payment.member-limit.free.description'
+          : 'com.arms.payment.member-limit.pro.description'
       ]({ planName: plan, quota: quota })}
       cancelButtonOptions={{ style: { display: isFreePlan ? '' : 'none' } }}
       confirmText={t[
         isFreePlan
-          ? 'com.affine.payment.member-limit.free.confirm'
-          : 'com.affine.payment.member-limit.pro.confirm'
+          ? 'com.arms.payment.member-limit.free.confirm'
+          : 'com.arms.payment.member-limit.pro.confirm'
       ]()}
       confirmButtonOptions={{
         variant: 'primary',

@@ -45,7 +45,7 @@ function DownloadUpdate({ updateAvailable }: ButtonContentProps) {
   return (
     <div className={styles.installLabel}>
       <span className={styles.ellipsisTextOverflow}>
-        {t['com.affine.appUpdater.downloadUpdate']()}
+        {t['com.arms.appUpdater.downloadUpdate']()}
       </span>
       <span className={styles.versionLabel}>{updateAvailable?.version}</span>
     </div>
@@ -58,7 +58,7 @@ function UpdateReady({ updateAvailable, appQuitting }: ButtonContentProps) {
     <div className={styles.updateAvailableWrapper}>
       <div className={styles.installLabelNormal}>
         <span className={styles.ellipsisTextOverflow}>
-          {t['com.affine.appUpdater.updateAvailable']()}
+          {t['com.arms.appUpdater.updateAvailable']()}
         </span>
         <span className={styles.versionLabel}>{updateAvailable?.version}</span>
       </div>
@@ -66,7 +66,7 @@ function UpdateReady({ updateAvailable, appQuitting }: ButtonContentProps) {
       <div className={styles.installLabelHover}>
         <ResetIcon className={styles.icon} />
         <span className={styles.ellipsisTextOverflow}>
-          {t[appQuitting ? 'Loading' : 'com.affine.appUpdater.installUpdate']()}
+          {t[appQuitting ? 'Loading' : 'com.arms.appUpdater.installUpdate']()}
         </span>
       </div>
     </div>
@@ -82,7 +82,7 @@ function DownloadingUpdate({
     <div className={clsx([styles.updateAvailableWrapper])}>
       <div className={clsx([styles.installLabelNormal])}>
         <span className={styles.ellipsisTextOverflow}>
-          {t['com.affine.appUpdater.downloading']()}
+          {t['com.arms.appUpdater.downloading']()}
         </span>
         <span className={styles.versionLabel}>{updateAvailable?.version}</span>
       </div>
@@ -103,14 +103,14 @@ function OpenDownloadPage({ updateAvailable }: ButtonContentProps) {
     <>
       <div className={styles.installLabelNormal}>
         <span className={styles.ellipsisTextOverflow}>
-          {t['com.affine.appUpdater.updateAvailable']()}
+          {t['com.arms.appUpdater.updateAvailable']()}
         </span>
         <span className={styles.versionLabel}>{updateAvailable?.version}</span>
       </div>
 
       <div className={styles.installLabelHover}>
         <span className={styles.ellipsisTextOverflow}>
-          {t['com.affine.appUpdater.openDownloadPage']()}
+          {t['com.arms.appUpdater.openDownloadPage']()}
         </span>
       </div>
     </>
@@ -127,7 +127,7 @@ function WhatsNew({ onDismissChangelog }: ButtonContentProps) {
       <div className={clsx([styles.whatsNewLabel])}>
         <NewIcon className={styles.icon} />
         <span className={styles.ellipsisTextOverflow}>
-          {t['com.affine.appUpdater.whatsNew']()}
+          {t['com.arms.appUpdater.whatsNew']()}
         </span>
       </div>
       <div className={styles.closeIcon} onClick={onClickClose}>

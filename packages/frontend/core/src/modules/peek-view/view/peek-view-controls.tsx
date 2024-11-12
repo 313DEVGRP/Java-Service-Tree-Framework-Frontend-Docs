@@ -75,7 +75,7 @@ export const DefaultPeekViewControls = ({
       {
         icon: <CloseIcon />,
         nameKey: 'close',
-        name: t['com.affine.peek-view-controls.close'](),
+        name: t['com.arms.peek-view-controls.close'](),
         onClick: () => peekView.close(),
       },
     ].filter((opt): opt is ControlButtonProps => Boolean(opt));
@@ -106,12 +106,12 @@ export const DocPeekViewControls = ({
       {
         icon: <CloseIcon />,
         nameKey: 'close',
-        name: t['com.affine.peek-view-controls.close'](),
+        name: t['com.arms.peek-view-controls.close'](),
         onClick: () => peekView.close(),
       },
       {
         icon: <ExpandFullIcon />,
-        name: t['com.affine.peek-view-controls.open-doc'](),
+        name: t['com.arms.peek-view-controls.open-doc'](),
         nameKey: 'open',
         onClick: () => {
           // TODO(@Peng): for frame blocks, we should mimic "view in edgeless" button behavior
@@ -127,7 +127,7 @@ export const DocPeekViewControls = ({
       {
         icon: <OpenInNewIcon />,
         nameKey: 'new-tab',
-        name: t['com.affine.peek-view-controls.open-doc-in-new-tab'](),
+        name: t['com.arms.peek-view-controls.open-doc-in-new-tab'](),
         onClick: () => {
           workbench.openDoc(docId, { at: 'new-tab' });
           peekView.close('none');
@@ -136,7 +136,7 @@ export const DocPeekViewControls = ({
       environment.isDesktop && {
         icon: <SplitViewIcon />,
         nameKey: 'split-view',
-        name: t['com.affine.peek-view-controls.open-doc-in-split-view'](),
+        name: t['com.arms.peek-view-controls.open-doc-in-split-view'](),
         onClick: () => {
           workbench.openDoc(docId, { at: 'beside' });
           peekView.close('none');

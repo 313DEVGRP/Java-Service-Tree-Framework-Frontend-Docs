@@ -32,7 +32,7 @@ const UpgradeSuccessLayout = ({
       {description}
       <div>
         <Trans
-          i18nKey={'com.affine.payment.upgrade-success-page.support'}
+          i18nKey={'com.arms.payment.upgrade-success-page.support'}
           components={{
             1: (
               <a
@@ -49,7 +49,7 @@ const UpgradeSuccessLayout = ({
   return (
     <AuthPageContainer title={title} subtitle={subtitle}>
       <Button variant="primary" size="extraLarge" onClick={openAffine}>
-        {t['com.affine.other-page.nav.open-affine']()}
+        {t['com.arms.other-page.nav.open-affine']()}
       </Button>
     </AuthPageContainer>
   );
@@ -60,8 +60,8 @@ export const CloudUpgradeSuccess = () => {
   useSubscriptionNotifyWriter();
   return (
     <UpgradeSuccessLayout
-      title={t['com.affine.payment.upgrade-success-page.title']()}
-      description={t['com.affine.payment.upgrade-success-page.text']()}
+      title={t['com.arms.payment.upgrade-success-page.title']()}
+      description={t['com.arms.payment.upgrade-success-page.text']()}
     />
   );
 };
@@ -71,8 +71,8 @@ export const AIUpgradeSuccess = () => {
   useSubscriptionNotifyWriter();
   return (
     <UpgradeSuccessLayout
-      title={t['com.affine.payment.ai-upgrade-success-page.title']()}
-      description={t['com.affine.payment.ai-upgrade-success-page.text']()}
+      title={t['com.arms.payment.ai-upgrade-success-page.title']()}
+      description={t['com.arms.payment.ai-upgrade-success-page.text']()}
     />
   );
 };

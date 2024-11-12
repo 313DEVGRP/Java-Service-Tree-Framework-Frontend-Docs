@@ -80,7 +80,7 @@ export const useI18n = () => {
 };
 
 /**
- * I18n['com.affine.xxx']({ arg1: 'hello' }) -> '中文 hello'
+ * I18n['com.arms.xxx']({ arg1: 'hello' }) -> '中文 hello'
  */
 export const I18n = createI18nWrapper(getI18n, () => getI18n().t);
 export type I18n = typeof I18n;

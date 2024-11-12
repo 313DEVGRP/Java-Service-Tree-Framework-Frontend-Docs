@@ -108,11 +108,11 @@ export const DeleteLeaveWorkspace = () => {
         name={
           <span style={{ color: 'var(--affine-error-color)' }}>
             {isOwner
-              ? t['com.affine.workspaceDelete.title']()
-              : t['com.affine.deleteLeaveWorkspace.leave']()}
+              ? t['com.arms.workspaceDelete.title']()
+              : t['com.arms.deleteLeaveWorkspace.leave']()}
           </span>
         }
-        desc={t['com.affine.deleteLeaveWorkspace.description']()}
+        desc={t['com.arms.deleteLeaveWorkspace.description']()}
         style={{ cursor: 'pointer' }}
         onClick={onLeaveOrDelete}
         data-testid="delete-workspace-button"
@@ -129,11 +129,11 @@ export const DeleteLeaveWorkspace = () => {
       ) : (
         <ConfirmModal
           open={showLeave}
-          cancelText={t['com.affine.confirmModal.button.cancel']()}
+          cancelText={t['com.arms.confirmModal.button.cancel']()}
           onConfirm={onDeleteConfirm}
           onOpenChange={setShowLeave}
-          title={`${t['com.affine.deleteLeaveWorkspace.leave']()}?`}
-          description={t['com.affine.deleteLeaveWorkspace.leaveDescription']()}
+          title={`${t['com.arms.deleteLeaveWorkspace.leave']()}?`}
+          description={t['com.arms.deleteLeaveWorkspace.leaveDescription']()}
           confirmText={t['Leave']()}
           confirmButtonOptions={{
             variant: 'error',

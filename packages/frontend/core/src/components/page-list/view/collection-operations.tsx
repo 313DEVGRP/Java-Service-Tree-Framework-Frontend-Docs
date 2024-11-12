@@ -46,7 +46,7 @@ export const CollectionOperations = ({
   const t = useI18n();
   const { open: openEditCollectionNameModal, node: editNameModal } =
     useEditCollectionName({
-      title: t['com.affine.editCollection.renameCollection'](),
+      title: t['com.arms.editCollection.renameCollection'](),
     });
 
   const showEditName = useCallback(() => {
@@ -118,7 +118,7 @@ export const CollectionOperations = ({
             <EditIcon />
           </MenuIcon>
         ),
-        name: t['com.affine.collection.menu.rename'](),
+        name: t['com.arms.collection.menu.rename'](),
         click: showEditName,
       },
       {
@@ -127,7 +127,7 @@ export const CollectionOperations = ({
             <FilterIcon />
           </MenuIcon>
         ),
-        name: t['com.affine.collection.menu.edit'](),
+        name: t['com.arms.collection.menu.edit'](),
         click: showEdit,
       },
       ...(onAddDocToCollection
@@ -154,8 +154,8 @@ export const CollectionOperations = ({
           </MenuIcon>
         ),
         name: favorite
-          ? t['com.affine.favoritePageOperation.remove']()
-          : t['com.affine.favoritePageOperation.add'](),
+          ? t['com.arms.favoritePageOperation.remove']()
+          : t['com.arms.favoritePageOperation.add'](),
         click: onToggleFavoritePage,
       },
       {
@@ -164,7 +164,7 @@ export const CollectionOperations = ({
             <OpenInNewIcon />
           </MenuIcon>
         ),
-        name: t['com.affine.workbench.tab.page-menu-open'](),
+        name: t['com.arms.workbench.tab.page-menu-open'](),
         click: openCollectionNewTab,
       },
       ...(appSettings.enableMultiView
@@ -175,7 +175,7 @@ export const CollectionOperations = ({
                   <SplitViewIcon />
                 </MenuIcon>
               ),
-              name: t['com.affine.workbench.split-view.page-menu-open'](),
+              name: t['com.arms.workbench.split-view.page-menu-open'](),
               click: openCollectionSplitView,
             },
           ]

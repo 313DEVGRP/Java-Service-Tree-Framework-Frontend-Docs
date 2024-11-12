@@ -310,7 +310,7 @@ function NotificationCard(props: NotificationCardProps): ReactNode {
               onClick={onClickAction}
             >
               {notification.actionLabel ??
-                t['com.affine.keyboardShortcuts.undo']()}
+                t['com.arms.keyboardShortcuts.undo']()}
             </div>
           )}
           {notification.multimedia ? null : (

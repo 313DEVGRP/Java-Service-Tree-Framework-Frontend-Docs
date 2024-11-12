@@ -46,7 +46,7 @@ export const WorkspaceUpgrade = function WorkspaceUpgrade() {
       <div className={styles.upgradeBox}>
         <AffineShapeIcon width={180} height={180} />
         <p className={styles.upgradeTips}>
-          {error ? error : t['com.affine.upgrade.tips.normal']()}
+          {error ? error : t['com.arms.upgrade.tips.normal']()}
         </p>
         <Button
           data-testid="upgrade-workspace-button"
@@ -57,10 +57,10 @@ export const WorkspaceUpgrade = function WorkspaceUpgrade() {
           variant={error ? 'error' : 'secondary'}
         >
           {error
-            ? t['com.affine.upgrade.button-text.error']()
+            ? t['com.arms.upgrade.button-text.error']()
             : upgrading
-              ? t['com.affine.upgrade.button-text.upgrading']()
-              : t['com.affine.upgrade.button-text.pending']()}
+              ? t['com.arms.upgrade.button-text.upgrading']()
+              : t['com.arms.upgrade.button-text.pending']()}
         </Button>
       </div>
     </div>

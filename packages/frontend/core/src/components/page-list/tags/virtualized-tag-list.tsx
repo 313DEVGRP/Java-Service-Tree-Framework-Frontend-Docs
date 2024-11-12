@@ -103,7 +103,7 @@ export const VirtualizedTagList = ({
         open={showFloatingToolbar}
         content={
           <Trans
-            i18nKey="com.affine.tag.toolbar.selected"
+            i18nKey="com.arms.tag.toolbar.selected"
             count={selectedTagIds.length}
           >
             <div style={{ color: 'var(--affine-text-secondary-color)' }}>

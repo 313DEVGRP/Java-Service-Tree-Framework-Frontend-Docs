@@ -31,14 +31,14 @@ export const ConfirmDeletePropertyModal = ({
       closeButtonOptions={{
         onClick: onCancel,
       }}
-      title={t['com.affine.settings.workspace.properties.delete-property']()}
+      title={t['com.arms.settings.workspace.properties.delete-property']()}
       description={
         <Trans
           values={{
             name: property.name,
             count,
           }}
-          i18nKey="com.affine.settings.workspace.properties.delete-property-prompt"
+          i18nKey="com.arms.settings.workspace.properties.delete-property-prompt"
         >
           The <strong>{{ name: property.name } as any}</strong> property will be
           removed from count doc(s). This action cannot be undone.

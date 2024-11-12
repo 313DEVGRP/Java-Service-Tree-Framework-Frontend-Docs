@@ -46,19 +46,19 @@ export const useGeneralSettingList = (): GeneralSettingList => {
   const settings: GeneralSettingListItem[] = [
     {
       key: 'appearance',
-      title: t['com.affine.settings.appearance'](),
+      title: t['com.arms.settings.appearance'](),
       icon: AppearanceIcon,
       testId: 'appearance-panel-trigger',
     },
     {
       key: 'shortcuts',
-      title: t['com.affine.keyboardShortcuts.title'](),
+      title: t['com.arms.keyboardShortcuts.title'](),
       icon: KeyboardIcon,
       testId: 'shortcuts-panel-trigger',
     },
     {
       key: 'about',
-      title: t['com.affine.aboutAFFiNE.title'](),
+      title: t['com.arms.aboutAFFiNE.title'](),
       icon: InformationIcon,
       testId: 'about-panel-trigger',
     },
@@ -67,14 +67,14 @@ export const useGeneralSettingList = (): GeneralSettingList => {
   if (hasPaymentFeature) {
     settings.splice(3, 0, {
       key: 'plans',
-      title: t['com.affine.payment.title'](),
+      title: t['com.arms.payment.title'](),
       icon: UpgradeIcon,
       testId: 'plans-panel-trigger',
     });
     if (status === 'authenticated') {
       settings.splice(3, 0, {
         key: 'billing',
-        title: t['com.affine.payment.billing-setting.title'](),
+        title: t['com.arms.payment.billing-setting.title'](),
         icon: PaymentIcon,
         testId: 'billing-panel-trigger',
       });
