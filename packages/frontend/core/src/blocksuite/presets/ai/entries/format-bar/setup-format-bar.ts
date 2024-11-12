@@ -15,7 +15,6 @@ import {
   Heading5Icon,
   Heading6Icon,
   ItalicIcon,
-  LinkedDocIcon,
   LinkIcon,
   NumberedListIcon,
   QuoteIcon,
@@ -33,6 +32,8 @@ import {
 } from '@blocksuite/blocks/_common/utils/render-linked-doc';
 import { assertExists } from '@blocksuite/global/utils';
 import { html } from 'lit';
+
+export const ARMSIcon = html`<img width="35" src="/req.png" />`;
 // import { html, type TemplateResult } from 'lit';
 
 // import { AIItemGroups } from '../../_common/config';
@@ -97,7 +98,7 @@ export function toolbarDefaultConfig(toolbar: AffineFormatBarWidget) {
     .addDivider()
     .addInlineAction({
       id: 'convert-to-database',
-      name: 'Create Database',
+      name: 'Create Data Table & Kanban Board',
       icon: DatabaseTableViewIcon20,
       isActive: () => false,
       action: () => {
@@ -152,7 +153,7 @@ export function toolbarDefaultConfig(toolbar: AffineFormatBarWidget) {
     .addInlineAction({
       id: 'convert-to-linked-doc',
       name: 'Create Linked Doc 이게 바로 오버라이드',
-      icon: LinkedDocIcon,
+      icon: ARMSIcon,
       isActive: () => false,
       action: (chain, formatBar) => {
         const [_, ctx] = chain
