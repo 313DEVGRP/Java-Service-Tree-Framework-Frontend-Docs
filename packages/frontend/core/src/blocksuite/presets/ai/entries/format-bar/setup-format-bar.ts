@@ -28,10 +28,10 @@ import {
   convertSelectedBlocksToLinkedDoc,
   getTitleFromSelectedModels,
   notifyDocCreated,
-  promptDocTitle,
 } from '@blocksuite/blocks/_common/utils/render-linked-doc';
 import { assertExists } from '@blocksuite/global/utils';
 import { html } from 'lit';
+import {EditorHost} from "@blocksuite/block-std";
 
 export const ARMSIcon = html`<img width="35" src="/req.png" />`;
 // import { html, type TemplateResult } from 'lit';
@@ -199,6 +199,7 @@ export function toolbarDefaultConfig(toolbar: AffineFormatBarWidget) {
               module: 'format toolbar',
               type: 'embed-linked-doc',
             });
+          console.log("여기에서 ARMS 연동");
         });
       },
       showWhen: chain => {
@@ -283,4 +284,19 @@ export function toolbarDefaultConfig(toolbar: AffineFormatBarWidget) {
       name: 'Quote',
       icon: QuoteIcon,
     });
+}
+
+export function promptDocTitle(host: EditorHost, autofill?: string) {
+  const notification =
+    host.std.spec.getService('affine:page').notificationService;
+  if (!notification) return Promise.resolve(undefined);
+
+  return notification.prompt({
+    title: 'Create linked doc packages/frontend/core/src/blocksuite/presets/ai/entries/format-bar/setup-format-bar.ts',
+    message: 'Enter a title for the new doc. packages/frontend/core/src/blocksuite/presets/ai/entries/format-bar/setup-format-bar.ts',
+    placeholder: 'Untitled',
+    autofill,
+    confirmText: 'Confirm',
+    cancelText: 'Cancel',
+  });
 }
