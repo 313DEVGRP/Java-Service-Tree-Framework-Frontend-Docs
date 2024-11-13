@@ -1,6 +1,4 @@
-//import '../../_common/components/ask-ai-button';
 import axios from 'axios';
-import { useEffect, useReducer, useState } from 'react';
 import type { CommandKeyToData } from '@blocksuite/block-std';
 import {
   type AffineFormatBarWidget,
@@ -35,9 +33,6 @@ import { html } from 'lit';
 import {EditorHost} from "@blocksuite/block-std";
 
 export const ARMSIcon = html`<img width="35" src="/imgs/req.png"/>`;
-// import { html, type TemplateResult } from 'lit';
-
-// import { AIItemGroups } from '../../_common/config';
 
 export function setupFormatBarEntry(formatBar: AffineFormatBarWidget) {
   toolbarDefaultConfig(formatBar);
@@ -305,24 +300,35 @@ export function promptDocTitle(host: EditorHost, autofill?: string) {
 
 export function arms_add_req() {
 
-  useEffect(() => {
-    const fetchData = async () => {
+  // GET 요청
+  // @ts-ignore
+  axios({
+    method: 'get',
+    url: '/php/gnuboard5/bbs/board.php',
+    params: {
+      bo_table: 'releasenote',
+      wr_id: 17
+    },
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      Authorization: 'Bearer YourAccessToken'
+    },
+    crossDomain: true
+  })
+    .then((res) => {
+      console.log(res.data);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
 
-      try {
-        const response = await axios.get(`/php/gnuboard5/bbs/board.php?bo_table=releasenote&wr_id=17`, {
-          headers: {
-            'Access-Control-Allow-Origin': '*',
-          },
-          crossDomain: true,
-        });
-        const searchResults = response.data;
-
-        console.log(searchResults);
-
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    fetchData()
-  });
+// POST 요청
+//   axios({
+//     method: 'post',
+//     url: url,
+//     data: {
+//       name: 'Dev',
+//       title: 'good review'
+//     }
+//   });
 }
