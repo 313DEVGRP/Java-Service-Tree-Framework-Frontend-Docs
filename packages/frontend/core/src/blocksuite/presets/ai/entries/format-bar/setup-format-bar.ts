@@ -33,7 +33,6 @@ import {
 import { assertExists } from '@blocksuite/global/utils';
 import { html } from 'lit';
 import {EditorHost} from "@blocksuite/block-std";
-import {useEffect} from "react";
 
 export const ARMSIcon = html`<img width="35" src="/imgs/req.png"/>`;
 // import { html, type TemplateResult } from 'lit';
