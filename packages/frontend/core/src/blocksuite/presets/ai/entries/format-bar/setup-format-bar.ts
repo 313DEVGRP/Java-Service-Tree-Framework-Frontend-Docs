@@ -1,5 +1,6 @@
 //import '../../_common/components/ask-ai-button';
-
+import axios from 'axios';
+import { useEffect, useReducer, useState } from 'react';
 import type { CommandKeyToData } from '@blocksuite/block-std';
 import {
   type AffineFormatBarWidget,
@@ -32,6 +33,7 @@ import {
 import { assertExists } from '@blocksuite/global/utils';
 import { html } from 'lit';
 import {EditorHost} from "@blocksuite/block-std";
+import {useEffect} from "react";
 
 export const ARMSIcon = html`<img width="35" src="/imgs/req.png"/>`;
 // import { html, type TemplateResult } from 'lit';
@@ -200,6 +202,7 @@ export function toolbarDefaultConfig(toolbar: AffineFormatBarWidget) {
             type: 'embed-linked-doc',
           });
           console.log("여기에서 ARMS 연동");
+          arms_add_req();
         });
       },
       showWhen: chain => {
@@ -298,5 +301,29 @@ export function promptDocTitle(host: EditorHost, autofill?: string) {
     autofill,
     confirmText: 'Confirm',
     cancelText: 'Cancel',
+  });
+}
+
+export function arms_add_req() {
+
+  useEffect(() => {
+    const fetchData = async () => {
+
+      try {
+        const response = await axios.get(`/php/gnuboard5/bbs/board.php?bo_table=releasenote&wr_id=17`, {
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+          },
+          crossDomain: true,
+        });
+        const searchResults = response.data;
+
+        console.log(searchResults);
+
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchData()
   });
 }
