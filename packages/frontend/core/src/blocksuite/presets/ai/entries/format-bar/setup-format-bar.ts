@@ -33,7 +33,7 @@ import { assertExists } from '@blocksuite/global/utils';
 import { html } from 'lit';
 import {EditorHost} from "@blocksuite/block-std";
 
-export const ARMSIcon = html`<img width="35" src="/req.png" />`;
+export const ARMSIcon = html`<img width="35" src="/imgs/req.png"/>`;
 // import { html, type TemplateResult } from 'lit';
 
 // import { AIItemGroups } from '../../_common/config';
@@ -186,19 +186,19 @@ export function toolbarDefaultConfig(toolbar: AffineFormatBarWidget) {
           host.spec
             .getService('affine:page')
             .telemetryService?.track('DocCreated', {
-              control: 'create linked doc',
-              page: 'doc editor',
-              module: 'format toolbar',
-              type: 'embed-linked-doc',
-            });
+            control: 'create linked doc',
+            page: 'doc editor',
+            module: 'format toolbar',
+            type: 'embed-linked-doc',
+          });
           host.spec
             .getService('affine:page')
             .telemetryService?.track('LinkedDocCreated', {
-              control: 'create linked doc',
-              page: 'doc editor',
-              module: 'format toolbar',
-              type: 'embed-linked-doc',
-            });
+            control: 'create linked doc',
+            page: 'doc editor',
+            module: 'format toolbar',
+            type: 'embed-linked-doc',
+          });
           console.log("여기에서 ARMS 연동");
         });
       },
