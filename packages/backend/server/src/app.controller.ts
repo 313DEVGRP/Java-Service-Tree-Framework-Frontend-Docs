@@ -22,6 +22,8 @@ export class AppController {
   @Public()
   @Get('arms')
   default() {
+    console.log("arms api");
     return 'arms';
   }
+
 }
