@@ -20,9 +20,8 @@ export class AppController {
   }
 
   @Public()
-  @Get('/arms')
+  @Get('arms')
   default() {
     return 'arms';
   }
-
 }
