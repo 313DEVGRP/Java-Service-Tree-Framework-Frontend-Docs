@@ -241,16 +241,16 @@ export class AuthController {
   @Post('/arms')
   @Header('content-type', 'application/json')
   async arms(
-    @Req() req: Request,
-    @Res() res: Response,
+    //@Req() req: Request,
+    //@Res() res: Response,
     @Body() reqadd: ReqAdd,
-    @CurrentUser() user?: CurrentUser
+    //@CurrentUser() user?: CurrentUser
   ) {
     // ARMS API
     return {
-      req: req,
-      res: res,
-      user: user,
+      // req: req,
+      // res: res,
+      // user: user,
       arms_ref: reqadd.ref,
       arms_c_title: reqadd.c_title,
       arms_c_type: reqadd.c_type,
