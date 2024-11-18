@@ -253,8 +253,7 @@ export class AuthController {
       arms_c_title: reqadd.c_title,
       arms_c_type: reqadd.c_type,
       arms_c_req_pdservice_link: reqadd.c_req_pdservice_link,
-      arms_c_req_pdservice_versionset_link:
-        reqadd.c_req_pdservice_versionset_link,
+      arms_c_req_pdservice_versionset_link: reqadd.c_req_pdservice_versionset_link,
       arms_c_req_start_date: reqadd.c_req_start_date,
       arms_c_req_end_date: reqadd.c_req_end_date,
       arms_c_req_writer: reqadd.c_req_writer,
