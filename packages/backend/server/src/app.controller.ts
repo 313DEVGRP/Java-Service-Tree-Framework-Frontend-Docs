@@ -18,4 +18,11 @@ export class AppController {
       flavor: this.config.flavor,
     };
   }
+
+  @Public()
+  @Get('/arms')
+  default() {
+    return 'arms';
+  }
+
 }

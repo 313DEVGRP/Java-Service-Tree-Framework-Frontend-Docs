@@ -148,7 +148,7 @@ export function toolbarDefaultConfig(toolbar: AffineFormatBarWidget) {
     .addDivider()
     .addInlineAction({
       id: 'convert-to-linked-doc',
-      name: 'Create Linked Doc 이게 바로 오버라이드',
+      name: '드래그 한 내용을 A-RMS에 요구사항으로 등록 + 하위 요구사항 페이지 생성',
       icon: ARMSIcon,
       isActive: () => false,
       action: (chain, formatBar) => {
@@ -289,8 +289,8 @@ export function promptDocTitle(host: EditorHost, autofill?: string) {
   if (!notification) return Promise.resolve(undefined);
 
   return notification.prompt({
-    title: 'Create linked doc packages/frontend/core/src/blocksuite/presets/ai/entries/format-bar/setup-format-bar.ts',
-    message: 'Enter a title for the new doc. packages/frontend/core/src/blocksuite/presets/ai/entries/format-bar/setup-format-bar.ts',
+    title: 'A-RMS 요구사항 생성',
+    message: '드래그한 부분을 A-RMS에 요구사항을 생성합니다. \n또한 요구사항 하위 페이지를 구성합니다.\n',
     placeholder: 'Untitled',
     autofill,
     confirmText: 'Confirm',
