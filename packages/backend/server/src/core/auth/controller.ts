@@ -237,38 +237,43 @@ export class AuthController {
   }
 
   @Public()
-  @Get('/arms')
-  async arms(@Req() req: Request,
-             @Res() res: Response,
-             @CurrentUser() user?: CurrentUser) {
+  @Post('/arms')
+  async arms(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Body() reqadd: ReqAdd,
+    @CurrentUser() user?: CurrentUser
+  ) {
     // ARMS API
     return {
-      user: user
+      req: req,
+      res: res,
+      user: user,
+      arms_ref: reqadd.ref,
+      arms_c_title: reqadd.c_title,
+      arms_c_type: reqadd.c_type,
+      arms_c_req_pdservice_link: reqadd.c_req_pdservice_link,
+      arms_c_req_pdservice_versionset_link:
+        reqadd.c_req_pdservice_versionset_link,
+      arms_c_req_start_date: reqadd.c_req_start_date,
+      arms_c_req_end_date: reqadd.c_req_end_date,
+      arms_c_req_writer: reqadd.c_req_writer,
+      arms_c_req_contents: reqadd.c_req_contents,
+      arms_c_req_desc: reqadd.c_req_desc,
+      arms_c_req_etc: reqadd.c_req_etc,
+      arms_c_req_priority_link: reqadd.c_req_priority_link,
+      arms_c_req_difficulty_link: reqadd.c_req_difficulty_link,
+      arms_c_req_state_link: reqadd.c_req_state_link,
+      arms_c_req_reviewer01: reqadd.c_req_reviewer01,
+      arms_c_req_reviewer02: reqadd.c_req_reviewer02,
+      arms_c_req_reviewer03: reqadd.c_req_reviewer03,
+      arms_c_req_reviewer04: reqadd.c_req_reviewer04,
+      arms_c_req_reviewer05: reqadd.c_req_reviewer05,
+      arms_c_req_reviewer01_status: reqadd.c_req_reviewer01_status,
+      arms_c_req_reviewer02_status: reqadd.c_req_reviewer02_status,
+      arms_c_req_reviewer03_status: reqadd.c_req_reviewer03_status,
+      arms_c_req_reviewer04_status: reqadd.c_req_reviewer04_status,
+      arms_c_req_reviewer05_status: reqadd.c_req_reviewer05_status,
     };
   }
 }
-
-  // arms_ref: reqadd.ref,
-  // arms_c_title: reqadd.c_title,
-  // arms_c_type: reqadd.c_type,
-  // arms_c_req_pdservice_link: reqadd.c_req_pdservice_link,
-  // arms_c_req_pdservice_versionset_link: reqadd.c_req_pdservice_versionset_link,
-  // arms_c_req_start_date: reqadd.c_req_start_date,
-  // arms_c_req_end_date: reqadd.c_req_end_date,
-  // arms_c_req_writer: reqadd.c_req_writer,
-  // arms_c_req_contents: reqadd.c_req_contents,
-  // arms_c_req_desc: reqadd.c_req_desc,
-  // arms_c_req_etc: reqadd.c_req_etc,
-  // arms_c_req_priority_link: reqadd.c_req_priority_link,
-  // arms_c_req_difficulty_link: reqadd.c_req_difficulty_link,
-  // arms_c_req_state_link: reqadd.c_req_state_link,
-  // arms_c_req_reviewer01: reqadd.c_req_reviewer01,
-  // arms_c_req_reviewer02: reqadd.c_req_reviewer02,
-  // arms_c_req_reviewer03: reqadd.c_req_reviewer03,
-  // arms_c_req_reviewer04: reqadd.c_req_reviewer04,
-  // arms_c_req_reviewer05: reqadd.c_req_reviewer05,
-  // arms_c_req_reviewer01_status: reqadd.c_req_reviewer01_status,
-  // arms_c_req_reviewer02_status: reqadd.c_req_reviewer02_status,
-  // arms_c_req_reviewer03_status: reqadd.c_req_reviewer03_status,
-  // arms_c_req_reviewer04_status: reqadd.c_req_reviewer04_status,
-  // arms_c_req_reviewer05_status: reqadd.c_req_reviewer05_status
