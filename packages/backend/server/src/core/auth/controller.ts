@@ -214,7 +214,8 @@ export class AuthController {
   async arms() {
     // ARMS API
     return {
-      target: 'arms',
+      target: randomUUID(),
+      arms: randomUUID(),
     };
   }
 }
