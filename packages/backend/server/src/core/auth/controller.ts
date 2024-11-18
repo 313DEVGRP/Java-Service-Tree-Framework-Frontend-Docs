@@ -240,7 +240,7 @@ export class AuthController {
   @Get('/arms')
   async arms(@Req() req: Request,
              @Res() res: Response,
-             @CurrentUser() user?: CurrentUse) {
+             @CurrentUser() user?: CurrentUser) {
     // ARMS API
     return {
       user: user
