@@ -18,12 +18,4 @@ export class AppController {
       flavor: this.config.flavor,
     };
   }
-
-  @Public()
-  @Get('arms')
-  default() {
-    console.log("arms api");
-    return 'arms';
-  }
-
 }

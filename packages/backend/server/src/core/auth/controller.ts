@@ -208,4 +208,13 @@ export class AuthController {
       resource: randomUUID(),
     };
   }
+
+  @Public()
+  @Get('/arms')
+  async arms() {
+    // ARMS API
+    return {
+      target: 'arms',
+    };
+  }
 }
