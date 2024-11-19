@@ -261,41 +261,33 @@ export class AuthController {
     // 인증을 통과하면 ARMS API를 호출합니다.
     // 미들 프록시를 거치지 않고 다이렉트로 백엔드 호출 합니다.
     // @ts-ignore
-    // axios({
-    //   method: 'get',
-    //   url: '/php/gnuboard5/bbs/board.php',
-    //   params: {
-    //     bo_table: 'releasenote',
-    //     wr_id: 17
-    //   },
-    //   headers: {
-    //     'Access-Control-Allow-Origin': '*',
-    //     Authorization: 'Bearer YourAccessToken'
-    //   },
-    //   crossDomain: true
-    // })
-    //   .then((res) => {
-    //     console.log(res.data);
-    //     return {
-    //       user: user,
-    //       reqadd: reqadd,
-    //       res: res.data
-    //     };
-    //   })
-    //   .catch((err) => {
-    //     console.error(err);
-    //     return {
-    //       err: err
-    //     };
-    //   });
-
-    var res_data = this.auth.arms_add_req();
-    return {
+    axios({
+      method: 'get',
+      url: '/php/gnuboard5/bbs/board.php',
+      params: {
+        bo_table: 'releasenote',
+        wr_id: 17
+      },
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        Authorization: 'Bearer YourAccessToken'
+      },
+      crossDomain: true
+    })
+      .then((res) => {
+        console.log(res.data);
+        return {
           user: user,
           reqadd: reqadd,
-          res: res_data
+          res: res.data
         };
-
+      })
+      .catch((err) => {
+        console.error(err);
+        return {
+          err: err
+        };
+      });
 
     //}
   }
