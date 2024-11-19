@@ -240,9 +240,15 @@ export class AuthController {
   @Post('/arms')
   @Header('content-type', 'application/json')
   async arms(
+    //@Req() req: Request,
+    //@Res() res: Response,
     @Body() reqadd: ReqAdd,
     @CurrentUser() user?: CurrentUser
   ) {
+
+    //await this.auth.setCookie(req, res, user);
+    //res.status(HttpStatus.OK).send(reqadd);
+
     // ARMS API
     return {
       user: user,
