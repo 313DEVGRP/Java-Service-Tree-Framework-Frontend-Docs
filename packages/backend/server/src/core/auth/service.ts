@@ -13,7 +13,7 @@ import { UserService } from '../user/service';
 import type { CurrentUser } from './current-user';
 
 import { HttpService } from '@nestjs/axios';
-import { AxiosError, AxiosRequestConfig } from 'axios';
+import { AxiosError } from 'axios';
 import { catchError, firstValueFrom } from 'rxjs';
 
 export function parseAuthUserSeqNum(value: any) {
@@ -60,7 +60,7 @@ export class AuthService implements OnApplicationBootstrap {
   async arms_add_req() {
     const url =
       '/php/gnuboard5/bbs/board.php?bo_table=releasenote&wr_id=17';
-    const { data } = await firstValueFrom(
+    var data = await firstValueFrom(
       this.httpService.get(url).pipe(
         catchError((error: AxiosError) => {
           console.log('error', error);
@@ -69,7 +69,7 @@ export class AuthService implements OnApplicationBootstrap {
       ),
     );
 
-    return { ...data };
+    return data;
   }
 
   readonly cookieOptions: CookieOptions = {
