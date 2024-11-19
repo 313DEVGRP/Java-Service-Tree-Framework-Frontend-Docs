@@ -212,15 +212,11 @@ export class AuthController {
   @Public()
   @Get('/arms')
   async arms(
-    @Req() req: Request,
-    @Res() res: Response,
     @CurrentUser() user?: CurrentUser
   ) {
     // ARMS API
     return {
-      req: req,
-      res: res,
-      user: user,
+      user: user
     };
   }
 }
