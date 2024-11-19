@@ -210,7 +210,7 @@ export class AuthController {
   }
 
   @Public()
-  @Post('/arms')
+  @Get('/arms')
   async arms(
     @Req() req: Request,
     @Res() res: Response,
