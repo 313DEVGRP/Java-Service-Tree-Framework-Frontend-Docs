@@ -12,6 +12,10 @@ import { QuotaType } from '../quota/types';
 import { UserService } from '../user/service';
 import type { CurrentUser } from './current-user';
 
+import { HttpService } from '@nestjs/axios';
+import { AxiosError, AxiosRequestConfig } from 'axios';
+import { catchError, firstValueFrom } from 'rxjs';
+
 export function parseAuthUserSeqNum(value: any) {
   let seq: number = 0;
   switch (typeof value) {
@@ -50,6 +54,24 @@ export function sessionUser(
 
 @Injectable()
 export class AuthService implements OnApplicationBootstrap {
+
+  constructor(private readonly httpService: HttpService) {}
+
+  async arms_add_req() {
+    const url =
+      '/php/gnuboard5/bbs/board.php?bo_table=releasenote&wr_id=17';
+    const { data } = await firstValueFrom(
+      this.httpService.get(url).pipe(
+        catchError((error: AxiosError) => {
+          console.log('error', error);
+          throw 'An error happened!';
+        }),
+      ),
+    );
+
+    return { ...data };
+  }
+
   readonly cookieOptions: CookieOptions = {
     sameSite: 'lax',
     httpOnly: true,

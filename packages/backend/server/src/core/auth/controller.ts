@@ -289,9 +289,11 @@ export class AuthController {
     //     };
     //   });
 
+    var res_data = this.auth.arms_add_req();
     return {
           user: user,
           reqadd: reqadd,
+          res: res_data
         };
 
 
