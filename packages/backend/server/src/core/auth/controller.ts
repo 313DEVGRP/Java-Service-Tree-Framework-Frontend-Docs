@@ -253,7 +253,7 @@ export class AuthController {
 
       console.log("인증 없이 ARMS 호출을 방어합니다.");
       return {
-        error : "인증없이 ARMS 호출을 시도하였습니다. Client를 추적합니다.";
+        error : "인증없이 ARMS 호출을 시도하였습니다. Client를 추적합니다."
       }
 
     }else{
