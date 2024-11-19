@@ -211,7 +211,6 @@ export class AuthController {
 
   @Public()
   @Post('/arms')
-  @Header('content-type', 'application/json')
   async arms(
     @Req() req: Request,
     @Res() res: Response,
