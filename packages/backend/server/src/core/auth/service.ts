@@ -55,23 +55,6 @@ export function sessionUser(
 @Injectable()
 export class AuthService implements OnApplicationBootstrap {
 
-  constructor(private readonly httpService: HttpService) {}
-
-  async arms_add_req() {
-    const url =
-      '/php/gnuboard5/bbs/board.php?bo_table=releasenote&wr_id=17';
-    var data = await firstValueFrom(
-      this.httpService.get(url).pipe(
-        catchError((error: AxiosError) => {
-          console.log('error', error);
-          throw 'An error happened!';
-        }),
-      ),
-    );
-
-    return data;
-  }
-
   readonly cookieOptions: CookieOptions = {
     sameSite: 'lax',
     httpOnly: true,
@@ -87,8 +70,25 @@ export class AuthService implements OnApplicationBootstrap {
     private readonly mailer: MailService,
     private readonly feature: FeatureManagementService,
     private readonly quota: QuotaService,
-    private readonly user: UserService
+    private readonly user: UserService,
+
+    private readonly httpService: HttpService
   ) {}
+
+  async arms_add_req() {
+    const url =
+      '/php/gnuboard5/bbs/board.php?bo_table=releasenote&wr_id=17';
+    var data = await firstValueFrom(
+      this.httpService.get(url).pipe(
+        catchError((error: AxiosError) => {
+          console.log('error', error);
+          throw 'An error happened!';
+        }),
+      ),
+    );
+
+    return data;
+  }
 
   async onApplicationBootstrap() {
     if (this.config.node.dev) {
