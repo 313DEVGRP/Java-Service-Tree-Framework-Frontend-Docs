@@ -245,26 +245,25 @@ export class AuthController {
     @Body() reqadd: ReqAdd,
     @CurrentUser() user?: CurrentUser
   ) {
-
     //await this.auth.setCookie(req, res, user);
     //res.status(HttpStatus.OK).send(reqadd);
 
-    if ( typeof user === "undefined" || user == null || user == undefined ) {
+    // if - else 문으로 인증 체계
+    // if ( typeof user === "undefined" || user == null || user == undefined ) {
+    //
+    //   console.log("인증 없이 ARMS 호출을 방어합니다.");
+    //   return {
+    //     error : "인증없이 ARMS 호출을 시도하였습니다. Client를 추적합니다."
+    //   }
+    //
+    // }else{
 
-      console.log("인증 없이 ARMS 호출을 방어합니다.");
-      return {
-        error : "인증없이 ARMS 호출을 시도하였습니다. Client를 추적합니다."
-      }
+    // ARMS API
+    return {
+      user: user,
+      reqadd: reqadd,
+    };
 
-    }else{
-
-      // ARMS API
-      return {
-        user: user,
-        reqadd: reqadd
-      };
-
-    }
-
+    //}
   }
 }
