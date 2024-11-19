@@ -30,7 +30,7 @@ import { Public } from './guard';
 import { AuthService, parseAuthUserSeqNum } from './service';
 import { TokenService, TokenType } from './token';
 
-import axios from 'axios';
+import * as axios from 'axios';
 
 class SignInCredential {
   email!: string;
