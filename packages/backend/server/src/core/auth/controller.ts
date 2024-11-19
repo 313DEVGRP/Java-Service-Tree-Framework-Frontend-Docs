@@ -235,7 +235,6 @@ export class AuthController {
       resource: randomUUID(),
     };
   }
-  Join Postman
 
   @Public()
   @Post('/arms')
