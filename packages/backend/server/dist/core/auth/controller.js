@@ -129,11 +129,10 @@ let AuthController = class AuthController {
             resource: randomUUID(),
         };
     }
-    async arms() {
+    async arms(user) {
         // ARMS API
         return {
-            target: randomUUID(),
-            arms: randomUUID(),
+            user: user
         };
     }
 };
@@ -196,8 +195,9 @@ __decorate([
 __decorate([
     Public(),
     Get('/arms'),
+    __param(0, CurrentUser()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "arms", null);
 AuthController = __decorate([

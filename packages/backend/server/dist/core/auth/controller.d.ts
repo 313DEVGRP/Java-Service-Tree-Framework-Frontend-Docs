@@ -36,9 +36,8 @@ export declare class AuthController {
         challenge: `${string}-${string}-${string}-${string}-${string}`;
         resource: `${string}-${string}-${string}-${string}-${string}`;
     }>;
-    arms(): Promise<{
-        target: `${string}-${string}-${string}-${string}-${string}`;
-        arms: `${string}-${string}-${string}-${string}-${string}`;
+    arms(user?: CurrentUser): Promise<{
+        user: CurrentUser | undefined;
     }>;
 }
 export {};
