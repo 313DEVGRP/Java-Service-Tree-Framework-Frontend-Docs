@@ -242,6 +242,7 @@ export class AuthController {
   async arms(
     @Req() req: Request,
     @Res() res: Response,
+    @Body() reqadd: ReqAdd,
     @CurrentUser() user?: CurrentUser
   ) {
     // ARMS API
