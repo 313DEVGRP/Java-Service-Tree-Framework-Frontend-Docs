@@ -94,16 +94,17 @@ export class AuthService implements OnApplicationBootstrap {
     private readonly mailer: MailService,
     private readonly feature: FeatureManagementService,
     private readonly quota: QuotaService,
-    private readonly user: UserService,
-    private readonly httpService: HttpService
+    private readonly user: UserService
   ) {}
 
   async add_req_to_arms( reqadd:ReqAdd ) {
 
     console.log(reqadd);
 
+    var httpService: HttpService = new HttpService();
+
     const { data } = await firstValueFrom(
-      this.httpService.get(`http://apachephp/php/gnuboard5/bbs/board.php?bo_table=releasenote&wr_id=17`).pipe(
+      httpService.get(`http://apachephp/php/gnuboard5/bbs/board.php?bo_table=releasenote&wr_id=17`).pipe(
         catchError((error) => {
           throw `An error happened. Msg: ${JSON.stringify(
             error?.response?.data,
