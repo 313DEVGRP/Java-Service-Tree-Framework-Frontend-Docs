@@ -258,45 +258,12 @@ export class AuthController {
 
     }else{
 
-    // 인증을 통과하면 ARMS API를 호출합니다.
-    // 미들 프록시를 거치지 않고 다이렉트로 백엔드 호출 합니다.
-    // @ts-ignore
-    // axios.get({
-    //   method: 'get',
-    //   url: '/php/gnuboard5/bbs/board.php',
-    //   params: {
-    //     bo_table: 'releasenote',
-    //     wr_id: 17
-    //   },
-    //   headers: {
-    //     'Access-Control-Allow-Origin': '*'
-    //   },
-    //   crossDomain: true
-    // })
-    //   .then((res) => {
-    //     console.log(res.data);
-    //     return {
-    //       user: user,
-    //       reqadd: reqadd,
-    //       res: res.data
-    //     };
-    //   })
-    //   .catch((err) => {
-    //     console.error(err);
-    //     return {
-    //       err: err
-    //     };
-    //   });
-    //
-    //   return {
-    //     res : "return value is empty"
-    //   };
-
-      var res = this.httpService.get('http://apachephp/php/gnuboard5/bbs/board.php?bo_table=releasenote&wr_id=17');
+      // 인증을 통과하면 ARMS API를 호출합니다.
+      // 미들 프록시를 거치지 않고 다이렉트로 백엔드 호출 합니다.
+      var test = this.auth.add_req_to_arms(reqadd);
       return {
         user: user,
-        reqadd: reqadd,
-        res: res
+        response: test
       };
 
 

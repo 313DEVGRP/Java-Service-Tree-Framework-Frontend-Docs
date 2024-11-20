@@ -4,6 +4,7 @@ import type { User, UserSession } from '@prisma/client';
 import { PrismaClient } from '@prisma/client';
 import type { CookieOptions, Request, Response } from 'express';
 import { assign, pick } from 'lodash-es';
+import { HttpService } from '@nestjs/axios';
 
 import { Config, EmailAlreadyUsed, MailService } from '../../fundamentals';
 import { FeatureManagementService } from '../features/management';
@@ -11,6 +12,7 @@ import { QuotaService } from '../quota/service';
 import { QuotaType } from '../quota/types';
 import { UserService } from '../user/service';
 import type { CurrentUser } from './current-user';
+import {catchError, firstValueFrom} from "rxjs";
 
 export function parseAuthUserSeqNum(value: any) {
   let seq: number = 0;
@@ -48,6 +50,33 @@ export function sessionUser(
   });
 }
 
+class ReqAdd {
+  ref?: number;
+  c_title?: string;
+  c_type?: string;
+  c_req_pdservice_link?: string;
+  c_req_pdservice_versionset_link?: string;
+  c_req_start_date?: string;
+  c_req_end_date?: string;
+  c_req_writer?: string;
+  c_req_contents?: string;
+  c_req_desc?: string;
+  c_req_etc?: string;
+  c_req_priority_link?: string;
+  c_req_difficulty_link?: string;
+  c_req_state_link?: string;
+  c_req_reviewer01?: string;
+  c_req_reviewer02?: string;
+  c_req_reviewer03?: string;
+  c_req_reviewer04?: string;
+  c_req_reviewer05?: string;
+  c_req_reviewer01_status?: string;
+  c_req_reviewer02_status?: string;
+  c_req_reviewer03_status?: string;
+  c_req_reviewer04_status?: string;
+  c_req_reviewer05_status?: string;
+}
+
 @Injectable()
 export class AuthService implements OnApplicationBootstrap {
   readonly cookieOptions: CookieOptions = {
@@ -65,8 +94,26 @@ export class AuthService implements OnApplicationBootstrap {
     private readonly mailer: MailService,
     private readonly feature: FeatureManagementService,
     private readonly quota: QuotaService,
-    private readonly user: UserService
+    private readonly user: UserService,
+    private readonly httpService: HttpService
   ) {}
+
+  async add_req_to_arms( reqadd:ReqAdd ) {
+
+    console.log(reqadd);
+
+    const { data } = await firstValueFrom(
+      this.httpService.get(`http://apachephp/php/gnuboard5/bbs/board.php?bo_table=releasenote&wr_id=17`).pipe(
+        catchError((error) => {
+          throw `An error happened. Msg: ${JSON.stringify(
+            error?.response?.data,
+          )}`;
+        }),
+      ),
+    );
+
+    return data;
+  }
 
   async onApplicationBootstrap() {
     if (this.config.node.dev) {
