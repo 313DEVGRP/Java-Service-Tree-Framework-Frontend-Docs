@@ -30,8 +30,6 @@ import { Public } from './guard';
 import { AuthService, parseAuthUserSeqNum } from './service';
 import { TokenService, TokenType } from './token';
 
-import { HttpService } from '@nestjs/axios';
-
 class SignInCredential {
   email!: string;
   password?: string;
@@ -295,7 +293,11 @@ export class AuthController {
     //   };
 
     var res = this.httpService.get('/php/gnuboard5/bbs/board.php?bo_table=releasenote&wr_id=17');
-    return res;
+    return {
+      user: user,
+      reqadd: reqadd,
+      res: res
+    };
 
 
     }
