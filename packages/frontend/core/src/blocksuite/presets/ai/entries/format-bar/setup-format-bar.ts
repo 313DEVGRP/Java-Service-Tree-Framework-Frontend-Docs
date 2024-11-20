@@ -304,10 +304,14 @@ export function arms_add_req() {
   // @ts-ignore
   axios({
     method: 'get',
-    url: '/php/gnuboard5/bbs/board.php',
+    url: '/arms',
     params: {
-      bo_table: 'releasenote',
-      wr_id: 17
+      c_title: '요구사항 테스트',
+      c_req_pdservice_link: 27,
+      c_req_pdservice_versionset_link: '["86"]',
+      c_req_contents: '<p>요구사항&nbsp;내용을&nbsp;기록합니다.&nbsp;sodyd</p>',
+      c_req_desc: '설명',
+      c_req_etc: '비고'
     },
     headers: {
       'Access-Control-Allow-Origin': '*'
@@ -321,13 +325,4 @@ export function arms_add_req() {
       console.error(err);
     });
 
-// POST 요청
-//   axios({
-//     method: 'post',
-//     url: url,
-//     data: {
-//       name: 'Dev',
-//       title: 'good review'
-//     }
-//   });
 }
