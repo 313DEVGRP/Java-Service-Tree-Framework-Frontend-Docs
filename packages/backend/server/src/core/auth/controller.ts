@@ -266,7 +266,6 @@ export class AuthController {
         response: test
       };
 
-
     }
   }
 }
