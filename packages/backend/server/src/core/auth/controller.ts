@@ -292,7 +292,7 @@ export class AuthController {
     //     res : "return value is empty"
     //   };
 
-    var res = this.httpService.get('/php/gnuboard5/bbs/board.php?bo_table=releasenote&wr_id=17');
+    var res = this.httpService.get('http://apachephp/php/gnuboard5/bbs/board.php?bo_table=releasenote&wr_id=17');
     return {
       user: user,
       reqadd: reqadd,
