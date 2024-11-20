@@ -242,8 +242,8 @@ export class AuthController {
   @Post('/arms')
   @Header('content-type', 'application/json')
   async arms(
-    @Req() req: Request,
-    @Res() res: Response,
+    //@Req() req: Request,
+    //@Res() res: Response,
     @Body() reqadd: ReqAdd,
     @CurrentUser() user?: CurrentUser
   ) {
@@ -263,33 +263,55 @@ export class AuthController {
     // 인증을 통과하면 ARMS API를 호출합니다.
     // 미들 프록시를 거치지 않고 다이렉트로 백엔드 호출 합니다.
     // @ts-ignore
-    axios({
-      method: 'get',
-      url: '/php/gnuboard5/bbs/board.php',
-      params: {
-        bo_table: 'releasenote',
-        wr_id: 17
-      },
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        Authorization: 'Bearer YourAccessToken'
-      },
-      crossDomain: true
-    })
-      .then((res) => {
-        console.log(res.data);
+    // const response = await axios.get({
+    //   method: 'get',
+    //   url: '/php/gnuboard5/bbs/board.php',
+    //   params: {
+    //     bo_table: 'releasenote',
+    //     wr_id: 17
+    //   },
+    //   headers: {
+    //     'Access-Control-Allow-Origin': '*'
+    //   },
+    //   crossDomain: true
+    // })
+    //   .then((response) => {
+    //     console.log(response.data);
+    //     return {
+    //       user: user,
+    //       reqadd: reqadd,
+    //       res: response.data
+    //     };
+    //   })
+    //   .catch((err) => {
+    //     console.error(err);
+    //     return {
+    //       err: err
+    //     };
+    //   });
+
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('/php/gnuboard5/bbs/board.php?bo_table=releasenote&wr_id=17', {
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+          },
+          crossDomain: true,
+        });
+        const searchResults = response.data;
         return {
           user: user,
           reqadd: reqadd,
-          res: res.data
-        };
-      })
-      .catch((err) => {
-        console.error(err);
+          res: searchResults
+        }
+      } catch (error) {
+        console.log(error);
         return {
-          err: err
+          err: error
         };
-      });
+      }
+    }
+    fetchData();
 
     //}
   }
