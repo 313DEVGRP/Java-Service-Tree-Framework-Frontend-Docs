@@ -265,7 +265,7 @@ export class AuthController {
       // @ts-ignore
       axios.get({
         method: 'get',
-        url: 'http://mad-dev.megazone.com/php/gnuboard5/bbs/board.php',
+        url: 'http://172.31.3.186/php/gnuboard5/bbs/board.php',
         params: {
           bo_table: 'releasenote',
           wr_id: 17
