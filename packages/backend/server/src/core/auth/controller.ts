@@ -290,6 +290,10 @@ export class AuthController {
         };
       });
 
+      return {
+        res : "return value is empty"
+      };
+
     }
   }
 }
