@@ -30,7 +30,7 @@ import { Public } from './guard';
 import { AuthService, parseAuthUserSeqNum } from './service';
 import { TokenService, TokenType } from './token';
 
-import * as axios from 'axios';
+import axios from 'axios';
 
 class SignInCredential {
   email!: string;
@@ -295,8 +295,7 @@ export class AuthController {
         const response = await axios.get('/php/gnuboard5/bbs/board.php?bo_table=releasenote&wr_id=17', {
           headers: {
             'Access-Control-Allow-Origin': '*',
-          },
-          crossDomain: true,
+          }
         });
         const searchResults = response.data;
         return {
