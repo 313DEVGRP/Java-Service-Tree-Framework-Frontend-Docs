@@ -1,10 +1,11 @@
+import { HttpService } from '@nestjs/axios';
 import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import type { User, UserSession } from '@prisma/client';
 import { PrismaClient } from '@prisma/client';
 import type { CookieOptions, Request, Response } from 'express';
 import { assign, pick } from 'lodash-es';
-import { HttpService } from '@nestjs/axios';
+import { catchError, firstValueFrom } from 'rxjs';
 
 import { Config, EmailAlreadyUsed, MailService } from '../../fundamentals';
 import { FeatureManagementService } from '../features/management';
@@ -12,7 +13,6 @@ import { QuotaService } from '../quota/service';
 import { QuotaType } from '../quota/types';
 import { UserService } from '../user/service';
 import type { CurrentUser } from './current-user';
-import {catchError, firstValueFrom} from "rxjs";
 
 export function parseAuthUserSeqNum(value: any) {
   let seq: number = 0;
@@ -97,20 +97,23 @@ export class AuthService implements OnApplicationBootstrap {
     private readonly user: UserService
   ) {}
 
-  async add_req_to_arms( reqadd:ReqAdd ) {
-
+  async add_req_to_arms(reqadd: ReqAdd) {
     console.log(reqadd);
 
-    var httpService: HttpService = new HttpService();
+    const httpService: HttpService = new HttpService();
 
     const { data } = await firstValueFrom(
-      httpService.get(`http://apachephp/php/gnuboard5/bbs/board.php?bo_table=releasenote&wr_id=17`).pipe(
-        catchError((error) => {
-          throw `An error happened. Msg: ${JSON.stringify(
-            error?.response?.data,
-          )}`;
-        }),
-      ),
+      httpService
+        .get(
+          `http://apachephp/php/gnuboard5/bbs/board.php?bo_table=releasenote&wr_id=17`
+        )
+        .pipe(
+          catchError(error => {
+            throw `An error happened. Msg: ${JSON.stringify(
+              error?.response?.data
+            )}`;
+          })
+        )
     );
 
     return data;
