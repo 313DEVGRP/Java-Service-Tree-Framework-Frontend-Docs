@@ -249,14 +249,14 @@ export class AuthController {
     //res.status(HttpStatus.OK).send(reqadd);
 
     // if - else 문으로 인증을 검증 합니다.
-    if ( typeof user === "undefined" || user == null || user == undefined ) {
-
-      console.log("인증 없이 ARMS 호출을 방어합니다.");
-      return {
-        error : "인증없이 ARMS 호출을 시도하였습니다. Client를 추적합니다."
-      }
-
-    }else{
+    // if ( typeof user === "undefined" || user == null || user == undefined ) {
+    //
+    //   console.log("인증 없이 ARMS 호출을 방어합니다.");
+    //   return {
+    //     error : "인증없이 ARMS 호출을 시도하였습니다. Client를 추적합니다."
+    //   }
+    //
+    // }else{
 
       // 인증을 통과하면 ARMS API를 호출합니다.
       // 미들 프록시를 거치지 않고 다이렉트로 백엔드 호출 합니다.
@@ -266,6 +266,6 @@ export class AuthController {
         response: test
       };
 
-    }
+    // }
   }
 }
