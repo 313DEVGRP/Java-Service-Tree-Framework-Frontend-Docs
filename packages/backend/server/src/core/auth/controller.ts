@@ -30,7 +30,7 @@ import { Public } from './guard';
 import { AuthService, parseAuthUserSeqNum } from './service';
 import { TokenService, TokenType } from './token';
 
-import axios from 'axios';
+import { HttpService } from '@nestjs/axios';
 
 class SignInCredential {
   email!: string;
@@ -263,36 +263,40 @@ export class AuthController {
     // 인증을 통과하면 ARMS API를 호출합니다.
     // 미들 프록시를 거치지 않고 다이렉트로 백엔드 호출 합니다.
     // @ts-ignore
-    axios.get({
-      method: 'get',
-      url: '/php/gnuboard5/bbs/board.php',
-      params: {
-        bo_table: 'releasenote',
-        wr_id: 17
-      },
-      headers: {
-        'Access-Control-Allow-Origin': '*'
-      },
-      crossDomain: true
-    })
-      .then((res) => {
-        console.log(res.data);
-        return {
-          user: user,
-          reqadd: reqadd,
-          res: res.data
-        };
-      })
-      .catch((err) => {
-        console.error(err);
-        return {
-          err: err
-        };
-      });
+    // axios.get({
+    //   method: 'get',
+    //   url: '/php/gnuboard5/bbs/board.php',
+    //   params: {
+    //     bo_table: 'releasenote',
+    //     wr_id: 17
+    //   },
+    //   headers: {
+    //     'Access-Control-Allow-Origin': '*'
+    //   },
+    //   crossDomain: true
+    // })
+    //   .then((res) => {
+    //     console.log(res.data);
+    //     return {
+    //       user: user,
+    //       reqadd: reqadd,
+    //       res: res.data
+    //     };
+    //   })
+    //   .catch((err) => {
+    //     console.error(err);
+    //     return {
+    //       err: err
+    //     };
+    //   });
+    //
+    //   return {
+    //     res : "return value is empty"
+    //   };
 
-      return {
-        res : "return value is empty"
-      };
+    var res = this.httpService.get('/php/gnuboard5/bbs/board.php?bo_table=releasenote&wr_id=17');
+    return res;
+
 
     }
   }
