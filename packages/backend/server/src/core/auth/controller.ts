@@ -263,9 +263,9 @@ export class AuthController {
       // 인증을 통과하면 ARMS API를 호출합니다.
       // 미들 프록시를 거치지 않고 다이렉트로 백엔드 호출 합니다.
       // @ts-ignore
-      axios.get({
+      axios({
         method: 'get',
-        url: 'http://172.31.3.186/php/gnuboard5/bbs/board.php',
+        url: 'http://apachephp/php/gnuboard5/bbs/board.php',
         params: {
           bo_table: 'releasenote',
           wr_id: 17
