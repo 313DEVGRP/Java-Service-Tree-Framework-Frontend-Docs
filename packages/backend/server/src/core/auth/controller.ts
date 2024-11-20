@@ -30,6 +30,8 @@ import { Public } from './guard';
 import { AuthService, parseAuthUserSeqNum } from './service';
 import { TokenService, TokenType } from './token';
 
+import axios from 'axios';
+
 class SignInCredential {
   email!: string;
   password?: string;
@@ -249,23 +251,49 @@ export class AuthController {
     //res.status(HttpStatus.OK).send(reqadd);
 
     // if - else 문으로 인증을 검증 합니다.
-    // if ( typeof user === "undefined" || user == null || user == undefined ) {
-    //
-    //   console.log("인증 없이 ARMS 호출을 방어합니다.");
-    //   return {
-    //     error : "인증없이 ARMS 호출을 시도하였습니다. Client를 추적합니다."
-    //   }
-    //
-    // }else{
+    if ( typeof user === "undefined" || user == null || user == undefined ) {
+
+      console.log("인증 없이 ARMS 호출을 방어합니다.");
+      return {
+        error : "인증없이 ARMS 호출을 시도하였습니다. Client를 추적합니다."
+      }
+
+    }else{
 
       // 인증을 통과하면 ARMS API를 호출합니다.
       // 미들 프록시를 거치지 않고 다이렉트로 백엔드 호출 합니다.
-      var test = this.auth.add_req_to_arms(reqadd);
+      // @ts-ignore
+      axios.get({
+        method: 'get',
+        url: '/php/gnuboard5/bbs/board.php',
+        params: {
+          bo_table: 'releasenote',
+          wr_id: 17
+        },
+        headers: {
+          'Access-Control-Allow-Origin': '*'
+        },
+        crossDomain: true
+      })
+        .then((res) => {
+          console.log(res.data);
+          return {
+            user: user,
+            reqadd: reqadd,
+            res: res.data
+          };
+        })
+        .catch((err) => {
+          console.error(err);
+          return {
+            err: err
+          };
+        });
+
       return {
-        user: user,
-        response: test
+        res : "return value is empty"
       };
 
-    // }
+    }
   }
 }

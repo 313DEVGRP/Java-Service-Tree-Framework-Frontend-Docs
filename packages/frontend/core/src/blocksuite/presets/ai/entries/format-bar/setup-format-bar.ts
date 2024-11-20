@@ -310,8 +310,7 @@ export function arms_add_req() {
       wr_id: 17
     },
     headers: {
-      'Access-Control-Allow-Origin': '*',
-      Authorization: 'Bearer YourAccessToken'
+      'Access-Control-Allow-Origin': '*'
     },
     crossDomain: true
   })
