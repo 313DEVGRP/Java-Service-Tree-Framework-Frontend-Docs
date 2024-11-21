@@ -304,7 +304,7 @@ async function arms_add_req() {
   // @ts-ignore
   await axios({
     method: 'get',
-    url: '/adoc/arms',
+    url: '/api/auth/arms',
     params: {
       c_title: '요구사항 테스트',
       c_req_pdservice_link: 11,
