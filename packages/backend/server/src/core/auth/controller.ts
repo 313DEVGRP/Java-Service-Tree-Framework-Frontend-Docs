@@ -37,33 +37,6 @@ class SignInCredential {
   password?: string;
 }
 
-class ReqAdd {
-  ref?: number;
-  c_title?: string;
-  c_type?: string;
-  c_req_pdservice_link?: number;
-  c_req_pdservice_versionset_link?: string;
-  c_req_start_date?: string;
-  c_req_end_date?: string;
-  c_req_writer?: string;
-  c_req_contents?: string;
-  c_req_desc?: string;
-  c_req_etc?: string;
-  c_req_priority_link?: number;
-  c_req_difficulty_link?: number;
-  c_req_state_link?: number;
-  c_req_reviewer01?: string;
-  c_req_reviewer02?: string;
-  c_req_reviewer03?: string;
-  c_req_reviewer04?: string;
-  c_req_reviewer05?: string;
-  c_req_reviewer01_status?: string;
-  c_req_reviewer02_status?: string;
-  c_req_reviewer03_status?: string;
-  c_req_reviewer04_status?: string;
-  c_req_reviewer05_status?: string;
-}
-
 class MagicLinkCredential {
   email!: string;
   token!: string;
