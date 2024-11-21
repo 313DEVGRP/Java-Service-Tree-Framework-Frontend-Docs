@@ -286,7 +286,7 @@ export class AuthController {
       axios({
         method: 'post',
         url: 'http://backend-core:31313/arms/reqAdd/T_ARMS_REQADD_11/addNode.do',
-        data: formData
+        data: formData,
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
           'Access-Control-Allow-Origin': '*'
