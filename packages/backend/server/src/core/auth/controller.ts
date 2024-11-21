@@ -235,6 +235,7 @@ export class AuthController {
 
     }else{
 
+
       var c_req_start_date = 'Mon Nov 18 2024 00:00:00 GMT+0900 (한국 표준시)';
       var c_req_end_date = 'Fri Nov 29 2024 00:00:00 GMT+0900 (한국 표준시)';
       var c_req_writer = '[admin] - 9af24080-050d-4943-b40e-d789c0f976ee';
@@ -251,39 +252,43 @@ export class AuthController {
       var c_req_reviewer03_status= 'Draft';
       var c_req_reviewer04_status= 'Draft';
       var c_req_reviewer05_status= 'Draft';
+
+      const formData = new URLSearchParams();
+      formData.append('ref', 2);
+      formData.append('c_title', c_title);
+      formData.append('c_type', "default");
+      formData.append('c_req_pdservice_link', c_req_pdservice_link);
+      formData.append('c_req_pdservice_versionset_link', c_req_pdservice_versionset_link);
+      formData.append('c_req_start_date', c_req_start_date);
+      formData.append('c_req_end_date', c_req_end_date);
+      formData.append('c_req_writer', c_req_writer);
+      formData.append('c_req_contents', c_req_contents);
+      formData.append('c_req_desc', c_req_desc);
+      formData.append('c_req_etc', c_req_etc);
+      formData.append('c_req_priority_link', c_req_priority_link);
+      formData.append('c_req_difficulty_link', c_req_difficulty_link);
+      formData.append('c_req_state_link', c_req_state_link);
+      formData.append('c_req_reviewer01', c_req_reviewer01);
+      formData.append('c_req_reviewer02', c_req_reviewer02);
+      formData.append('c_req_reviewer03', c_req_reviewer03);
+      formData.append('c_req_reviewer04', c_req_reviewer04);
+      formData.append('c_req_reviewer05', c_req_reviewer05);
+      formData.append('c_req_reviewer01_status', c_req_reviewer01_status);
+      formData.append('c_req_reviewer02_status', c_req_reviewer02_status);
+      formData.append('c_req_reviewer03_status', c_req_reviewer03_status);
+      formData.append('c_req_reviewer04_status', c_req_reviewer04_status);
+      formData.append('c_req_reviewer05_status', c_req_reviewer05_status);
+
+
       // 인증을 통과하면 ARMS API를 호출합니다.
       // 미들 프록시를 거치지 않고 다이렉트로 백엔드 호출 합니다.
       // @ts-ignore
       axios({
         method: 'post',
         url: 'http://backend-core:31313/arms/reqAdd/T_ARMS_REQADD_11/addNode.do',
-        data: { // 전송할 데이터
-          ref : 2,
-          c_title : c_title,
-          c_type : "default",
-          c_req_pdservice_link : c_req_pdservice_link,
-          c_req_pdservice_versionset_link : c_req_pdservice_versionset_link,
-          c_req_start_date : c_req_start_date,
-          c_req_end_date : c_req_end_date,
-          c_req_writer : c_req_writer,
-          c_req_contents : c_req_contents,
-          c_req_desc : c_req_desc,
-          c_req_etc : c_req_etc,
-          c_req_priority_link : c_req_priority_link,
-          c_req_difficulty_link : c_req_difficulty_link,
-          c_req_state_link : c_req_state_link,
-          c_req_reviewer01 : c_req_reviewer01,
-          c_req_reviewer02 : c_req_reviewer02,
-          c_req_reviewer03 : c_req_reviewer03,
-          c_req_reviewer04 : c_req_reviewer04,
-          c_req_reviewer05 : c_req_reviewer05,
-          c_req_reviewer01_status : c_req_reviewer01_status,
-          c_req_reviewer02_status : c_req_reviewer02_status,
-          c_req_reviewer03_status : c_req_reviewer03_status,
-          c_req_reviewer04_status : c_req_reviewer04_status,
-          c_req_reviewer05_status : c_req_reviewer05_status,
-        },
+        data: formData
         headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
           'Access-Control-Allow-Origin': '*'
         },
         crossDomain: true
