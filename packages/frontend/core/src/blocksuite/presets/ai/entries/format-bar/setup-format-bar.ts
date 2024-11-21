@@ -306,7 +306,7 @@ async function arms_add_req() {
     method: 'get',
     url: '/api/auth/arms',
     params: {
-      c_title: '정재용 대표님 플레티어 김진호 상무님 미팅',
+      c_title: '디무브 원일 대표님 미팅',
       c_req_pdservice_link: 11,
       c_req_pdservice_versionset_link: '["37"]',
       c_req_contents: '<p>요구사항&nbsp;내용을&nbsp;기록합니다.&nbsp;with Dmove</p>',
