@@ -30,8 +30,6 @@ import { Public } from './guard';
 import { AuthService, parseAuthUserSeqNum } from './service';
 import { TokenService, TokenType } from './token';
 
-import axios from 'axios';
-
 class SignInCredential {
   email!: string;
   password?: string;
@@ -209,103 +207,5 @@ export class AuthController {
       challenge: randomUUID(),
       resource: randomUUID(),
     };
-  }
-
-  @Public()
-  @Get('/arms')
-  async arms(
-
-    @Query('c_title') c_title?: string,
-    @Query('c_req_pdservice_link') c_req_pdservice_link?: number,
-    @Query('c_req_pdservice_versionset_link') c_req_pdservice_versionset_link?: string,
-    @Query('c_req_contents') c_req_contents?: string,
-    @Query('c_req_desc') c_req_desc?: string,
-    @Query('c_req_etc') c_req_etc?: string,
-
-    @CurrentUser() user?: CurrentUser
-  ) {
-
-    //if - else 문으로 인증을 검증 합니다.
-    if ( typeof user === "undefined" || user == null || user == undefined ) {
-
-      console.log("인증 없이 ARMS 호출을 방어합니다.");
-      return {
-        error : "인증없이 ARMS 호출을 시도하였습니다. Client를 추적합니다."
-      }
-
-    }else{
-
-      var c_req_start_date = 'Mon Nov 18 2024 00:00:00 GMT+0900 (한국 표준시)';
-      var c_req_end_date = 'Fri Nov 29 2024 00:00:00 GMT+0900 (한국 표준시)';
-      var c_req_writer = '[admin] - 9af24080-050d-4943-b40e-d789c0f976ee';
-      var c_req_priority_link = 7;
-      var c_req_difficulty_link= 3;
-      var c_req_state_link= 10;
-      var c_req_reviewer01 = '[admin] - 9af24080-050d-4943-b40e-d789c0f976ee';
-      var c_req_reviewer02 = 'none';
-      var c_req_reviewer03 = 'none';
-      var c_req_reviewer04 = 'none';
-      var c_req_reviewer05 = 'none';
-      var c_req_reviewer01_status= 'Draft';
-      var c_req_reviewer02_status= 'Draft';
-      var c_req_reviewer03_status= 'Draft';
-      var c_req_reviewer04_status= 'Draft';
-      var c_req_reviewer05_status= 'Draft';
-      // 인증을 통과하면 ARMS API를 호출합니다.
-      // 미들 프록시를 거치지 않고 다이렉트로 백엔드 호출 합니다.
-      // @ts-ignore
-      axios({
-        method: 'post',
-        url: 'http://backend-core:31313/arms/reqAdd/T_ARMS_REQADD_11/addNode.do',
-        data: { // 전송할 데이터
-          ref : 2,
-          c_title : c_title,
-          c_type : "default",
-          c_req_pdservice_link : c_req_pdservice_link,
-          c_req_pdservice_versionset_link : c_req_pdservice_versionset_link,
-          c_req_start_date : c_req_start_date,
-          c_req_end_date : c_req_end_date,
-          c_req_writer : c_req_writer,
-          c_req_contents : c_req_contents,
-          c_req_desc : c_req_desc,
-          c_req_etc : c_req_etc,
-          c_req_priority_link : c_req_priority_link,
-          c_req_difficulty_link : c_req_difficulty_link,
-          c_req_state_link : c_req_state_link,
-          c_req_reviewer01 : c_req_reviewer01,
-          c_req_reviewer02 : c_req_reviewer02,
-          c_req_reviewer03 : c_req_reviewer03,
-          c_req_reviewer04 : c_req_reviewer04,
-          c_req_reviewer05 : c_req_reviewer05,
-          c_req_reviewer01_status : c_req_reviewer01_status,
-          c_req_reviewer02_status : c_req_reviewer02_status,
-          c_req_reviewer03_status : c_req_reviewer03_status,
-          c_req_reviewer04_status : c_req_reviewer04_status,
-          c_req_reviewer05_status : c_req_reviewer05_status,
-        },
-        headers: {
-          'Access-Control-Allow-Origin': '*'
-        },
-        crossDomain: true
-      })
-        .then((res) => {
-          console.log(res.data);
-          return {
-            user: user,
-            res: res.data
-          };
-        })
-        .catch((err) => {
-          console.error(err);
-          return {
-            err: err
-          };
-        });
-
-      return {
-        result : "ARMS연동 콘솔에서 확인합니다."
-      };
-
-    }
   }
 }

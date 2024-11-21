@@ -300,18 +300,60 @@ export function promptDocTitle(host: EditorHost, autofill?: string) {
 
 export function arms_add_req() {
 
-  // GET 요청
+  var c_title: '요구사항 테스트';
+  var c_req_pdservice_link: 11;
+  var c_req_pdservice_versionset_link: '["37"]';
+  var c_req_contents: '<p>요구사항&nbsp;내용을&nbsp;기록합니다.&nbsp;with Dmove</p>';
+  var c_req_desc: '설명';
+  var c_req_etc: '비고';
+
+  var c_req_start_date = 'Mon Nov 18 2024 00:00:00 GMT+0900 (한국 표준시)';
+  var c_req_end_date = 'Fri Nov 29 2024 00:00:00 GMT+0900 (한국 표준시)';
+  var c_req_writer = '[admin] - 9af24080-050d-4943-b40e-d789c0f976ee';
+  var c_req_priority_link = 7;
+  var c_req_difficulty_link= 3;
+  var c_req_state_link= 10;
+  var c_req_reviewer01 = '[admin] - 9af24080-050d-4943-b40e-d789c0f976ee';
+  var c_req_reviewer02 = 'none';
+  var c_req_reviewer03 = 'none';
+  var c_req_reviewer04 = 'none';
+  var c_req_reviewer05 = 'none';
+  var c_req_reviewer01_status= 'Draft';
+  var c_req_reviewer02_status= 'Draft';
+  var c_req_reviewer03_status= 'Draft';
+  var c_req_reviewer04_status= 'Draft';
+  var c_req_reviewer05_status= 'Draft';
+  // 인증을 통과하면 ARMS API를 호출합니다.
+  // 미들 프록시를 거치지 않고 다이렉트로 백엔드 호출 합니다.
   // @ts-ignore
   axios({
-    method: 'get',
-    url: '/arms',
-    params: {
-      c_title: '요구사항 테스트',
-      c_req_pdservice_link: 11,
-      c_req_pdservice_versionset_link: '["37"]',
-      c_req_contents: '<p>요구사항&nbsp;내용을&nbsp;기록합니다.&nbsp;with Dmove</p>',
-      c_req_desc: '설명',
-      c_req_etc: '비고'
+    method: 'post',
+    url: 'http://backend-core:31313/arms/reqAdd/T_ARMS_REQADD_11/addNode.do',
+    data: { // 전송할 데이터
+      ref : 2,
+      c_title : c_title,
+      c_type : "default",
+      c_req_pdservice_link : c_req_pdservice_link,
+      c_req_pdservice_versionset_link : c_req_pdservice_versionset_link,
+      c_req_start_date : c_req_start_date,
+      c_req_end_date : c_req_end_date,
+      c_req_writer : c_req_writer,
+      c_req_contents : c_req_contents,
+      c_req_desc : c_req_desc,
+      c_req_etc : c_req_etc,
+      c_req_priority_link : c_req_priority_link,
+      c_req_difficulty_link : c_req_difficulty_link,
+      c_req_state_link : c_req_state_link,
+      c_req_reviewer01 : c_req_reviewer01,
+      c_req_reviewer02 : c_req_reviewer02,
+      c_req_reviewer03 : c_req_reviewer03,
+      c_req_reviewer04 : c_req_reviewer04,
+      c_req_reviewer05 : c_req_reviewer05,
+      c_req_reviewer01_status : c_req_reviewer01_status,
+      c_req_reviewer02_status : c_req_reviewer02_status,
+      c_req_reviewer03_status : c_req_reviewer03_status,
+      c_req_reviewer04_status : c_req_reviewer04_status,
+      c_req_reviewer05_status : c_req_reviewer05_status,
     },
     headers: {
       'Access-Control-Allow-Origin': '*'
