@@ -196,7 +196,7 @@ export function toolbarDefaultConfig(toolbar: AffineFormatBarWidget) {
             type: 'embed-linked-doc',
           });
           console.log("여기에서 ARMS 연동");
-          await arms_add_req();
+          arms_add_req();
         });
       },
       showWhen: chain => {
@@ -299,78 +299,44 @@ export function promptDocTitle(host: EditorHost, autofill?: string) {
 }
 
 async function arms_add_req() {
-
-  try{
-    var c_title: '요구사항 테스트';
-    var c_req_pdservice_link: 11;
-    var c_req_pdservice_versionset_link: '["37"]';
-    var c_req_contents: '<p>요구사항&nbsp;내용을&nbsp;기록합니다.&nbsp;with Dmove</p>';
-    var c_req_desc: '설명';
-    var c_req_etc: '비고';
-
-    var c_req_start_date = 'Mon Nov 18 2024 00:00:00 GMT+0900 (한국 표준시)';
-    var c_req_end_date = 'Fri Nov 29 2024 00:00:00 GMT+0900 (한국 표준시)';
-    var c_req_writer = '[admin] - 9af24080-050d-4943-b40e-d789c0f976ee';
-    var c_req_priority_link = 7;
-    var c_req_difficulty_link= 3;
-    var c_req_state_link= 10;
-    var c_req_reviewer01 = '[admin] - 9af24080-050d-4943-b40e-d789c0f976ee';
-    var c_req_reviewer02 = 'none';
-    var c_req_reviewer03 = 'none';
-    var c_req_reviewer04 = 'none';
-    var c_req_reviewer05 = 'none';
-    var c_req_reviewer01_status= 'Draft';
-    var c_req_reviewer02_status= 'Draft';
-    var c_req_reviewer03_status= 'Draft';
-    var c_req_reviewer04_status= 'Draft';
-    var c_req_reviewer05_status= 'Draft';
-    // 인증을 통과하면 ARMS API를 호출합니다.
-    // 미들 프록시를 거치지 않고 다이렉트로 백엔드 호출 합니다.
-    // @ts-ignore
-    await axios({
-      method: 'post',
-      url: 'http://backend-core:31313/arms/reqAdd/T_ARMS_REQADD_11/addNode.do',
-      data: { // 전송할 데이터
-        ref : 2,
-        c_title : c_title,
-        c_type : "default",
-        c_req_pdservice_link : c_req_pdservice_link,
-        c_req_pdservice_versionset_link : c_req_pdservice_versionset_link,
-        c_req_start_date : c_req_start_date,
-        c_req_end_date : c_req_end_date,
-        c_req_writer : c_req_writer,
-        c_req_contents : c_req_contents,
-        c_req_desc : c_req_desc,
-        c_req_etc : c_req_etc,
-        c_req_priority_link : c_req_priority_link,
-        c_req_difficulty_link : c_req_difficulty_link,
-        c_req_state_link : c_req_state_link,
-        c_req_reviewer01 : c_req_reviewer01,
-        c_req_reviewer02 : c_req_reviewer02,
-        c_req_reviewer03 : c_req_reviewer03,
-        c_req_reviewer04 : c_req_reviewer04,
-        c_req_reviewer05 : c_req_reviewer05,
-        c_req_reviewer01_status : c_req_reviewer01_status,
-        c_req_reviewer02_status : c_req_reviewer02_status,
-        c_req_reviewer03_status : c_req_reviewer03_status,
-        c_req_reviewer04_status : c_req_reviewer04_status,
-        c_req_reviewer05_status : c_req_reviewer05_status,
+  try {
+    const response = await axios.post(
+      'http://backend-core:31313/arms/reqAdd/T_ARMS_REQADD_11/addNode.do',
+      {
+        ref: 2,
+        c_title: '요구사항 테스트',
+        c_type: 'default',
+        c_req_pdservice_link: 11,
+        c_req_pdservice_versionset_link: '["37"]',
+        c_req_start_date: new Date().toISOString(),
+        c_req_end_date: new Date(new Date().setDate(new Date().getDate() + 7)).toISOString(),
+        c_req_writer: '[admin] - 9af24080-050d-4943-b40e-d789c0f976ee',
+        c_req_contents: '<p>요구사항 내용</p>',
+        c_req_desc: '설명',
+        c_req_etc: '비고',
+        c_req_priority_link: 7,
+        c_req_difficulty_link: 3,
+        c_req_state_link: 10,
+        c_req_reviewer01: '[admin] - 9af24080-050d-4943-b40e-d789c0f976ee',
+        c_req_reviewer02: 'none',
+        c_req_reviewer03: 'none',
+        c_req_reviewer04: 'none',
+        c_req_reviewer05: 'none',
+        c_req_reviewer01_status: 'Draft',
+        c_req_reviewer02_status: 'Draft',
+        c_req_reviewer03_status: 'Draft',
+        c_req_reviewer04_status: 'Draft',
+        c_req_reviewer05_status: 'Draft',
       },
-      headers: {
-        'Access-Control-Allow-Origin': '*'
-      },
-      crossDomain: true
-    })
-      .then((res) => {
-        console.log(res.data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }
-  catch(error){
-    console.error(error);
-  }
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
 
-
+    console.log('응답 데이터:', response.data);
+  } catch (error) {
+    console.error('요청 실패:', error);
+  }
 }
