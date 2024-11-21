@@ -256,7 +256,7 @@ export class AuthController {
       // @ts-ignore
       axios({
         method: 'post',
-        url: 'http://apachephp/php/gnuboard5/bbs/board.php',
+        url: 'http://backend-core:31313/arms/reqAdd/T_ARMS_REQADD_11/addNode.do',
         data: { // 전송할 데이터
           ref : 2,
           c_title : c_title,

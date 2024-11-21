@@ -307,9 +307,9 @@ export function arms_add_req() {
     url: '/arms',
     params: {
       c_title: '요구사항 테스트',
-      c_req_pdservice_link: 27,
-      c_req_pdservice_versionset_link: '["86"]',
-      c_req_contents: '<p>요구사항&nbsp;내용을&nbsp;기록합니다.&nbsp;sodyd</p>',
+      c_req_pdservice_link: 11,
+      c_req_pdservice_versionset_link: '["37"]',
+      c_req_contents: '<p>요구사항&nbsp;내용을&nbsp;기록합니다.&nbsp;with Dmove</p>',
       c_req_desc: '설명',
       c_req_etc: '비고'
     },
