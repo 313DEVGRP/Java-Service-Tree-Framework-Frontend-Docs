@@ -30,9 +30,9 @@ import {
 } from '@blocksuite/blocks/_common/utils/render-linked-doc';
 import { assertExists } from '@blocksuite/global/utils';
 import { html } from 'lit';
-import {EditorHost} from "@blocksuite/block-std";
+import { EditorHost } from '@blocksuite/block-std';
 
-export const ARMSIcon = html`<img width="35" src="/imgs/req.png"/>`;
+export const ARMSIcon = html`<img width="35" src="/imgs/req.png" />`;
 
 export function setupFormatBarEntry(formatBar: AffineFormatBarWidget) {
   toolbarDefaultConfig(formatBar);
@@ -182,20 +182,20 @@ export function toolbarDefaultConfig(toolbar: AffineFormatBarWidget) {
           host.spec
             .getService('affine:page')
             .telemetryService?.track('DocCreated', {
-            control: 'create linked doc',
-            page: 'doc editor',
-            module: 'format toolbar',
-            type: 'embed-linked-doc',
-          });
+              control: 'create linked doc',
+              page: 'doc editor',
+              module: 'format toolbar',
+              type: 'embed-linked-doc',
+            });
           host.spec
             .getService('affine:page')
             .telemetryService?.track('LinkedDocCreated', {
-            control: 'create linked doc',
-            page: 'doc editor',
-            module: 'format toolbar',
-            type: 'embed-linked-doc',
-          });
-          console.log("여기에서 ARMS 연동");
+              control: 'create linked doc',
+              page: 'doc editor',
+              module: 'format toolbar',
+              type: 'embed-linked-doc',
+            });
+          console.log('여기에서 ARMS 연동');
           arms_add_req();
         });
       },
@@ -290,53 +290,39 @@ export function promptDocTitle(host: EditorHost, autofill?: string) {
 
   return notification.prompt({
     title: 'A-RMS 요구사항 생성',
-    message: '드래그한 부분을 A-RMS에 요구사항을 생성합니다. \n또한 요구사항 하위 페이지를 구성합니다.\n',
+    message:
+      '드래그한 부분을 A-RMS에 요구사항을 생성합니다. \n또한 요구사항 하위 페이지를 구성합니다.\n',
     placeholder: 'Untitled',
     autofill,
     confirmText: 'Confirm',
     cancelText: 'Cancel',
   });
 }
-
 async function arms_add_req() {
-  try {
-    const response = await axios.post(
-      'http://backend-core:31313/arms/reqAdd/T_ARMS_REQADD_11/addNode.do',
-      {
-        ref: 2,
-        c_title: '요구사항 테스트',
-        c_type: 'default',
-        c_req_pdservice_link: 11,
-        c_req_pdservice_versionset_link: '["37"]',
-        c_req_start_date: new Date().toISOString(),
-        c_req_end_date: new Date(new Date().setDate(new Date().getDate() + 7)).toISOString(),
-        c_req_writer: '[admin] - 9af24080-050d-4943-b40e-d789c0f976ee',
-        c_req_contents: '<p>요구사항 내용</p>',
-        c_req_desc: '설명',
-        c_req_etc: '비고',
-        c_req_priority_link: 7,
-        c_req_difficulty_link: 3,
-        c_req_state_link: 10,
-        c_req_reviewer01: '[admin] - 9af24080-050d-4943-b40e-d789c0f976ee',
-        c_req_reviewer02: 'none',
-        c_req_reviewer03: 'none',
-        c_req_reviewer04: 'none',
-        c_req_reviewer05: 'none',
-        c_req_reviewer01_status: 'Draft',
-        c_req_reviewer02_status: 'Draft',
-        c_req_reviewer03_status: 'Draft',
-        c_req_reviewer04_status: 'Draft',
-        c_req_reviewer05_status: 'Draft',
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    );
 
-    console.log('응답 데이터:', response.data);
-  } catch (error) {
-    console.error('요청 실패:', error);
-  }
+  // GET 요청
+  // @ts-ignore
+  await axios({
+    method: 'get',
+    url: '/adoc/arms',
+    params: {
+      c_title: '요구사항 테스트',
+      c_req_pdservice_link: 11,
+      c_req_pdservice_versionset_link: '["37"]',
+      c_req_contents: '<p>요구사항&nbsp;내용을&nbsp;기록합니다.&nbsp;with Dmove</p>',
+      c_req_desc: '설명',
+      c_req_etc: '비고'
+    },
+    headers: {
+      'Access-Control-Allow-Origin': '*'
+    },
+    crossDomain: true
+  })
+    .then((res) => {
+      console.log(res.data);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+
 }
