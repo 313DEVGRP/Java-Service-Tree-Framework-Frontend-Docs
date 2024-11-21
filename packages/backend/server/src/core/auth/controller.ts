@@ -284,8 +284,7 @@ export class AuthController {
           c_req_reviewer05_status : c_req_reviewer05_status,
         },
         headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
         },
         crossDomain: true
       })
