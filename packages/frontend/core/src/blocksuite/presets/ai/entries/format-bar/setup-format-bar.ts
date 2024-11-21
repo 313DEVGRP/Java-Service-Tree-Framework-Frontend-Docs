@@ -326,7 +326,7 @@ export function arms_add_req() {
   // 인증을 통과하면 ARMS API를 호출합니다.
   // 미들 프록시를 거치지 않고 다이렉트로 백엔드 호출 합니다.
   // @ts-ignore
-  axios({
+  await axios({
     method: 'post',
     url: 'http://backend-core:31313/arms/reqAdd/T_ARMS_REQADD_11/addNode.do',
     data: { // 전송할 데이터
