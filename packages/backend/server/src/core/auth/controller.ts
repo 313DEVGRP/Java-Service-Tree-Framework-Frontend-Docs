@@ -254,30 +254,20 @@ export class AuthController {
       var c_req_reviewer05_status= 'Draft';
 
       const formData = new URLSearchParams();
-      // @ts-ignore
-      formData.append('ref', 2);
-      // @ts-ignore
-      formData.append('c_title', c_title);
+      formData.append('ref', "2");
+      formData.append('c_title', c_title || '');
       formData.append('c_type', "default");
-      // @ts-ignore
-      formData.append('c_req_pdservice_link', c_req_pdservice_link);
-      // @ts-ignore
-      formData.append('c_req_pdservice_versionset_link', c_req_pdservice_versionset_link);
+      formData.append('c_req_pdservice_link', c_req_pdservice_link?.toString() || '');
+      formData.append('c_req_pdservice_versionset_link', c_req_pdservice_versionset_link || '');
       formData.append('c_req_start_date', c_req_start_date);
       formData.append('c_req_end_date', c_req_end_date);
       formData.append('c_req_writer', c_req_writer);
-      // @ts-ignore
-      formData.append('c_req_contents', c_req_contents);
-      // @ts-ignore
-      formData.append('c_req_desc', c_req_desc);
-      // @ts-ignore
-      formData.append('c_req_etc', c_req_etc);
-      // @ts-ignore
-      formData.append('c_req_priority_link', c_req_priority_link);
-      // @ts-ignore
-      formData.append('c_req_difficulty_link', c_req_difficulty_link);
-      // @ts-ignore
-      formData.append('c_req_state_link', c_req_state_link);
+      formData.append('c_req_contents', c_req_contents || '');
+      formData.append('c_req_desc', c_req_desc || '');
+      formData.append('c_req_etc', c_req_etc || '');
+      formData.append('c_req_priority_link', c_req_priority_link?.toString() || '');
+      formData.append('c_req_difficulty_link', c_req_difficulty_link?.toString() || '');
+      formData.append('c_req_state_link', c_req_state_link?.toString() || '');
       formData.append('c_req_reviewer01', c_req_reviewer01);
       formData.append('c_req_reviewer02', c_req_reviewer02);
       formData.append('c_req_reviewer03', c_req_reviewer03);
