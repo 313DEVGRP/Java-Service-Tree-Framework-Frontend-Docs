@@ -196,7 +196,7 @@ export function toolbarDefaultConfig(toolbar: AffineFormatBarWidget) {
             type: 'embed-linked-doc',
           });
           console.log("여기에서 ARMS 연동");
-          arms_add_req();
+          await arms_add_req();
         });
       },
       showWhen: chain => {
