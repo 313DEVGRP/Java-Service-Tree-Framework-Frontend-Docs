@@ -34,7 +34,7 @@ export function setupSlashMenuEntry(slashMenu: AffineSlashMenuWidget) {
     icon: AIStarIcon,
     showWhen: showWhenWrapper(),
     action: () => {
-      window.open('http://www.313.co.kr/reference/drawio/', '_blank');
+      window.open('https://www.a-rms.net/reference/drawio/', '_blank');
     },
   });
   /* AIMenuItems, Ask AI 메뉴 삭제 */

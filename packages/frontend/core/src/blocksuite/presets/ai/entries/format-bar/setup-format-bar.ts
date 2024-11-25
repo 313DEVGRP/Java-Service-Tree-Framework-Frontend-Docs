@@ -36,22 +36,6 @@ export const ARMSIcon = html`<img width="35" src="/imgs/req.png" />`;
 
 export function setupFormatBarEntry(formatBar: AffineFormatBarWidget) {
   toolbarDefaultConfig(formatBar);
-  // formatBar.addRawConfigItems( //'ctrl + A' key : AI 버튼 삭제
-  //   [
-  //     {
-  //       type: 'custom' as const,
-  //       render(formatBar: AffineFormatBarWidget): TemplateResult | null {
-  //         return html` <ask-ai-button
-  //           .host=${formatBar.host}
-  //           .actionGroups=${AIItemGroups}
-  //           .toggleType=${'hover'}
-  //         ></ask-ai-button>`;
-  //       },
-  //     },
-  //     { type: 'divider' },
-  //   ],
-  //   0
-  // );
 }
 
 export function toolbarDefaultConfig(toolbar: AffineFormatBarWidget) {
@@ -160,6 +144,7 @@ export function toolbarDefaultConfig(toolbar: AffineFormatBarWidget) {
           .run();
         const { selectedModels } = ctx;
         assertExists(selectedModels);
+
         if (!selectedModels.length) return;
 
         const host = formatBar.host;
@@ -167,6 +152,7 @@ export function toolbarDefaultConfig(toolbar: AffineFormatBarWidget) {
 
         const doc = host.doc;
         const autofill = getTitleFromSelectedModels(selectedModels);
+
         void promptDocTitle(host, autofill).then(title => {
           if (title === null) return;
           const linkedDoc = convertSelectedBlocksToLinkedDoc(
@@ -196,7 +182,7 @@ export function toolbarDefaultConfig(toolbar: AffineFormatBarWidget) {
               type: 'embed-linked-doc',
             });
           console.log('여기에서 ARMS 연동');
-          arms_add_req();
+          arms_add_req(title, host);
         });
       },
       showWhen: chain => {
@@ -284,6 +270,7 @@ export function toolbarDefaultConfig(toolbar: AffineFormatBarWidget) {
 }
 
 export function promptDocTitle(host: EditorHost, autofill?: string) {
+
   const notification =
     host.std.spec.getService('affine:page').notificationService;
   if (!notification) return Promise.resolve(undefined);
@@ -291,14 +278,15 @@ export function promptDocTitle(host: EditorHost, autofill?: string) {
   return notification.prompt({
     title: 'A-RMS 요구사항 생성',
     message:
-      '드래그한 부분을 A-RMS에 요구사항을 생성합니다. \n또한 요구사항 하위 페이지를 구성합니다.\n',
-    placeholder: 'Untitled',
-    autofill,
+      '드래그한 부분을 A-RMS에 요구사항을 생성합니다. \n또한 요구사항 하위 페이지를 구성합니다.\n\n요구사항 제목 : ',
+    placeholder: autofill,
+    autofill: host.std.range.host.innerText,
     confirmText: 'Confirm',
     cancelText: 'Cancel',
   });
+
 }
-async function arms_add_req() {
+async function arms_add_req(title: string, host: EditorHost) {
 
   // GET 요청
   // @ts-ignore
@@ -306,10 +294,12 @@ async function arms_add_req() {
     method: 'get',
     url: '/api/auth/arms',
     params: {
-      c_title: '디무브 원일 대표님 미팅',
+      c_title: title,
       c_req_pdservice_link: 11,
       c_req_pdservice_versionset_link: '["37"]',
-      c_req_contents: '<p>요구사항&nbsp;내용을&nbsp;기록합니다.&nbsp;with Dmove</p>',
+      c_req_contents: '제품(*서비스) 이름 : A' + '\n' +
+                      '제품(*서비스) 버전 : B' + '\n' +
+                      '제품(*서비스) 내용 : ' + host.std.range.host.innerText,
       c_req_desc: '설명',
       c_req_etc: '비고'
     },

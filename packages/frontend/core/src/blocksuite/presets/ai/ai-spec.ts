@@ -2,12 +2,9 @@ import type { BlockSpec } from '@blocksuite/block-std';
 import {
   AFFINE_AI_PANEL_WIDGET,
   AFFINE_EDGELESS_COPILOT_WIDGET,
-  AffineAIPanelWidget,
-  AffineCodeToolbarWidget,
   AffineFormatBarWidget,
   AffineImageToolbarWidget,
   AffineSlashMenuWidget,
-  CodeBlockSpec,
   EdgelessCopilotWidget,
   EdgelessElementToolbarWidget,
   EdgelessRootBlockSpec,
@@ -19,8 +16,6 @@ import {
 import { assertInstanceOf } from '@blocksuite/global/utils';
 import { literal, unsafeStatic } from 'lit/static-html.js';
 
-// import { buildAIPanelConfig } from './ai-panel';
-// import { setupCodeToolbarEntry } from './entries/code-toolbar/setup-code-toolbar';
 import {
   setupEdgelessCopilot,
   setupEdgelessElementToolbarEntry,
@@ -28,7 +23,6 @@ import {
 import { setupFormatBarEntry } from './entries/format-bar/setup-format-bar';
 import { setupImageToolbarEntry } from './entries/image-toolbar/setup-image-toolbar';
 import { setupSlashMenuEntry } from './entries/slash-menu/setup-slash-menu';
-// import { setupSpaceEntry } from './entries/space/setup-space'; 
 
 export const AIPageRootBlockSpec: BlockSpec = {
   ...PageRootBlockSpec,
@@ -79,7 +73,7 @@ export const AIEdgelessRootBlockSpec: BlockSpec = {
   },
   setup(slots, disposableGroup) {
     EdgelessRootBlockSpec.setup?.(slots, disposableGroup);
-    slots.widgetConnected.on(view => { 
+    slots.widgetConnected.on(view => {
       // if (view.component instanceof AffineAIPanelWidget) { 'space' key : AI 입력창 삭제
       //   view.component.style.width = '430px';
       //   view.component.config = buildAIPanelConfig(view.component);
@@ -131,7 +125,7 @@ export const AIParagraphBlockSpec: BlockSpec = {
   },
 };
 
-// export const AICodeBlockSpec: BlockSpec = { 
+// export const AICodeBlockSpec: BlockSpec = {
 //   ...CodeBlockSpec,
 //   setup(slots, disposableGroup) {
 //     CodeBlockSpec.setup?.(slots, disposableGroup);
