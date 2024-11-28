@@ -61,6 +61,7 @@ export const ConfirmModal = ({
       {children ? (
         <div className={styles.confirmModalContent}>{children}</div>
       ) : null}
+      <span>test</span>
       <div
         className={clsx(styles.modalFooter, {
           modalFooterWithChildren: !!children,

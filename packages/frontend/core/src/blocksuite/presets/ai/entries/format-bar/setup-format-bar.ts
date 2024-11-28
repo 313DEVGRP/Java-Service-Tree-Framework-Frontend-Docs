@@ -148,6 +148,9 @@ export function toolbarDefaultConfig(toolbar: AffineFormatBarWidget) {
         if (!selectedModels.length) return;
 
         const host = formatBar.host;
+        console.log("------------------------------");
+        console.log(host.selection);
+        console.log("------------------------------");
         host.selection.clear();
 
         const doc = host.doc;
@@ -160,6 +163,10 @@ export function toolbarDefaultConfig(toolbar: AffineFormatBarWidget) {
             selectedModels,
             title
           );
+          console.log("========================");
+          console.log(selectedModels);
+          console.log(title);
+          console.log("========================");
           const linkedDocService = host.spec.getService(
             'affine:embed-linked-doc'
           );
@@ -182,6 +189,10 @@ export function toolbarDefaultConfig(toolbar: AffineFormatBarWidget) {
               type: 'embed-linked-doc',
             });
           console.log('여기에서 ARMS 연동');
+
+          //console.log(host.rootDoc.guid);
+          console.log(linkedDoc.Text);
+          console.log(linkedDoc.id);
           arms_add_req(title, host);
         });
       },
@@ -275,17 +286,22 @@ export function promptDocTitle(host: EditorHost, autofill?: string) {
     host.std.spec.getService('affine:page').notificationService;
   if (!notification) return Promise.resolve(undefined);
 
+  console.log(host.std);
+
   return notification.prompt({
-    title: 'A-RMS 요구사항 생성',
+    title: "A-RMS 요구사항 생성",
     message:
       '드래그한 부분을 A-RMS에 요구사항을 생성합니다. \n또한 요구사항 하위 페이지를 구성합니다.\n\n요구사항 제목 : ',
     placeholder: autofill,
-    autofill: host.std.range.host.innerText,
+    autofill: "[ADOC-REQ] " + host.std.range.host.ownerDocument.title,
+    //documentURI
     confirmText: 'Confirm',
     cancelText: 'Cancel',
   });
 
 }
+
+
 async function arms_add_req(title: string, host: EditorHost) {
 
   // GET 요청
@@ -299,7 +315,7 @@ async function arms_add_req(title: string, host: EditorHost) {
       c_req_pdservice_versionset_link: '["37"]',
       c_req_contents: '제품(*서비스) 이름 : A' + '\n' +
                       '제품(*서비스) 버전 : B' + '\n' +
-                      '제품(*서비스) 내용 : ' + host.std.range.host.innerText,
+                      '제품(*서비스) 내용 : Adoc 문서 제목 : ' + host.std.range.host.ownerDocument.title,
       c_req_desc: '설명',
       c_req_etc: '비고'
     },
