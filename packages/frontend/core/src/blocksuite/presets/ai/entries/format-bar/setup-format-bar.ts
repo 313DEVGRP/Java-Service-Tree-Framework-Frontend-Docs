@@ -35,6 +35,7 @@ import { EditorHost } from '@blocksuite/block-std';
 export const ARMSIcon = html`<img width="35" src="/imgs/req.png" />`;
 
 export function setupFormatBarEntry(formatBar: AffineFormatBarWidget) {
+  console.log("=======call==========");
   toolbarDefaultConfig(formatBar);
 }
 
@@ -148,9 +149,6 @@ export function toolbarDefaultConfig(toolbar: AffineFormatBarWidget) {
         if (!selectedModels.length) return;
 
         const host = formatBar.host;
-        console.log("------------------------------");
-        console.log(host.selection);
-        console.log("------------------------------");
         host.selection.clear();
 
         const doc = host.doc;
@@ -190,7 +188,6 @@ export function toolbarDefaultConfig(toolbar: AffineFormatBarWidget) {
             });
           console.log('여기에서 ARMS 연동');
 
-          //console.log(host.rootDoc.guid);
           console.log(linkedDoc.Text);
           console.log(linkedDoc.id);
           arms_add_req(title, host);
@@ -282,18 +279,31 @@ export function toolbarDefaultConfig(toolbar: AffineFormatBarWidget) {
 
 export function promptDocTitle(host: EditorHost, autofill?: string) {
 
+  console.log("promptDocTitle");
+
   const notification =
     host.std.spec.getService('affine:page').notificationService;
   if (!notification) return Promise.resolve(undefined);
 
-  console.log(host.std);
+  const selection = document.getSelection();
+  if (!selection || selection.rangeCount === 0) return false;
+  const range = selection.getRangeAt(0);
+  console.log(range.startContainer.data);
+  console.log(range.endContainer.data);
+
+  var req_title = "";
+  if(range.startContainer.data.toString() == range.endContainer.data.toString()){
+    req_title = range.startContainer.data.toString();
+  }else{
+    req_title = range.startContainer.data.toString() + " " + range.endContainer.data.toString();
+  }
 
   return notification.prompt({
     title: "A-RMS 요구사항 생성",
     message:
       '드래그한 부분을 A-RMS에 요구사항을 생성합니다. \n또한 요구사항 하위 페이지를 구성합니다.\n\n요구사항 제목 : ',
     placeholder: autofill,
-    autofill: "[ADOC-REQ] " + host.std.range.host.ownerDocument.title,
+    autofill: "[ADOC-REQ] " + req_title,
     //documentURI
     confirmText: 'Confirm',
     cancelText: 'Cancel',
