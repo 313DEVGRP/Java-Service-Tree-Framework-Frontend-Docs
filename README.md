@@ -10,6 +10,8 @@
 4. `yarn install` 명령어로 필요 패키지 설치
 5. `yarn dev` 명령어로 로컬 구동
 
+yarn add multiselect-react-dropdown
+
 COPY ./packages/frontend/web/dist ./dist
 COPY ./packages/frontend/admin/dist ./admin
 

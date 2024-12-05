@@ -9,6 +9,8 @@ import type { ModalProps } from './modal';
 import { Modal } from './modal';
 import * as styles from './styles.css';
 
+import Multiselect from 'multiselect-react-dropdown';
+
 export interface ConfirmModalProps extends ModalProps {
   confirmButtonOptions?: Omit<ButtonProps, 'children'>;
   onConfirm?: (() => void) | (() => Promise<void>);
@@ -61,7 +63,119 @@ export const ConfirmModal = ({
       {children ? (
         <div className={styles.confirmModalContent}>{children}</div>
       ) : null}
-      <span>test</span>
+
+      <div>
+        <p>test</p>
+        <Multiselect
+          id="user_id"
+          displayValue="key"
+          onKeyPressFn={function noRefCheck(){}}
+          onRemove={function noRefCheck(){}}
+          onSearch={function noRefCheck(){}}
+          onSelect={function noRefCheck(){}}
+          options={[
+            {
+              cat: 'Group 1',
+              key: 'Option 1'
+            },
+            {
+              cat: 'Group 1',
+              key: 'Option 2'
+            },
+            {
+              cat: 'Group 1',
+              key: 'Option 3'
+            },
+            {
+              cat: 'Group 2',
+              key: 'Option 4'
+            },
+            {
+              cat: 'Group 2',
+              key: 'Option 5'
+            },
+            {
+              cat: 'Group 2',
+              key: 'Option 6'
+            },
+            {
+              cat: 'Group 2',
+              key: 'Option 7'
+            }
+          ]}
+          style={{
+            multiselectContainer: {
+              width: '50%'
+            }
+          }}
+          singleSelect
+        />
+      </div>
+
+      <Multiselect
+        displayValue="key"
+        onKeyPressFn={function noRefCheck(){}}
+        onRemove={function noRefCheck(){}}
+        onSearch={function noRefCheck(){}}
+        onSelect={function noRefCheck(){}}
+        options={[
+          {
+            cat: 'Group 1',
+            key: 'Option 1'
+          },
+          {
+            cat: 'Group 1',
+            key: 'Option 2'
+          },
+          {
+            cat: 'Group 1',
+            key: 'Option 3'
+          },
+          {
+            cat: 'Group 2',
+            key: 'Option 4'
+          },
+          {
+            cat: 'Group 2',
+            key: 'Option 5'
+          },
+          {
+            cat: 'Group 2',
+            key: 'Option 6'
+          },
+          {
+            cat: 'Group 2',
+            key: 'Option 7'
+          }
+        ]}
+        selectedValues={[
+          {
+            cat: 'Group 1',
+            key: 'Option 1'
+          },
+          {
+            cat: 'Group 1',
+            key: 'Option 2'
+          }
+        ]}
+        placeholder="CSS Custom"
+        style={{
+          chips: {
+            background: 'red',
+          },
+          multiselectContainer: {
+            color: 'red',
+            width: '50%'
+          },
+          searchBox: {
+            border: 'none',
+            'border-bottom': '1px solid blue',
+            'border-radius': '0px'
+          }
+        }}
+      />
+
+
       <div
         className={clsx(styles.modalFooter, {
           modalFooterWithChildren: !!children,
