@@ -65,115 +65,115 @@ export const ConfirmModal = ({
       ) : null}
 
       <div>
-        <p>test</p>
-        <Multiselect
-          id="user_id"
-          displayValue="key"
-          onKeyPressFn={function noRefCheck(){}}
-          onRemove={function noRefCheck(){}}
-          onSearch={function noRefCheck(){}}
-          onSelect={function noRefCheck(){}}
-          options={[
-            {
-              cat: 'Group 1',
-              key: 'Option 1'
-            },
-            {
-              cat: 'Group 1',
-              key: 'Option 2'
-            },
-            {
-              cat: 'Group 1',
-              key: 'Option 3'
-            },
-            {
-              cat: 'Group 2',
-              key: 'Option 4'
-            },
-            {
-              cat: 'Group 2',
-              key: 'Option 5'
-            },
-            {
-              cat: 'Group 2',
-              key: 'Option 6'
-            },
-            {
-              cat: 'Group 2',
-              key: 'Option 7'
-            }
-          ]}
-          style={{
-            multiselectContainer: {
-              width: '50%'
-            }
-          }}
-          singleSelect
-        />
-      </div>
+        <span>&nbsp;</span>
+        <span>&nbsp;</span>
+        <p>✔ 요구사항을 생성할 대상 제품(서비스) + 버전을 선택하세요.</p>
+        <div style={{display:'table'}}>
+          <span style={{display:'table-cell', verticalAlign:'middle', width:'120px', textAlign:'right'}}>제품(서비스) → &nbsp;</span>
+          <Multiselect
+            displayValue="key"
+            onKeyPressFn={function noRefCheck(){}}
+            onRemove={function noRefCheck(){}}
+            onSearch={function noRefCheck(){}}
+            onSelect={function noRefCheck(){}}
+            options={[
+              {
+                cat: 'Group 1',
+                key: 'Option 1'
+              },
+              {
+                cat: 'Group 1',
+                key: 'Option 2'
+              },
+              {
+                cat: 'Group 1',
+                key: 'Option 3'
+              },
+              {
+                cat: 'Group 2',
+                key: 'Option 4'
+              },
+              {
+                cat: 'Group 2',
+                key: 'Option 5'
+              },
+              {
+                cat: 'Group 2',
+                key: 'Option 6'
+              },
+              {
+                cat: 'Group 2',
+                key: 'Option 7'
+              }
+            ]}
+            placeholder="요구사항 생성 → 제품(서비스)"
+            style={{
+              searchBox: {
+                border: 'none',
+                'border-bottom': '1px solid blue',
+                'border-radius': '0px',
+              }
+            }}
+            singleSelect
+          />
+        </div>
+        <div style={{display:'table'}}>
+          <span style={{display:'table-cell', verticalAlign:'middle', width:'120px', textAlign:'right'}}>버전 → &nbsp;</span>
+          <Multiselect
+            displayValue="key"
+            onKeyPressFn={function noRefCheck(){}}
+            onRemove={function noRefCheck(){}}
+            onSearch={function noRefCheck(){}}
+            onSelect={function noRefCheck(){}}
+            options={[
+              {
+                cat: 'Group 1',
+                key: 'Option 1'
+              },
+              {
+                cat: 'Group 1',
+                key: 'Option 2'
+              },
+              {
+                cat: 'Group 1',
+                key: 'Option 3'
+              },
+              {
+                cat: 'Group 2',
+                key: 'Option 4'
+              },
+              {
+                cat: 'Group 2',
+                key: 'Option 5'
+              },
+              {
+                cat: 'Group 2',
+                key: 'Option 6'
+              },
+              {
+                cat: 'Group 2',
+                key: 'Option 7'
+              }
+            ]}
+            placeholder="제품(서비스)의 Version 선택"
+            style={{
+              chips: {
+                background: 'red',
+              },
+              multiselectContainer: {
+                color: 'red',
+              },
+              searchBox: {
+                border: 'none',
+                'border-bottom': '1px solid blue',
+                'border-radius': '0px',
+              }
+            }}
+          />
+        </div>
+    </div>
 
-      <Multiselect
-        displayValue="key"
-        onKeyPressFn={function noRefCheck(){}}
-        onRemove={function noRefCheck(){}}
-        onSearch={function noRefCheck(){}}
-        onSelect={function noRefCheck(){}}
-        options={[
-          {
-            cat: 'Group 1',
-            key: 'Option 1'
-          },
-          {
-            cat: 'Group 1',
-            key: 'Option 2'
-          },
-          {
-            cat: 'Group 1',
-            key: 'Option 3'
-          },
-          {
-            cat: 'Group 2',
-            key: 'Option 4'
-          },
-          {
-            cat: 'Group 2',
-            key: 'Option 5'
-          },
-          {
-            cat: 'Group 2',
-            key: 'Option 6'
-          },
-          {
-            cat: 'Group 2',
-            key: 'Option 7'
-          }
-        ]}
-        selectedValues={[
-          {
-            cat: 'Group 1',
-            key: 'Option 1'
-          },
-          {
-            cat: 'Group 1',
-            key: 'Option 2'
-          }
-        ]}
-        placeholder="CSS Custom"
-        style={{
-          chips: {
-            background: 'red',
-          },
-          multiselectContainer: {
-            color: 'red',
-            width: '50%'
-          },
-          searchBox: {
-            border: 'none',
-            'border-bottom': '1px solid blue',
-            'border-radius': '0px'
-          }
-        }}
-      />
+
 
 
       <div
