@@ -1,7 +1,7 @@
 import { DialogTrigger } from '@radix-ui/react-dialog';
 import clsx from 'clsx';
 import type { PropsWithChildren } from 'react';
-import { createContext, useCallback, useContext, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 
 import type { ButtonProps } from '../button';
 import { Button } from '../button';
@@ -10,6 +10,7 @@ import { Modal } from './modal';
 import * as styles from './styles.css';
 
 import Multiselect from 'multiselect-react-dropdown';
+import axios from 'axios';
 
 export interface ConfirmModalProps extends ModalProps {
   confirmButtonOptions?: Omit<ButtonProps, 'children'>;
@@ -19,37 +20,63 @@ export interface ConfirmModalProps extends ModalProps {
   cancelText?: React.ReactNode;
   cancelButtonOptions?: Omit<ButtonProps, 'children'>;
   reverseFooter?: boolean;
-  /**
-   * Auto focus on confirm button when modal opened
-   * @default true
-   */
   autoFocusConfirm?: boolean;
 }
 
 export const ConfirmModal = ({
-  children,
-  confirmButtonOptions,
-  // FIXME: we need i18n
-  confirmText,
-  cancelText = 'Cancel',
-  cancelButtonOptions,
-  reverseFooter,
-  onConfirm,
-  onCancel,
-  width = 480,
-  autoFocusConfirm = true,
-  ...props
-}: ConfirmModalProps) => {
+                               children,
+                               confirmButtonOptions,
+                               confirmText = 'Confirm',
+                               cancelText = 'Cancel',
+                               cancelButtonOptions,
+                               reverseFooter,
+                               onConfirm,
+                               onCancel,
+                               width = 480,
+                               autoFocusConfirm = true,
+                               ...props
+                             }: ConfirmModalProps) => {
+  const [productOptions, setProductOptions] = useState([]);
+  const [versionOptions, setVersionOptions] = useState([]);
+
+  // 서버에서 데이터 가져오기
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const productsResponse = await axios.get('/api/auth/arms/pdService');
+        setProductOptions(
+          productsResponse.data.map((item: any) => ({
+            key: item.name,
+            cat: item.category,
+          }))
+        );
+
+        const versionsResponse = await axios.get('/api/auth/arms/pdServiceVersion + 선택한 제품(서비스)');
+        setVersionOptions(
+          versionsResponse.data.map((item: any) => ({
+            key: item.version,
+            cat: item.category,
+          }))
+        );
+      } catch (error) {
+        console.error('데이터 로드 실패:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const onConfirmClick = useCallback(() => {
-    Promise.resolve(onConfirm?.()).catch(err => {
+    Promise.resolve(onConfirm?.()).catch((err) => {
       console.error(err);
     });
   }, [onConfirm]);
+
   return (
     <Modal
       contentOptions={{
         className: styles.confirmModalContainer,
-        onPointerDownOutside: e => {
+        onPointerDownOutside: (e) => {
           e.stopPropagation();
           onCancel?.();
         },
@@ -65,116 +92,58 @@ export const ConfirmModal = ({
       ) : null}
 
       <div>
-        <span>&nbsp;</span>
-        <span>&nbsp;</span>
         <p>✔ 요구사항을 생성할 대상 제품(서비스) + 버전을 선택하세요.</p>
-        <div style={{display:'table'}}>
-          <span style={{display:'table-cell', verticalAlign:'middle', width:'120px', textAlign:'right'}}>제품(서비스) → &nbsp;</span>
+        <div style={{ display: 'table', marginBottom: '10px' }}>
+          <span
+            style={{
+              display: 'table-cell',
+              verticalAlign: 'middle',
+              width: '120px',
+              textAlign: 'right',
+            }}
+          >
+            제품(서비스) → &nbsp;
+          </span>
           <Multiselect
             displayValue="key"
-            onKeyPressFn={function noRefCheck(){}}
-            onRemove={function noRefCheck(){}}
-            onSearch={function noRefCheck(){}}
-            onSelect={function noRefCheck(){}}
-            options={[
-              {
-                cat: 'Group 1',
-                key: 'Option 1'
-              },
-              {
-                cat: 'Group 1',
-                key: 'Option 2'
-              },
-              {
-                cat: 'Group 1',
-                key: 'Option 3'
-              },
-              {
-                cat: 'Group 2',
-                key: 'Option 4'
-              },
-              {
-                cat: 'Group 2',
-                key: 'Option 5'
-              },
-              {
-                cat: 'Group 2',
-                key: 'Option 6'
-              },
-              {
-                cat: 'Group 2',
-                key: 'Option 7'
-              }
-            ]}
-            placeholder="요구사항 생성 → 제품(서비스)"
+            options={productOptions}
+            placeholder="제품(서비스) 선택"
             style={{
               searchBox: {
                 border: 'none',
-                'border-bottom': '1px solid blue',
-                'border-radius': '0px',
-              }
+                borderBottom: '1px solid blue',
+                borderRadius: '0px',
+              },
             }}
             singleSelect
           />
         </div>
-        <div style={{display:'table'}}>
-          <span style={{display:'table-cell', verticalAlign:'middle', width:'120px', textAlign:'right'}}>버전 → &nbsp;</span>
+        <div style={{ display: 'table' }}>
+          <span
+            style={{
+              display: 'table-cell',
+              verticalAlign: 'middle',
+              width: '120px',
+              textAlign: 'right',
+            }}
+          >
+            버전 → &nbsp;
+          </span>
           <Multiselect
             displayValue="key"
-            onKeyPressFn={function noRefCheck(){}}
-            onRemove={function noRefCheck(){}}
-            onSearch={function noRefCheck(){}}
-            onSelect={function noRefCheck(){}}
-            options={[
-              {
-                cat: 'Group 1',
-                key: 'Option 1'
-              },
-              {
-                cat: 'Group 1',
-                key: 'Option 2'
-              },
-              {
-                cat: 'Group 1',
-                key: 'Option 3'
-              },
-              {
-                cat: 'Group 2',
-                key: 'Option 4'
-              },
-              {
-                cat: 'Group 2',
-                key: 'Option 5'
-              },
-              {
-                cat: 'Group 2',
-                key: 'Option 6'
-              },
-              {
-                cat: 'Group 2',
-                key: 'Option 7'
-              }
-            ]}
-            placeholder="제품(서비스)의 Version 선택"
+            options={versionOptions}
+            placeholder="제품(서비스) 의 Version 선택"
             style={{
-              chips: {
-                background: 'red',
-              },
-              multiselectContainer: {
-                color: 'red',
-              },
               searchBox: {
                 border: 'none',
-                'border-bottom': '1px solid blue',
-                'border-radius': '0px',
-              }
+                borderBottom: '1px solid blue',
+                borderRadius: '0px',
+              },
             }}
+            singleSelect
           />
         </div>
-    </div>
-
-
-
+      </div>
 
       <div
         className={clsx(styles.modalFooter, {
@@ -227,7 +196,7 @@ export const ConfirmModalProvider = ({ children }: PropsWithChildren) => {
   });
 
   const setLoading = useCallback((value: boolean) => {
-    setModalProps(prev => ({
+    setModalProps((prev) => ({
       ...prev,
       confirmButtonOptions: {
         ...prev.confirmButtonOptions,
@@ -266,7 +235,7 @@ export const ConfirmModalProvider = ({ children }: PropsWithChildren) => {
   const onOpenChange = useCallback(
     (open: boolean) => {
       modalProps.onOpenChange?.(open);
-      setModalProps(props => ({ ...props, open }));
+      setModalProps((props) => ({ ...props, open }));
     },
     [modalProps]
   );
@@ -276,7 +245,6 @@ export const ConfirmModalProvider = ({ children }: PropsWithChildren) => {
       value={{ openConfirmModal, closeConfirmModal, modalProps }}
     >
       {children}
-      {/* TODO(@catsjuice): multi-instance support(unnecessary for now) */}
       <ConfirmModal {...modalProps} onOpenChange={onOpenChange} />
     </ConfirmModalContext.Provider>
   );
