@@ -365,9 +365,8 @@ export class AuthController {
 
 
   @Public()
-  @Get('/arms')
-  async arms(
-
+  @Get('/arms_version')
+  async arms_version(
     @Query('c_req_pdservice') c_req_pdservice?: number,
     @CurrentUser() user?: CurrentUser
   ) {
