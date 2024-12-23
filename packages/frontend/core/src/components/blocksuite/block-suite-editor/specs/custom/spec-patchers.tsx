@@ -41,6 +41,7 @@ import {
 import { type TemplateResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { literal } from 'lit/static-html.js';
+import Multiselect from 'multiselect-react-dropdown'; // 241223 추가
 
 export type ReferenceReactRenderer = (
   reference: AffineReference
@@ -158,20 +159,61 @@ export function patchNotificationService(
         cancelText,
         autofill,
         abort,
+        inputTitle, // 241223 추가
+        versionSelect, // 241223 추가
+        // productOptions, // 241223 추가
+        // versionOptions, // 241223 추가
       }) => {
         return new Promise<string | null>(resolve => {
           let value = autofill || '';
-          const description = (
+          const description = ( // 241223 수정
             <div>
-              <span style={{ marginBottom: 12 }}>{toReactNode(message)}</span>
+              {message && <p style={{ marginBottom: 12 ,display: 'block' }}>{toReactNode(message)}</p>}
+              {inputTitle && <strong style={{fontSize: 14, marginBottom: 5,display: 'block'}}>✔ {toReactNode(inputTitle)}</strong>}
               <Input
                 placeholder={placeholder}
                 defaultValue={value}
                 onChange={e => (value = e)}
                 ref={input => input?.select()}
               />
+              {versionSelect && <div >
+                <strong style={{ marginTop: 20, marginBottom: 10,display: 'block', fontSize: 14}}>✔ 요구사항을 생성할 대상 제품(서비스) + 버전을 선택하세요.</strong>
+                <ul>
+                  <li style={{marginBottom: 5}}>
+                    <strong style={{fontSize: 13, marginBottom: 5,display: 'block'}}>제품(서비스)</strong>
+                    <Multiselect
+                      displayValue="key"
+                      // options={productOptions}
+                      placeholder="제품(서비스) 선택"
+                      style={{
+                        searchBox: {
+                          border: '1px solid #e6e6e6',
+                          borderRadius: '8px',
+                        },
+                      }}
+                      singleSelect
+                    />
+                  </li>
+                  <li style={{marginBottom: 5}}>
+                    <strong style={{fontSize: 13, marginBottom: 5}}>버전</strong>
+                    <Multiselect
+                      displayValue="key"
+                      // options={versionOptions}
+                      placeholder="제품(서비스) 의 Version 선택"
+                      style={{
+                        searchBox: {
+                          border: '1px solid #e6e6e6',
+                          borderRadius: '8px',
+                        },
+                      }}
+                      singleSelect
+                    />
+                  </li>
+                </ul>
+              </div>}
             </div>
           );
+
           openConfirmModal({
             title: toReactNode(title),
             description: description,

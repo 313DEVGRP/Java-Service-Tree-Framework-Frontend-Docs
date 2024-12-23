@@ -9,9 +9,6 @@ import type { ModalProps } from './modal';
 import { Modal } from './modal';
 import * as styles from './styles.css';
 
-import Multiselect from 'multiselect-react-dropdown';
-import axios from 'axios';
-
 export interface ConfirmModalProps extends ModalProps {
   confirmButtonOptions?: Omit<ButtonProps, 'children'>;
   onConfirm?: (() => void) | (() => Promise<void>);
@@ -36,8 +33,6 @@ export const ConfirmModal = ({
                                autoFocusConfirm = true,
                                ...props
                              }: ConfirmModalProps) => {
-  const [productOptions, setProductOptions] = useState([]);
-  const [versionOptions, setVersionOptions] = useState([]);
 
   // 서버에서 데이터 가져오기
   // useEffect(() => {
@@ -90,60 +85,6 @@ export const ConfirmModal = ({
       {children ? (
         <div className={styles.confirmModalContent}>{children}</div>
       ) : null}
-
-      <div>
-        <p>✔ 요구사항을 생성할 대상 제품(서비스) + 버전을 선택하세요.</p>
-        <div style={{ display: 'table', marginBottom: '10px' }}>
-          <span
-            style={{
-              display: 'table-cell',
-              verticalAlign: 'middle',
-              width: '120px',
-              textAlign: 'right',
-            }}
-          >
-            제품(서비스) → &nbsp;
-          </span>
-          <Multiselect
-            displayValue="key"
-            options={productOptions}
-            placeholder="제품(서비스) 선택"
-            style={{
-              searchBox: {
-                border: 'none',
-                borderBottom: '1px solid blue',
-                borderRadius: '0px',
-              },
-            }}
-            singleSelect
-          />
-        </div>
-        <div style={{ display: 'table' }}>
-          <span
-            style={{
-              display: 'table-cell',
-              verticalAlign: 'middle',
-              width: '120px',
-              textAlign: 'right',
-            }}
-          >
-            버전 → &nbsp;
-          </span>
-          <Multiselect
-            displayValue="key"
-            options={versionOptions}
-            placeholder="제품(서비스) 의 Version 선택"
-            style={{
-              searchBox: {
-                border: 'none',
-                borderBottom: '1px solid blue',
-                borderRadius: '0px',
-              },
-            }}
-            singleSelect
-          />
-        </div>
-      </div>
 
       <div
         className={clsx(styles.modalFooter, {

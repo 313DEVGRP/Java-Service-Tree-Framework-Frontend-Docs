@@ -300,13 +300,16 @@ export function promptDocTitle(host: EditorHost, autofill?: string) {
 
   return notification.prompt({
     title: "A-RMS 요구사항 생성",
-    message:
-      '드래그한 부분을 A-RMS에 요구사항을 생성합니다. \n또한 요구사항 하위 페이지를 구성합니다.\n\n요구사항 제목 : ',
+    message:'드래그한 부분을 A-RMS에 요구사항을 생성합니다. \n또한 요구사항 하위 페이지를 구성합니다.',
+    inputTitle: '요구사항 제목', // 241223 추가
     placeholder: autofill,
     autofill: "[ADOC-REQ] " + req_title,
     //documentURI
     confirmText: 'Confirm',
     cancelText: 'Cancel',
+    versionSelect: true, // 241223 추가
+    // productOptions: , // 241223 추가
+    // versionOptions: , // 241223 추가
   });
 
 }
