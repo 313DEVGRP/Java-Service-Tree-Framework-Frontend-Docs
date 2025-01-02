@@ -335,7 +335,7 @@ export class AuthController {
       // @ts-ignore
       axios({
         method: 'get',
-        url: 'http://backend-core:31313/arms/pdServicePure/getPdService.do',
+        url: 'http://backend-core:31313/arms/pdServicePure/getPdServiceMonitor.do',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
           'Access-Control-Allow-Origin': '*'
@@ -357,7 +357,7 @@ export class AuthController {
         });
 
       return {
-        result : "ARMS연동 콘솔에서 확인합니다."
+        result : "getPdService error"
       };
 
     }
@@ -365,7 +365,7 @@ export class AuthController {
 
 
   @Public()
-  @Get('/arms_version')
+  @Get('/arms/version')
   async arms_version(
     @Query('c_req_pdservice') c_req_pdservice?: number,
     @CurrentUser() user?: CurrentUser
@@ -391,7 +391,7 @@ export class AuthController {
       // @ts-ignore
       axios({
         method: 'post',
-        url: 'http://backend-core:31313/arms/pdServicePure/getPdServiceVersion.do',
+        url: 'http://backend-core:31313/arms/pdServicePure/getPdServiceMonitor.do?c_ids=27',
         data: formData,
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -414,7 +414,7 @@ export class AuthController {
         });
 
       return {
-        result : "ARMS연동 콘솔에서 확인합니다."
+        result : "getPdServiceVersion error"
       };
 
     }

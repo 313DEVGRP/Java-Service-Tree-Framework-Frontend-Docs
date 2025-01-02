@@ -42,6 +42,7 @@ import { type TemplateResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { literal } from 'lit/static-html.js';
 import Multiselect from 'multiselect-react-dropdown'; // 241223 추가
+import axios from 'axios';
 
 export type ReferenceReactRenderer = (
   reference: AffineReference
@@ -114,6 +115,23 @@ export function patchReferenceRenderer(
   });
 }
 
+// 데이터 로드를 외부로 분리
+async function fetchOptions() {
+  try {
+    const productResponse = await axios.get('/api/auth/arms/pdService');
+    //const productResponse = [{key: 'Option 1️⃣', value: 1},{key: 'Option 2️⃣', value: 2}];
+    const versionResponse = await axios.get('/api/auth/arms/version');
+    //const versionResponse = [{key: 'Option 11️⃣', value: 1},{key: 'Option 22️⃣', value: 2}];
+    return {
+      productOptions: productResponse,
+      versionOptions: versionResponse,
+    };
+  } catch (error) {
+    console.error('Failed to fetch options:', error);
+    return { productOptions: [], versionOptions: [] };
+  }
+}
+
 export function patchNotificationService(
   specs: BlockSpec[],
   { closeConfirmModal, openConfirmModal }: ReturnType<typeof useConfirmModal>
@@ -161,9 +179,11 @@ export function patchNotificationService(
         abort,
         inputTitle, // 241223 추가
         versionSelect, // 241223 추가
-        // productOptions, // 241223 추가
-        // versionOptions, // 241223 추가
       }) => {
+
+        // 데이터 로드
+        const { productOptions, versionOptions } = await fetchOptions();
+
         return new Promise<string | null>(resolve => {
           let value = autofill || '';
           const description = ( // 241223 수정
@@ -183,7 +203,7 @@ export function patchNotificationService(
                     <strong style={{fontSize: 13, marginBottom: 5,display: 'block'}}>제품(서비스)</strong>
                     <Multiselect
                       displayValue="key"
-                      // options={productOptions}
+                      options={productOptions}
                       placeholder="제품(서비스) 선택"
                       style={{
                         searchBox: {
@@ -198,7 +218,7 @@ export function patchNotificationService(
                     <strong style={{fontSize: 13, marginBottom: 5}}>버전</strong>
                     <Multiselect
                       displayValue="key"
-                      // options={versionOptions}
+                      options={versionOptions}
                       placeholder="제품(서비스) 의 Version 선택"
                       style={{
                         searchBox: {
