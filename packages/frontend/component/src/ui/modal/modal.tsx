@@ -228,7 +228,7 @@ export const ModalInner = forwardRef<HTMLDivElement, ModalProps>(
                 </VisuallyHidden.Root>
               )}
               {description ? (
-                <Dialog.Description className={styles.modalDescription}>
+                <Dialog.Description className={styles.modalDescription} asChild>
                   {description}
                 </Dialog.Description>
               ) : null}
