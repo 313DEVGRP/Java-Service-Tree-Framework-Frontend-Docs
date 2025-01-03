@@ -360,7 +360,42 @@ export class AuthController {
         result : "getPdService error"
       };
 
-    }
+      //응답 example.
+      // {
+      //   "success" : true,
+      //   "response" : [ {
+      //   "c_id" : 27,
+      //   "c_parentid" : 2,
+      //   "c_position" : 0,
+      //   "c_left" : 3,
+      //   "c_right" : 4,
+      //   "c_level" : 2,
+      //   "c_title" : "개발 서버 제품 서비스 생성",
+      //   "c_type" : "default",
+      //   "ref" : 0,
+      //   "copy" : 0,
+      //   "multiCounter" : 0,
+      //   "status" : 0,
+      //   "id" : 0,
+      //   "attr" : {
+      //     "rel" : "default",
+      //     "id" : "node_27"
+      //   },
+      //   "c_pdservice_owner" : "zzz",
+      //   "c_pdservice_reviewer01" : "none",
+      //   "c_pdservice_reviewer02" : "none",
+      //   "c_pdservice_reviewer03" : "none",
+      //   "c_pdservice_reviewer04" : "none",
+      //   "c_pdservice_reviewer05" : "none",
+      //   "c_pdservice_contents" : "<p>제품(서비스)의&nbsp;기획서&nbsp;및&nbsp;Project                                                                      &nbsp;Charter&nbsp;의&nbsp;내용을&nbsp;기록합니다.</p>\n",
+      //   "c_pdservice_etc" : "T_ARMS_REQADD_27",
+      //   "state" : "opened",
+      //   "data" : "개발 서버 제품 서비스 생성",
+      //   "copied" : false
+      // } ]
+
+
+      }
   }
 
 

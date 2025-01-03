@@ -118,10 +118,14 @@ export function patchReferenceRenderer(
 // 데이터 로드를 외부로 분리
 async function fetchOptions() {
   try {
+
+    //TODO : (연) packages/backend/server/src/core/auth/controller.ts 의 url 을 호출하고
+    //TODO : 내부 Backend 로 API 호출 결과를.
+    //TODO : 멀티 셀렉트에 데이터를 바인딩 하고 싶습니다. ( c_title 을 바인등 하면 되고 : key, value 는 c_id 입니다. )
     const productResponse = await axios.get('/api/auth/arms/pdService');
     //const productResponse = [{key: 'Option 1️⃣', value: 1},{key: 'Option 2️⃣', value: 2}];
-    const versionResponse = await axios.get('/api/auth/arms/version');
-    //const versionResponse = [{key: 'Option 11️⃣', value: 1},{key: 'Option 22️⃣', value: 2}];
+    //const versionResponse = await axios.get('/api/auth/arms/version');
+    const versionResponse = [{key: 'Option 11️⃣', value: 1},{key: 'Option 22️⃣', value: 2}];
     return {
       productOptions: productResponse,
       versionOptions: versionResponse,
