@@ -292,20 +292,18 @@ export class AuthController {
           'Access-Control-Allow-Origin': '*'
         },
         crossDomain: true
-      })
-        .then((res) => {
-          console.log(res.data);
-          return {
-            user: user,
-            res: res.data
-          };
-        })
-        .catch((err) => {
-          console.error(err);
-          return {
-            err: err
-          };
-        });
+      }).then((res) => {
+        console.log(res.data);
+        return {
+          user: user,
+          res: res.data
+        };
+      }).catch((err) => {
+        console.error(err);
+        return {
+          err: err
+        };
+      });
 
       return {
         result : "ARMS연동 콘솔에서 확인합니다."
@@ -341,20 +339,18 @@ export class AuthController {
           'Access-Control-Allow-Origin': '*'
         },
         crossDomain: true
-      })
-        .then((res) => {
-          console.log(res.data);
-          return {
-            user: user,
-            res: res.data
-          };
-        })
-        .catch((err) => {
-          console.error(err);
-          return {
-            err: err
-          };
-        });
+      }).then((res) => {
+        console.log(res.data);
+        return {
+          user: user,
+          res: res.data
+        };
+      }).catch((err) => {
+        console.error(err);
+        return {
+          err: err
+        };
+      });
 
       return {
         result : "getPdService error"
@@ -433,20 +429,18 @@ export class AuthController {
           'Access-Control-Allow-Origin': '*'
         },
         crossDomain: true
-      })
-        .then((res) => {
-          console.log(res.data);
-          return {
-            user: user,
-            res: res.data
-          };
-        })
-        .catch((err) => {
-          console.error(err);
-          return {
-            err: err
-          };
-        });
+      }).then((res) => {
+        console.log(res.data);
+        return {
+          user: user,
+          res: res.data
+        };
+      }).catch((err) => {
+        console.error(err);
+        return {
+          err: err
+        };
+      });
 
       return {
         result : "getPdServiceVersion error"
