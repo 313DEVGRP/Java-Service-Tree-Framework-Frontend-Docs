@@ -331,19 +331,17 @@ export class AuthController {
       // 인증을 통과하면 ARMS API를 호출합니다.
       // 미들 프록시를 거치지 않고 다이렉트로 백엔드 호출 합니다.
       // @ts-ignore
+      var response_data;
       axios({
         method: 'get',
         url: 'http://backend-core:31313/arms/pdServicePure/getPdServiceMonitor.do',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Access-Control-Allow-Origin': '*'
-        },
         crossDomain: true
       }).then((res) => {
-        console.log(res.data);
+        console.log(res);
+        response_data = res;
         return {
           user: user,
-          res: res.data
+          res: response_data
         };
       }).catch((err) => {
         console.error(err);
@@ -353,7 +351,7 @@ export class AuthController {
       });
 
       return {
-        result : "getPdService error"
+        result : response_data
       };
 
       //응답 example.
