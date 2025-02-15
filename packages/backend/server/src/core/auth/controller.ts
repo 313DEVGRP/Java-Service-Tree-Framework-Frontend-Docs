@@ -324,12 +324,8 @@ export class AuthController {
         method: 'get',
         url: 'http://backend-core:31313/arms/pdServicePure/getPdServiceMonitor.do'
       }).then((res) => {
-        console.log(res);
-
-        response_data = res;
-        return {
-          res: response_data
-        };
+        console.log(res.data);
+        response_data = res.data;
       }).catch((err) => {
         console.error(err);
         return {
