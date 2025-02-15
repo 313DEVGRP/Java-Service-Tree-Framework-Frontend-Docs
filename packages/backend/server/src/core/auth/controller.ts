@@ -320,23 +320,28 @@ export class AuthController {
       // 미들 프록시를 거치지 않고 다이렉트로 백엔드 호출 합니다.
       // @ts-ignore
       var response_data;
+      var user;
       axios({
         method: 'get',
         url: 'http://backend-core:31313/arms/pdServicePure/getPdServiceMonitor.do'
       }).then((res) => {
         console.log(res);
+
         response_data = res;
         return {
+          user: user,
           res: response_data
         };
       }).catch((err) => {
         console.error(err);
         return {
+          user: user,
           err: err
         };
       });
 
       return {
+        user: user,
         result : response_data
       };
 
