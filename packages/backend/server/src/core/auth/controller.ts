@@ -314,13 +314,12 @@ export class AuthController {
 
   @Public()
   @Get('/pdService')
-  async arms_pdservice(@CurrentUser() user?: CurrentUser) {
+  async arms_pdservice() {
 
       // 인증을 통과하면 ARMS API를 호출합니다.
       // 미들 프록시를 거치지 않고 다이렉트로 백엔드 호출 합니다.
       // @ts-ignore
       var response_data;
-      var user;
       axios({
         method: 'get',
         url: 'http://backend-core:31313/arms/pdServicePure/getPdServiceMonitor.do'
@@ -329,19 +328,16 @@ export class AuthController {
 
         response_data = res;
         return {
-          user: user,
           res: response_data
         };
       }).catch((err) => {
         console.error(err);
         return {
-          user: user,
           err: err
         };
       });
 
       return {
-        user: user,
         result : response_data
       };
 
