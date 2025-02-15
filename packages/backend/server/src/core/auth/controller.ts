@@ -314,17 +314,7 @@ export class AuthController {
 
   @Public()
   @Get('/pdService')
-  async arms_pdservice() {
-
-    //if - else 문으로 인증을 검증 합니다.
-    // if ( typeof user === "undefined" || user == null || user == undefined ) {
-    //
-    //   console.log("인증 없이 ARMS 호출을 방어합니다.");
-    //   return {
-    //     error : "인증없이 ARMS 호출을 시도하였습니다. Client를 추적합니다."
-    //   }
-    //
-    // }else{
+  async arms_pdservice(@CurrentUser() user?: CurrentUser) {
 
       // 인증을 통과하면 ARMS API를 호출합니다.
       // 미들 프록시를 거치지 않고 다이렉트로 백엔드 호출 합니다.
@@ -332,13 +322,11 @@ export class AuthController {
       var response_data;
       axios({
         method: 'get',
-        url: 'http://backend-core:31313/arms/pdServicePure/getPdServiceMonitor.do',
-        crossDomain: true
+        url: 'http://backend-core:31313/arms/pdServicePure/getPdServiceMonitor.do'
       }).then((res) => {
         console.log(res);
         response_data = res;
         return {
-          user: user,
           res: response_data
         };
       }).catch((err) => {
@@ -352,42 +340,6 @@ export class AuthController {
         result : response_data
       };
 
-      //응답 example.
-      // {
-      //   "success" : true,
-      //   "response" : [ {
-      //   "c_id" : 27,
-      //   "c_parentid" : 2,
-      //   "c_position" : 0,
-      //   "c_left" : 3,
-      //   "c_right" : 4,
-      //   "c_level" : 2,
-      //   "c_title" : "개발 서버 제품 서비스 생성",
-      //   "c_type" : "default",
-      //   "ref" : 0,
-      //   "copy" : 0,
-      //   "multiCounter" : 0,
-      //   "status" : 0,
-      //   "id" : 0,
-      //   "attr" : {
-      //     "rel" : "default",
-      //     "id" : "node_27"
-      //   },
-      //   "c_pdservice_owner" : "zzz",
-      //   "c_pdservice_reviewer01" : "none",
-      //   "c_pdservice_reviewer02" : "none",
-      //   "c_pdservice_reviewer03" : "none",
-      //   "c_pdservice_reviewer04" : "none",
-      //   "c_pdservice_reviewer05" : "none",
-      //   "c_pdservice_contents" : "<p>제품(서비스)의&nbsp;기획서&nbsp;및&nbsp;Project                                                                      &nbsp;Charter&nbsp;의&nbsp;내용을&nbsp;기록합니다.</p>\n",
-      //   "c_pdservice_etc" : "T_ARMS_REQADD_27",
-      //   "state" : "opened",
-      //   "data" : "개발 서버 제품 서비스 생성",
-      //   "copied" : false
-      // } ]
-
-
-      // }
   }
 
 
