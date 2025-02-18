@@ -336,7 +336,9 @@ export class AuthController {
         };
       });
 
-      return response_data;
+    return {
+      result : response_data
+    };
   }
 
 
