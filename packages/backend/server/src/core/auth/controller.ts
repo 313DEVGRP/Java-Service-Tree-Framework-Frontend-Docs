@@ -326,17 +326,15 @@ export class AuthController {
       }).then((res) => {
         console.log(res.data);
         response_data = res.data;
+        return {
+          result : res.data
+        };
       }).catch((err) => {
         console.error(err);
         return {
           err: err
         };
       });
-
-      return {
-        result : response_data
-      };
-
   }
 
 
