@@ -314,7 +314,7 @@ export class AuthController {
 
   @Public()
   @Get('/pdService')
-  async arms_pdservice() {
+  arms_pdservice() {
 
       // 인증을 통과하면 ARMS API를 호출합니다.
       // 미들 프록시를 거치지 않고 다이렉트로 백엔드 호출 합니다.
