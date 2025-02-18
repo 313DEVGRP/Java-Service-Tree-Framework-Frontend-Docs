@@ -324,7 +324,9 @@ export class AuthController {
         method: 'get',
         url: 'http://backend-core:31313/arms/pdServicePure/getPdServiceMonitor.do'
       }).then((res) => {
+        console.log("==============arms_pdservice============");
         console.log(res.data);
+        console.log("==============arms_pdservice============");
         response_data = res.data;
         return {
           result : res.data
