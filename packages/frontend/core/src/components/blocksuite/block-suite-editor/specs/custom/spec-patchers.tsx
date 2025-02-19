@@ -195,6 +195,7 @@ export function patchNotificationService(
   const rootSpec = specs.find(
     spec => spec.schema.model.flavour === 'affine:page'
   ) as BlockSpec<string, RootService>;
+  const [versionOptions, setVersionOptions] = useState([]);
 
   if (!rootSpec) {
     return specs;
@@ -239,7 +240,6 @@ export function patchNotificationService(
         // 데이터 로드
         const { productOptions } = await fetchProductOptions();
         //const { versionOptions } = await fetchVersionOptions();
-        const [versionOptions, setVersionOptions] = useState([]);
 
         console.log(productOptions, versionOptions);
 
@@ -301,7 +301,7 @@ export function patchNotificationService(
                             },
                           }}
                           singleSelect
-                          onSelect={(selectedList, selectedItem) => pdServiceHandleSelect (selectedList, selectedItem, setVersionOptions)} // 선택 시 호출
+                          onSelect={(selectedList, selectedItem) => pdServiceHandleSelect(selectedList, selectedItem, setVersionOptions)} // 선택 시 호출
                         />
                       </li>
                       <li style={{ marginBottom: 5 }}>
