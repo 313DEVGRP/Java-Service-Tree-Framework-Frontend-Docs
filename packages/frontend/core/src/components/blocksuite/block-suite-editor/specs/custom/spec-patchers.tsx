@@ -138,19 +138,6 @@ async function fetchProductOptions() {
   }
 }
 
-async function fetchVersionOptions() {
-  try {
-    const versionOptions: any[] = [];
-
-    return {
-      versionOptions
-    };
-  } catch (error) {
-    console.error('Failed to fetch options:', error);
-    return { productOptions: [], versionOptions: [] };
-  }
-}
-
 async function pdServiceHandleSelect (selectedList, selectedItem) {
   console.log("선택된 항목:", selectedList);
   console.log("선택된 항목:", selectedItem);
@@ -221,9 +208,8 @@ export function patchNotificationService(
                      }) => {
         // 데이터 로드
         const { productOptions } = await fetchProductOptions();
-        const { versionOptions } = await fetchVersionOptions();
 
-        console.log(productOptions, versionOptions);
+        console.log(productOptions);
 
         return new Promise<string | null>(resolve => {
           let value = autofill || '';
