@@ -130,8 +130,8 @@ async function fetchOptions() {
       value: item.c_title, // value는 c_title (멀티 셀렉트에서 보여질 값)
     })) || [];
 
-
-    const versionOptions = '';
+    // versionOptions 빈 배열로 초기화
+    const versionOptions: any[] = [];
 
     return {
       productOptions,
