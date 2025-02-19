@@ -320,7 +320,7 @@ export class AuthController {
       // 미들 프록시를 거치지 않고 다이렉트로 백엔드 호출 합니다.
       // @ts-ignore
       var response_data = "";
-      axios({
+      await axios({
         method: 'get',
         url: 'http://backend-core:31313/arms/pdServicePure/getPdServiceMonitor.do'
       }).then((res) => {
@@ -328,9 +328,6 @@ export class AuthController {
         console.log(res.data);
         console.log("==============arms_pdservice============");
         response_data = res.data;
-        return {
-          result : res.data
-        };
       }).catch((err) => {
         console.error(err);
         return {
