@@ -41,8 +41,10 @@ import {
 import { type TemplateResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { literal } from 'lit/static-html.js';
+import { useState } from 'react';
 import Multiselect from 'multiselect-react-dropdown'; // 241223 추가
 import axios from 'axios';
+
 
 export type ReferenceReactRenderer = (
   reference: AffineReference
@@ -116,17 +118,9 @@ export function patchReferenceRenderer(
 }
 
 // 데이터 로드를 외부로 분리
-async function fetchOptions() {
+async function fetchProductOptions() {
   try {
-    //TODO : (연) packages/backend/server/src/core/auth/controller.ts 의 url 을 호출하고
-    //TODO : 내부 Backend 로 API 호출 결과를.
-    //TODO : 멀티 셀렉트에 데이터를 바인딩 하고 싶습니다. ( c_title 을 바인등 하면 되고 : key, value 는 c_id 입니다.)
     const productResponse = await axios.get('/api/auth/pdService');
-    console.log(
-      'Product Response:',
-      JSON.stringify(productResponse.data, null, 2)
-    );
-
     // 응답 데이터에서 필요한 부분 추출
     const productOptions =
       productResponse.data?.result?.response?.map(
@@ -136,12 +130,8 @@ async function fetchOptions() {
         })
       ) || [];
 
-    // versionOptions 빈 배열로 초기화
-    const versionOptions: any[] = [];
-
     return {
-      productOptions,
-      versionOptions,
+      productOptions
     };
   } catch (error) {
     console.error('Failed to fetch options:', error);
@@ -149,25 +139,18 @@ async function fetchOptions() {
   }
 }
 
-async function pdServiceHandleSelect (selectedList, selectedItem) {
-  console.log("선택된 항목:", selectedList);
-  console.log("선택된 항목:", selectedItem);
+async function fetchVersionOptions() {
+  try {
+    const versionOptions: any[] = [];
 
-  const versionResponse = await axios.get('/api/auth/version?c_req_pdservice=' + selectedItem.value);
-
-  versionOptions =
-    versionResponse.data?.result?.response?.map(
-      (item: { c_id: number; c_title: string }) => ({
-        key: item.c_title, // value는 c_title (멀티 셀렉트에서 보여질 값)
-        value: item.c_id, // key는 c_id
-      })
-    ) || [];
-
-  console.log(
-    'Product Response:',
-    JSON.stringify(versionResponse.data, null, 2)
-  );
-};
+    return {
+      versionOptions
+    };
+  } catch (error) {
+    console.error('Failed to fetch options:', error);
+    return { productOptions: [], versionOptions: [] };
+  }
+}
 
 export function patchNotificationService(
   specs: BlockSpec[],
@@ -218,9 +201,32 @@ export function patchNotificationService(
         versionSelect, // 241223 추가
       }) => {
         // 데이터 로드
-        const { productOptions, versionOptions } = await fetchOptions();
+        const { productOptions } = await fetchProductOptions();
+        //const { versionOptions } = await fetchVersionOptions();
 
-        console.log(productOptions, versionOptions);
+        const [versionOptions, setVersionOptions] = useState([]);
+
+        const pdServiceHandleSelect = async (selectedList, selectedItem) => {
+          console.log("선택된 항목:", selectedList);
+          console.log("선택된 항목:", selectedItem);
+
+          try {
+            const versionResponse = await axios.get(`/api/auth/version?c_req_pdservice=${selectedItem.value}`);
+
+            const newVersionOptions =
+              versionResponse.data?.result?.response?.map(
+                (item) => ({
+                  key: item.c_title, // value는 c_title (멀티 셀렉트에서 보여질 값)
+                  value: item.c_id, // key는 c_id
+                })
+              ) || [];
+
+            setVersionOptions(newVersionOptions); // 상태 업데이트
+          } catch (error) {
+            console.error('버전 옵션을 불러오는 데 실패했습니다:', error);
+            setVersionOptions([]); // 오류 발생 시 초기화
+          }
+        };
 
         return new Promise<string | null>(resolve => {
           let value = autofill || '';
