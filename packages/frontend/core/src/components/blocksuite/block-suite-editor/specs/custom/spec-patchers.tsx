@@ -152,6 +152,26 @@ async function fetchVersionOptions() {
   }
 }
 
+async function pdServiceHandleSelect (selectedList, selectedItem) {
+  console.log("선택된 항목:", selectedList);
+  console.log("선택된 항목:", selectedItem);
+
+  const versionResponse = await axios.get('/api/auth/version?c_req_pdservice=' + selectedItem.value);
+
+  const versionOptions =
+    versionResponse.data?.result?.response?.map(
+      (item: { c_id: number; c_title: string }) => ({
+        key: item.c_title, // value는 c_title (멀티 셀렉트에서 보여질 값)
+        value: item.c_id, // key는 c_id
+      })
+    ) || [];
+
+  return {
+    versionOptions
+  };
+
+};
+
 export function patchNotificationService(
   specs: BlockSpec[],
   { closeConfirmModal, openConfirmModal }: ReturnType<typeof useConfirmModal>
@@ -202,31 +222,9 @@ export function patchNotificationService(
       }) => {
         // 데이터 로드
         const { productOptions } = await fetchProductOptions();
-        //const { versionOptions } = await fetchVersionOptions();
+        const { versionOptions } = await fetchVersionOptions();
 
-        const [versionOptions, setVersionOptions] = useState([]);
-
-        const pdServiceHandleSelect = async (selectedList, selectedItem) => {
-          console.log("선택된 항목:", selectedList);
-          console.log("선택된 항목:", selectedItem);
-
-          try {
-            const versionResponse = await axios.get(`/api/auth/version?c_req_pdservice=${selectedItem.value}`);
-
-            const newVersionOptions =
-              versionResponse.data?.result?.response?.map(
-                (item) => ({
-                  key: item.c_title, // value는 c_title (멀티 셀렉트에서 보여질 값)
-                  value: item.c_id, // key는 c_id
-                })
-              ) || [];
-
-            setVersionOptions(newVersionOptions); // 상태 업데이트
-          } catch (error) {
-            console.error('버전 옵션을 불러오는 데 실패했습니다:', error);
-            setVersionOptions([]); // 오류 발생 시 초기화
-          }
-        };
+        console.log(productOptions, versionOptions);
 
         return new Promise<string | null>(resolve => {
           let value = autofill || '';
