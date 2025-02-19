@@ -50,9 +50,6 @@ export type ReferenceReactRenderer = (
 
 const logger = new DebugLogger('affine::spec-patchers');
 
-let productOptions: { key: string; value: number }[] = [];
-let versionOptions: { key: string; value: number }[] = [];
-
 function patchSpecService<Spec extends BlockSpec>(
   spec: Spec,
   onMounted: (
@@ -131,7 +128,7 @@ async function fetchOptions() {
     );
 
     // 응답 데이터에서 필요한 부분 추출
-    productOptions =
+    const productOptions =
       productResponse.data?.result?.response?.map(
         (item: { c_id: number; c_title: string }) => ({
           key: item.c_title, // value는 c_title (멀티 셀렉트에서 보여질 값)
@@ -139,6 +136,13 @@ async function fetchOptions() {
         })
       ) || [];
 
+    // versionOptions 빈 배열로 초기화
+    const versionOptions: any[] = [];
+
+    return {
+      productOptions,
+      versionOptions,
+    };
   } catch (error) {
     console.error('Failed to fetch options:', error);
     return { productOptions: [], versionOptions: [] };
@@ -159,6 +163,10 @@ async function pdServiceHandleSelect (selectedList, selectedItem) {
       })
     ) || [];
 
+  console.log(
+    'Product Response:',
+    JSON.stringify(versionResponse.data, null, 2)
+  );
 };
 
 export function patchNotificationService(
