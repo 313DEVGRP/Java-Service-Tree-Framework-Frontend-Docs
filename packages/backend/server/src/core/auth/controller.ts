@@ -51,7 +51,8 @@ export class AuthController {
     private readonly user: UserService,
     private readonly token: TokenService,
     private readonly config: Config
-  ) {}
+  ) {
+  }
 
   @Public()
   @Post('/sign-in')
@@ -87,7 +88,7 @@ export class AuthController {
       }
 
       const result = await this.sendSignInEmail(
-        { email: credential.email, signUp: !user },
+        {email: credential.email, signUp: !user},
         redirectUri
       );
 
@@ -102,7 +103,7 @@ export class AuthController {
   }
 
   async sendSignInEmail(
-    { email, signUp }: { email: string; signUp: boolean },
+    {email, signUp}: { email: string; signUp: boolean },
     redirectUri: string
   ) {
     const token = await this.token.createToken(TokenType.SignIn, email);
@@ -150,7 +151,7 @@ export class AuthController {
   async magicLinkSignIn(
     @Req() req: Request,
     @Res() res: Response,
-    @Body() { email, token }: MagicLinkCredential
+    @Body() {email, token}: MagicLinkCredential
   ) {
     if (!token || !email) {
       throw new EmailTokenNotFound();
@@ -173,10 +174,10 @@ export class AuthController {
 
     await this.auth.setCookie(req, res, user);
 
-    res.send({ id: user.id, email: user.email, name: user.name });
+    res.send({id: user.id, email: user.email, name: user.name});
   }
 
-  @Throttle('default', { limit: 1200 })
+  @Throttle('default', {limit: 1200})
   @Public()
   @Get('/session')
   async currentSessionUser(@CurrentUser() user?: CurrentUser) {
@@ -185,7 +186,7 @@ export class AuthController {
     };
   }
 
-  @Throttle('default', { limit: 1200 })
+  @Throttle('default', {limit: 1200})
   @Public()
   @Get('/sessions')
   async currentSessionUsers(@Req() req: Request) {
@@ -214,44 +215,42 @@ export class AuthController {
   @Public()
   @Get('/arms')
   async arms(
-
     @Query('c_title') c_title?: string,
     @Query('c_req_pdservice_link') c_req_pdservice_link?: number,
     @Query('c_req_pdservice_versionset_link') c_req_pdservice_versionset_link?: string,
     @Query('c_req_contents') c_req_contents?: string,
     @Query('c_req_desc') c_req_desc?: string,
     @Query('c_req_etc') c_req_etc?: string,
-
     @CurrentUser() user?: CurrentUser
   ) {
 
     //if - else 문으로 인증을 검증 합니다.
-    if ( typeof user === "undefined" || user == null || user == undefined ) {
+    if (typeof user === "undefined" || user == null || user == undefined) {
 
       console.log("인증 없이 ARMS 호출을 방어합니다.");
       return {
-        error : "인증없이 ARMS 호출을 시도하였습니다. Client를 추적합니다."
+        error: "인증없이 ARMS 호출을 시도하였습니다. Client를 추적합니다."
       }
 
-    }else{
+    } else {
 
 
       var c_req_start_date = 'Mon Nov 18 2024 00:00:00 GMT+0900 (한국 표준시)';
       var c_req_end_date = 'Fri Nov 29 2024 00:00:00 GMT+0900 (한국 표준시)';
       var c_req_writer = '[admin] - 9af24080-050d-4943-b40e-d789c0f976ee';
       var c_req_priority_link = 7;
-      var c_req_difficulty_link= 3;
-      var c_req_state_link= 10;
+      var c_req_difficulty_link = 3;
+      var c_req_state_link = 10;
       var c_req_reviewer01 = '[admin] - 9af24080-050d-4943-b40e-d789c0f976ee';
       var c_req_reviewer02 = 'none';
       var c_req_reviewer03 = 'none';
       var c_req_reviewer04 = 'none';
       var c_req_reviewer05 = 'none';
-      var c_req_reviewer01_status= 'Draft';
-      var c_req_reviewer02_status= 'Draft';
-      var c_req_reviewer03_status= 'Draft';
-      var c_req_reviewer04_status= 'Draft';
-      var c_req_reviewer05_status= 'Draft';
+      var c_req_reviewer01_status = 'Draft';
+      var c_req_reviewer02_status = 'Draft';
+      var c_req_reviewer03_status = 'Draft';
+      var c_req_reviewer04_status = 'Draft';
+      var c_req_reviewer05_status = 'Draft';
 
       const formData = new URLSearchParams();
       formData.append('ref', "2");
@@ -306,7 +305,7 @@ export class AuthController {
       });
 
       return {
-        result : "ARMS연동 콘솔에서 확인합니다."
+        result: "ARMS연동 콘솔에서 확인합니다."
       };
 
     }
@@ -317,14 +316,14 @@ export class AuthController {
   async arms_pdservice(@CurrentUser() user?: CurrentUser) {
 
     //if - else 문으로 인증을 검증 합니다.
-    if ( typeof user === "undefined" || user == null || user == undefined ) {
+    if (typeof user === "undefined" || user == null || user == undefined) {
 
       console.log("인증 없이 ARMS 호출을 방어합니다.");
       return {
-        error : "인증없이 ARMS 호출을 시도하였습니다. Client를 추적합니다."
+        error: "인증없이 ARMS 호출을 시도하였습니다. Client를 추적합니다."
       }
 
-    }else{
+    } else {
       // 인증을 통과하면 ARMS API를 호출합니다.
       // 미들 프록시를 거치지 않고 다이렉트로 백엔드 호출 합니다.
       // @ts-ignore
@@ -343,7 +342,7 @@ export class AuthController {
       });
 
       return {
-        result : response_data
+        result: response_data
       };
     }
   }
@@ -357,14 +356,14 @@ export class AuthController {
   ) {
 
     //if - else 문으로 인증을 검증 합니다.
-    if ( typeof user === "undefined" || user == null || user == undefined ) {
+    if (typeof user === "undefined" || user == null || user == undefined) {
 
       console.log("인증 없이 ARMS 호출을 방어합니다.");
       return {
-        error : "인증없이 ARMS 호출을 시도하였습니다. Client를 추적합니다."
+        error: "인증없이 ARMS 호출을 시도하였습니다. Client를 추적합니다."
       }
 
-    }else{
+    } else {
       // 인증을 통과하면 ARMS API를 호출합니다.
       // 미들 프록시를 거치지 않고 다이렉트로 백엔드 호출 합니다.
       // @ts-ignore
@@ -383,7 +382,8 @@ export class AuthController {
       });
 
       return {
-        result : response_data
+        result: response_data
       };
     }
   }
+}
