@@ -314,8 +314,17 @@ export class AuthController {
 
   @Public()
   @Get('/pdService')
-  async arms_pdservice() {
+  async arms_pdservice(@CurrentUser() user?: CurrentUser) {
 
+    //if - else 문으로 인증을 검증 합니다.
+    if ( typeof user === "undefined" || user == null || user == undefined ) {
+
+      console.log("인증 없이 ARMS 호출을 방어합니다.");
+      return {
+        error : "인증없이 ARMS 호출을 시도하였습니다. Client를 추적합니다."
+      }
+
+    }else{
       // 인증을 통과하면 ARMS API를 호출합니다.
       // 미들 프록시를 거치지 않고 다이렉트로 백엔드 호출 합니다.
       // @ts-ignore
@@ -324,9 +333,7 @@ export class AuthController {
         method: 'get',
         url: 'http://backend-core:31313/arms/pdServicePure/getPdServiceMonitor.do'
       }).then((res) => {
-        console.log("==============arms_pdservice============");
         console.log(res.data);
-        console.log("==============arms_pdservice============");
         response_data = res.data;
       }).catch((err) => {
         console.error(err);
@@ -335,9 +342,10 @@ export class AuthController {
         };
       });
 
-    return {
-      result : response_data
-    };
+      return {
+        result : response_data
+      };
+    }
   }
 
 
