@@ -123,7 +123,7 @@ async function fetchOptions() {
     //TODO : 멀티 셀렉트에 데이터를 바인딩 하고 싶습니다. ( c_title 을 바인등 하면 되고 : key, value 는 c_id 입니다.)
     const productResponse = await axios.get('/api/auth/pdService');
     console.log(JSON.stringify(productResponse, null, 2) + " <-- productResponse");
-    const productOptions = productResponse.data.map((item: { c_title: any; c_id: any; }) => ({
+    const productOptions = productResponse.data.result.response.map((item: { c_title: any; c_id: any; }) => ({
       key: item.c_title,
       value: item.c_id
     }));
