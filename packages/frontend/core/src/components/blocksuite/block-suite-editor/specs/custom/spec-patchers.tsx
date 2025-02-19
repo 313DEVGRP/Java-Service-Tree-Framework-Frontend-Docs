@@ -122,15 +122,15 @@ async function fetchOptions() {
     //TODO : 내부 Backend 로 API 호출 결과를.
     //TODO : 멀티 셀렉트에 데이터를 바인딩 하고 싶습니다. ( c_title 을 바인등 하면 되고 : key, value 는 c_id 입니다.)
     const productResponse = await axios.get('/api/auth/pdService');
-    console.log(JSON.stringify(productResponse, null, 2) + " <-- productResponse");
-    console.log("============productResponse.data============");
-    console.log(productResponse.data.result.response);
-    console.log("============productResponse.data============");
+    console.log("Product Response:", JSON.stringify(productResponse.data, null, 2));
 
-    const productOptions = productResponse.data.result.response.map((item: { c_title: any; c_id: any; }) => ({
-      key: item.c_title,
-      value: item.c_id
-    }));
+    // 응답 데이터에서 필요한 부분 추출
+    const productOptions = productResponse.data?.data?.result?.response?.map((item: { c_id: number; c_title: string }) => ({
+      key: item.c_id,      // key는 c_id
+      value: item.c_title, // value는 c_title (멀티 셀렉트에서 보여질 값)
+    })) || [];
+
+
     const versionResponse = await axios.get('/api/auth/version');
     console.log(versionResponse.data + "versionResponse");
     const versionOptions = versionResponse.data.map((item: { c_title: any; c_id: any; }) => ({
