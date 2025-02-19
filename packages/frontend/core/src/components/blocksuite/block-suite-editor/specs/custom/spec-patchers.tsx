@@ -122,26 +122,37 @@ async function fetchOptions() {
     //TODO : 내부 Backend 로 API 호출 결과를.
     //TODO : 멀티 셀렉트에 데이터를 바인딩 하고 싶습니다. ( c_title 을 바인등 하면 되고 : key, value 는 c_id 입니다.)
     const productResponse = await axios.get('/api/auth/pdService');
-    console.log("Product Response:", JSON.stringify(productResponse.data, null, 2));
+    console.log(
+      'Product Response:',
+      JSON.stringify(productResponse.data, null, 2)
+    );
 
     // 응답 데이터에서 필요한 부분 추출
-    const productOptions = productResponse.data?.result?.response?.map((item: { c_id: number; c_title: string }) => ({
-      key: item.c_id,      // key는 c_id
-      value: item.c_title, // value는 c_title (멀티 셀렉트에서 보여질 값)
-    })) || [];
+    const productOptions =
+      productResponse.data?.result?.response?.map(
+        (item: { c_id: number; c_title: string }) => ({
+          key: item.c_title, // value는 c_title (멀티 셀렉트에서 보여질 값)
+          value: item.c_id, // key는 c_id
+        })
+      ) || [];
 
     // versionOptions 빈 배열로 초기화
     const versionOptions: any[] = [];
 
     return {
       productOptions,
-      versionOptions
+      versionOptions,
     };
   } catch (error) {
     console.error('Failed to fetch options:', error);
     return { productOptions: [], versionOptions: [] };
   }
 }
+
+const pdServerHandleSelect = (selectedList, selectedItem) => {
+  console.log("선택된 항목:", selectedList);
+  console.log("선택된 항목:", selectedItem);
+};
 
 export function patchNotificationService(
   specs: BlockSpec[],
@@ -191,7 +202,6 @@ export function patchNotificationService(
         inputTitle, // 241223 추가
         versionSelect, // 241223 추가
       }) => {
-
         // 데이터 로드
         const { productOptions, versionOptions } = await fetchOptions();
 
@@ -199,53 +209,87 @@ export function patchNotificationService(
 
         return new Promise<string | null>(resolve => {
           let value = autofill || '';
-          const description = ( // 241223 수정
-            <div>
-              {message && <p style={{ marginBottom: 12 ,display: 'block' }}>{toReactNode(message)}</p>}
-              {inputTitle && <strong style={{fontSize: 14, marginBottom: 5,display: 'block'}}>✔ {toReactNode(inputTitle)}</strong>}
-              <Input
-                placeholder={placeholder}
-                defaultValue={value}
-                onChange={e => (value = e)}
-                ref={input => input?.select()}
-              />
-              {versionSelect && <div >
-                <strong style={{ marginTop: 20, marginBottom: 10,display: 'block', fontSize: 14}}>✔ 요구사항을 생성할 대상 제품(서비스) + 버전을 선택하세요.</strong>
-                <ul>
-                  <li style={{marginBottom: 5}}>
-                    <strong style={{fontSize: 13, marginBottom: 5,display: 'block'}}>제품(서비스)</strong>
-                    <Multiselect
-                      displayValue="key"
-                      options={productOptions}
-                      placeholder="제품(서비스) 선택"
+          const description = // 241223 수정
+            (
+              <div>
+                {message && (
+                  <p style={{ marginBottom: 12, display: 'block' }}>
+                    {toReactNode(message)}
+                  </p>
+                )}
+                {inputTitle && (
+                  <strong
+                    style={{ fontSize: 14, marginBottom: 5, display: 'block' }}
+                  >
+                    ✔ {toReactNode(inputTitle)}
+                  </strong>
+                )}
+                <Input
+                  placeholder={placeholder}
+                  defaultValue={value}
+                  onChange={e => (value = e)}
+                  ref={input => input?.select()}
+                />
+                {versionSelect && (
+                  <div>
+                    <strong
                       style={{
-                        searchBox: {
-                          border: '1px solid #e6e6e6',
-                          borderRadius: '8px',
-                        },
+                        marginTop: 20,
+                        marginBottom: 10,
+                        display: 'block',
+                        fontSize: 14,
                       }}
-                      singleSelect
-                    />
-                  </li>
-                  <li style={{marginBottom: 5}}>
-                    <strong style={{fontSize: 13, marginBottom: 5}}>버전</strong>
-                    <Multiselect
-                      displayValue="key"
-                      options={versionOptions}
-                      placeholder="제품(서비스) 의 Version 선택"
-                      style={{
-                        searchBox: {
-                          border: '1px solid #e6e6e6',
-                          borderRadius: '8px',
-                        },
-                      }}
-                      singleSelect
-                    />
-                  </li>
-                </ul>
-              </div>}
-            </div>
-          );
+                    >
+                      ✔ 요구사항을 생성할 대상 제품(서비스) + 버전을
+                      선택하세요.
+                    </strong>
+                    <ul>
+                      <li style={{ marginBottom: 5 }}>
+                        <strong
+                          style={{
+                            fontSize: 13,
+                            marginBottom: 5,
+                            display: 'block',
+                          }}
+                        >
+                          제품(서비스)
+                        </strong>
+                        <Multiselect
+                          displayValue="key"
+                          options={productOptions}
+                          placeholder="제품(서비스) 선택"
+                          style={{
+                            searchBox: {
+                              border: '1px solid #e6e6e6',
+                              borderRadius: '8px',
+                            },
+                          }}
+                          singleSelect
+                          onSelect={pdServerHandleSelect} // 선택 시 호출
+                        />
+                      </li>
+                      <li style={{ marginBottom: 5 }}>
+                        <strong style={{ fontSize: 13, marginBottom: 5 }}>
+                          버전
+                        </strong>
+                        <Multiselect
+                          displayValue="key"
+                          options={versionOptions}
+                          placeholder="제품(서비스) 의 Version 선택"
+                          style={{
+                            searchBox: {
+                              border: '1px solid #e6e6e6',
+                              borderRadius: '8px',
+                            },
+                          }}
+                          singleSelect
+                        />
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </div>
+            );
 
           openConfirmModal({
             title: toReactNode(title),
