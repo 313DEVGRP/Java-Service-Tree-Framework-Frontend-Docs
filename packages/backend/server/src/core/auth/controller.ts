@@ -365,30 +365,16 @@ export class AuthController {
       }
 
     }else{
-
-
-      const formData = new URLSearchParams();
-      formData.append('c_req_pdservice_link', c_req_pdservice?.toString() || '');
-
-
       // 인증을 통과하면 ARMS API를 호출합니다.
       // 미들 프록시를 거치지 않고 다이렉트로 백엔드 호출 합니다.
       // @ts-ignore
-      axios({
-        method: 'post',
-        url: 'http://backend-core:31313/arms/pdServicePure/getPdServiceMonitor.do?c_ids=27',
-        data: formData,
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Access-Control-Allow-Origin': '*'
-        },
-        crossDomain: true
+      var response_data = "";
+      await axios({
+        method: 'get',
+        url: 'http://backend-core:31313/arms/pdService/getVersionList?c_id=' + c_req_pdservice,
       }).then((res) => {
         console.log(res.data);
-        return {
-          user: user,
-          res: res.data
-        };
+        response_data = res.data;
       }).catch((err) => {
         console.error(err);
         return {
@@ -397,10 +383,7 @@ export class AuthController {
       });
 
       return {
-        result : "getPdServiceVersion error"
+        result : response_data
       };
-
     }
   }
-
-}

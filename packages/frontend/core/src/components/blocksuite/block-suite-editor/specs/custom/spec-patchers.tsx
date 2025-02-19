@@ -152,6 +152,14 @@ async function fetchOptions() {
 const pdServerHandleSelect = (selectedList, selectedItem) => {
   console.log("선택된 항목:", selectedList);
   console.log("선택된 항목:", selectedItem);
+
+  const versionResponse = await axios.get('/api/auth/version?c_req_pdservice=' + selectedItem.value);
+  console.log(
+    'Product Response:',
+    JSON.stringify(versionResponse.data, null, 2)
+  );
+
+
 };
 
 export function patchNotificationService(
