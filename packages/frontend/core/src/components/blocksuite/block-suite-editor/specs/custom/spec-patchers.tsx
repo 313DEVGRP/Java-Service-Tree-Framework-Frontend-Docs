@@ -143,6 +143,7 @@ async function fetchVersionOptions(selectedPdService?:number) {
 
   if (typeof selectedPdService === "undefined" || selectedPdService == null || selectedPdService == undefined) {
 
+    console.log("fetchVersionOptions----empty");
     const versionOptions: any[] = [];
 
     return {
@@ -152,6 +153,7 @@ async function fetchVersionOptions(selectedPdService?:number) {
   } else {
 
 
+    console.log("fetchVersionOptions----"+selectedPdService);
     try {
       const versionResponse = await axios.get('/api/auth/version?c_req_pdservice=' + selectedPdService);
       // 응답 데이터에서 필요한 부분 추출
