@@ -124,7 +124,7 @@ async function fetchOptions() {
     const productResponse = await axios.get('/api/auth/pdService');
     console.log(JSON.stringify(productResponse, null, 2) + " <-- productResponse");
     console.log("============productResponse.data============");
-    console.log(productResponse.data);
+    console.log(productResponse.data.result.response);
     console.log("============productResponse.data============");
 
     const productOptions = productResponse.data.result.response.map((item: { c_title: any; c_id: any; }) => ({
