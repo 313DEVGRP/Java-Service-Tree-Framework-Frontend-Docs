@@ -43,6 +43,11 @@ import { customElement } from 'lit/decorators.js';
 import { literal } from 'lit/static-html.js';
 import Multiselect from 'multiselect-react-dropdown'; // 241223 추가
 import axios from 'axios';
+import {useEffect} from "react";
+
+// 옵션 상태 관리
+const [productOptions, setProductOptions] = useState([]);
+const [versionOptions, setVersionOptions] = useState([]);
 
 export type ReferenceReactRenderer = (
   reference: AffineReference
@@ -149,15 +154,45 @@ async function fetchOptions() {
   }
 }
 
-async function pdServerHandleSelect (selectedList, selectedItem) {
-  console.log("선택된 항목:", selectedList);
-  console.log("선택된 항목:", selectedItem);
+// 데이터 로드
+useEffect(() => {
+  async function fetchProductOptions() {
+    try {
+      const response = await axios.get('/api/auth/pdService');
+      const options =
+        response.data?.result?.response?.map((item) => ({
+          key: item.c_title, // 제품(서비스) 이름
+          value: item.c_id, // 제품(서비스) ID
+        })) || [];
+      setProductOptions(options);
+    } catch (error) {
+      console.error('제품(서비스) 목록을 불러오는 데 실패했습니다.', error);
+    }
+  }
 
-  const versionResponse = await axios.get('/api/auth/version?c_req_pdservice=' + selectedItem.value);
-  console.log(
-    'Product Response:',
-    JSON.stringify(versionResponse.data, null, 2)
-  );
+  fetchProductOptions();
+}, []);
+
+// 제품(서비스) 선택 시 버전 불러오기
+const pdServiceHandleSelect = async (selectedList, selectedItem) => {
+  console.log('선택된 제품(서비스):', selectedItem);
+
+  try {
+    const response = await axios.get(
+      `/api/auth/version?c_req_pdservice=${selectedItem.value}`
+    );
+
+    const options =
+      response.data?.result?.response?.map((item) => ({
+        key: item.c_title, // 버전 이름
+        value: item.c_id, // 버전 ID
+      })) || [];
+
+    setVersionOptions(options);
+    console.log('버전 목록:', options);
+  } catch (error) {
+    console.error('버전 목록을 불러오는 데 실패했습니다.', error);
+  }
 };
 
 export function patchNotificationService(
@@ -271,7 +306,7 @@ export function patchNotificationService(
                             },
                           }}
                           singleSelect
-                          onSelect={pdServerHandleSelect} // 선택 시 호출
+                          onSelect={pdServiceHandleSelect} // 선택 시 호출
                         />
                       </li>
                       <li style={{ marginBottom: 5 }}>
