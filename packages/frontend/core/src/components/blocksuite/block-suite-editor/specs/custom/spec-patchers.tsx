@@ -278,7 +278,7 @@ export function patchNotificationService(
                         </strong>
                         <Multiselect
                           displayValue="key"
-                          options={versionOptions}
+                          options={productOptions}
                           placeholder="제품(서비스) 의 Version 선택"
                           style={{
                             searchBox: {
