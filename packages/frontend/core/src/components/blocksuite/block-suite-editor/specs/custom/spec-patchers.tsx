@@ -138,36 +138,49 @@ async function fetchProductOptions() {
   }
 }
 
-async function fetchVersionOptions() {
-  try {
+async function fetchVersionOptions(selectedPdService?:number) {
+
+
+  if (typeof selectedPdService === "undefined" || selectedPdService == null || selectedPdService == undefined) {
+
     const versionOptions: any[] = [];
 
     return {
       versionOptions
     };
-  } catch (error) {
-    console.error('Failed to fetch options:', error);
-    return { productOptions: [], versionOptions: [] };
+
+  } else {
+
+
+    try {
+      const versionResponse = await axios.get('/api/auth/version?c_req_pdservice=' + selectedPdService);
+      // 응답 데이터에서 필요한 부분 추출
+      const versionOptions =
+        versionResponse.data?.result?.response?.map(
+          (item: { c_id: number; c_title: string }) => ({
+            key: item.c_title, // value는 c_title (멀티 셀렉트에서 보여질 값)
+            value: item.c_id, // key는 c_id
+          })
+        ) || [];
+
+      return {
+        versionOptions
+      };
+    } catch (error) {
+      console.error('Failed to fetch options:', error);
+      return { productOptions: [], versionOptions: [] };
+    }
+
+
   }
+
 }
 
 async function pdServiceHandleSelect (selectedList, selectedItem) {
   console.log("선택된 항목:", selectedList);
   console.log("선택된 항목:", selectedItem);
 
-  const versionResponse = await axios.get('/api/auth/version?c_req_pdservice=' + selectedItem.value);
-
-  const versionOptions =
-    versionResponse.data?.result?.response?.map(
-      (item: { c_id: number; c_title: string }) => ({
-        key: item.c_title, // value는 c_title (멀티 셀렉트에서 보여질 값)
-        value: item.c_id, // key는 c_id
-      })
-    ) || [];
-
-  return {
-    versionOptions
-  };
+  fetchVersionOptions(selectedItem.value);
 
 };
 
