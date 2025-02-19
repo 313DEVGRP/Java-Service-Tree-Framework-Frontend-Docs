@@ -43,11 +43,6 @@ import { customElement } from 'lit/decorators.js';
 import { literal } from 'lit/static-html.js';
 import Multiselect from 'multiselect-react-dropdown'; // 241223 추가
 import axios from 'axios';
-import { useState, useEffect } from 'react';
-
-// 옵션 상태 관리
-const [productOptions, setProductOptions] = useState([]);
-const [versionOptions, setVersionOptions] = useState([]);
 
 export type ReferenceReactRenderer = (
   reference: AffineReference
@@ -154,45 +149,24 @@ async function fetchOptions() {
   }
 }
 
-// 데이터 로드
-useEffect(() => {
-  async function fetchProductOptions() {
-    try {
-      const response = await axios.get('/api/auth/pdService');
-      const options =
-        response.data?.result?.response?.map((item) => ({
-          key: item.c_title, // 제품(서비스) 이름
-          value: item.c_id, // 제품(서비스) ID
-        })) || [];
-      setProductOptions(options);
-    } catch (error) {
-      console.error('제품(서비스) 목록을 불러오는 데 실패했습니다.', error);
-    }
-  }
+async function pdServiceHandleSelect (selectedList, selectedItem) {
+  console.log("선택된 항목:", selectedList);
+  console.log("선택된 항목:", selectedItem);
 
-  fetchProductOptions();
-}, []);
+  const versionResponse = await axios.get('/api/auth/version?c_req_pdservice=' + selectedItem.value);
 
-// 제품(서비스) 선택 시 버전 불러오기
-const pdServiceHandleSelect = async (selectedList, selectedItem) => {
-  console.log('선택된 제품(서비스):', selectedItem);
+  versionOptions =
+    versionResponse.data?.result?.response?.map(
+      (item: { c_id: number; c_title: string }) => ({
+        key: item.c_title, // value는 c_title (멀티 셀렉트에서 보여질 값)
+        value: item.c_id, // key는 c_id
+      })
+    ) || [];
 
-  try {
-    const response = await axios.get(
-      `/api/auth/version?c_req_pdservice=${selectedItem.value}`
-    );
-
-    const options =
-      response.data?.result?.response?.map((item) => ({
-        key: item.c_title, // 버전 이름
-        value: item.c_id, // 버전 ID
-      })) || [];
-
-    setVersionOptions(options);
-    console.log('버전 목록:', options);
-  } catch (error) {
-    console.error('버전 목록을 불러오는 데 실패했습니다.', error);
-  }
+  console.log(
+    'Product Response:',
+    JSON.stringify(versionResponse.data, null, 2)
+  );
 };
 
 export function patchNotificationService(
