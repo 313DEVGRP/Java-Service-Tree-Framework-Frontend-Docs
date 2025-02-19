@@ -43,7 +43,8 @@ import { customElement } from 'lit/decorators.js';
 import { literal } from 'lit/static-html.js';
 import Multiselect from 'multiselect-react-dropdown'; // 241223 추가
 import axios from 'axios';
-import { useState } from 'react';
+import React, { useState } from 'react';
+
 
 const [versionOptions, setVersionOptions] = useState([]);
 
