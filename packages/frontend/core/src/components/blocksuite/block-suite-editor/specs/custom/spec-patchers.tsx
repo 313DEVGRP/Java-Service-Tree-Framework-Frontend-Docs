@@ -41,7 +41,6 @@ import {
 import { type TemplateResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { literal } from 'lit/static-html.js';
-import { useState } from 'react';
 import Multiselect from 'multiselect-react-dropdown'; // 241223 추가
 import axios from 'axios';
 
@@ -74,11 +73,11 @@ function patchSpecService<Spec extends BlockSpec>(
     );
 
     onWidgetConnected &&
-      disposableGroup.add(
-        slots.widgetConnected.on(({ component }) => {
-          onWidgetConnected(component);
-        })
-      );
+    disposableGroup.add(
+      slots.widgetConnected.on(({ component }) => {
+        onWidgetConnected(component);
+      })
+    );
   };
   return spec;
 }
@@ -117,49 +116,59 @@ export function patchReferenceRenderer(
   });
 }
 
-// 제품 옵션 상태
-const [productOptions, setProductOptions] = useState([]);
-// 버전 옵션 상태
-const [versionOptions, setVersionOptions] = useState([]);
-
-// 제품 옵션 가져오기
-const fetchProductOptions = async () => {
+// 데이터 로드를 외부로 분리
+async function fetchProductOptions() {
   try {
     const productResponse = await axios.get('/api/auth/pdService');
-    const options =
-      productResponse.data?.result?.response?.map((item) => ({
-        key: item.c_title, // 보여질 값
-        value: item.c_id, // 내부 값
-      })) || [];
+    // 응답 데이터에서 필요한 부분 추출
+    const productOptions =
+      productResponse.data?.result?.response?.map(
+        (item: { c_id: number; c_title: string }) => ({
+          key: item.c_title, // value는 c_title (멀티 셀렉트에서 보여질 값)
+          value: item.c_id, // key는 c_id
+        })
+      ) || [];
 
-    setProductOptions(options);
+    return {
+      productOptions
+    };
   } catch (error) {
-    console.error('Failed to fetch product options:', error);
+    console.error('Failed to fetch options:', error);
+    return { productOptions: [], versionOptions: [] };
   }
-};
+}
 
-// 버전 옵션 가져오기
-const fetchVersionOptions = async (productId) => {
+async function fetchVersionOptions() {
   try {
-    const versionResponse = await axios.get(
-      `/api/auth/version?c_req_pdservice=${productId}`
-    );
-    const options =
-      versionResponse.data?.result?.response?.map((item) => ({
-        key: item.c_title,
-        value: item.c_id,
-      })) || [];
+    const versionOptions: any[] = [];
 
-    setVersionOptions(options); // 상태 업데이트
+    return {
+      versionOptions
+    };
   } catch (error) {
-    console.error('Failed to fetch version options:', error);
+    console.error('Failed to fetch options:', error);
+    return { productOptions: [], versionOptions: [] };
   }
-};
+}
 
-// 제품 선택 핸들러
-const pdServiceHandleSelect = (selectedList, selectedItem) => {
-  console.log('선택된 제품:', selectedItem);
-  fetchVersionOptions(selectedItem.value); // 제품 선택 시 버전 옵션 업데이트
+async function pdServiceHandleSelect (selectedList, selectedItem) {
+  console.log("선택된 항목:", selectedList);
+  console.log("선택된 항목:", selectedItem);
+
+  const versionResponse = await axios.get('/api/auth/version?c_req_pdservice=' + selectedItem.value);
+
+  const versionOptions =
+    versionResponse.data?.result?.response?.map(
+      (item: { c_id: number; c_title: string }) => ({
+        key: item.c_title, // value는 c_title (멀티 셀렉트에서 보여질 값)
+        value: item.c_id, // key는 c_id
+      })
+    ) || [];
+
+  return {
+    versionOptions
+  };
+
 };
 
 export function patchNotificationService(
@@ -200,17 +209,21 @@ export function patchNotificationService(
         });
       },
       prompt: async ({
-        title,
-        message,
-        confirmText,
-        placeholder,
-        cancelText,
-        autofill,
-        abort,
-        inputTitle, // 241223 추가
-        versionSelect, // 241223 추가
-      }) => {
+                       title,
+                       message,
+                       confirmText,
+                       placeholder,
+                       cancelText,
+                       autofill,
+                       abort,
+                       inputTitle, // 241223 추가
+                       versionSelect, // 241223 추가
+                     }) => {
         // 데이터 로드
+        const { productOptions } = await fetchProductOptions();
+        const { versionOptions } = await fetchVersionOptions();
+
+        console.log(productOptions, versionOptions);
 
         return new Promise<string | null>(resolve => {
           let value = autofill || '';
@@ -339,9 +352,9 @@ export function patchNotificationService(
             message: toReactNode(notification.message),
             action: notification.action?.onClick
               ? {
-                  label: toReactNode(notification.action?.label),
-                  onClick: notification.action.onClick,
-                }
+                label: toReactNode(notification.action?.label),
+                onClick: notification.action.onClick,
+              }
               : undefined,
             onDismiss: notification.onClose,
           },
