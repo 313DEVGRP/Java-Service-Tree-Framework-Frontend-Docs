@@ -149,7 +149,7 @@ async function fetchOptions() {
   }
 }
 
-const pdServerHandleSelect = (selectedList, selectedItem) => {
+async function pdServerHandleSelect (selectedList, selectedItem) {
   console.log("선택된 항목:", selectedList);
   console.log("선택된 항목:", selectedItem);
 
@@ -158,8 +158,6 @@ const pdServerHandleSelect = (selectedList, selectedItem) => {
     'Product Response:',
     JSON.stringify(versionResponse.data, null, 2)
   );
-
-
 };
 
 export function patchNotificationService(
