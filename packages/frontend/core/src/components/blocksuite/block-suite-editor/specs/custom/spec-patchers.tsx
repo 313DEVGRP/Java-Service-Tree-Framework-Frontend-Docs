@@ -117,59 +117,49 @@ export function patchReferenceRenderer(
   });
 }
 
-// 데이터 로드를 외부로 분리
-async function fetchProductOptions() {
+// 제품 옵션 상태
+const [productOptions, setProductOptions] = useState([]);
+// 버전 옵션 상태
+const [versionOptions, setVersionOptions] = useState([]);
+
+// 제품 옵션 가져오기
+const fetchProductOptions = async () => {
   try {
     const productResponse = await axios.get('/api/auth/pdService');
-    // 응답 데이터에서 필요한 부분 추출
-    const productOptions =
-      productResponse.data?.result?.response?.map(
-        (item: { c_id: number; c_title: string }) => ({
-          key: item.c_title, // value는 c_title (멀티 셀렉트에서 보여질 값)
-          value: item.c_id, // key는 c_id
-        })
-      ) || [];
+    const options =
+      productResponse.data?.result?.response?.map((item) => ({
+        key: item.c_title, // 보여질 값
+        value: item.c_id, // 내부 값
+      })) || [];
 
-    return {
-      productOptions
-    };
+    setProductOptions(options);
   } catch (error) {
-    console.error('Failed to fetch options:', error);
-    return { productOptions: [], versionOptions: [] };
+    console.error('Failed to fetch product options:', error);
   }
-}
+};
 
-async function fetchVersionOptions() {
+// 버전 옵션 가져오기
+const fetchVersionOptions = async (productId) => {
   try {
-    const versionOptions: any[] = [];
+    const versionResponse = await axios.get(
+      `/api/auth/version?c_req_pdservice=${productId}`
+    );
+    const options =
+      versionResponse.data?.result?.response?.map((item) => ({
+        key: item.c_title,
+        value: item.c_id,
+      })) || [];
 
-    return {
-      versionOptions
-    };
+    setVersionOptions(options); // 상태 업데이트
   } catch (error) {
-    console.error('Failed to fetch options:', error);
-    return { productOptions: [], versionOptions: [] };
+    console.error('Failed to fetch version options:', error);
   }
-}
+};
 
-async function pdServiceHandleSelect (selectedList, selectedItem) {
-  console.log("선택된 항목:", selectedList);
-  console.log("선택된 항목:", selectedItem);
-
-  const versionResponse = await axios.get('/api/auth/version?c_req_pdservice=' + selectedItem.value);
-
-  const versionOptions =
-    versionResponse.data?.result?.response?.map(
-      (item: { c_id: number; c_title: string }) => ({
-        key: item.c_title, // value는 c_title (멀티 셀렉트에서 보여질 값)
-        value: item.c_id, // key는 c_id
-      })
-    ) || [];
-
-  return {
-    versionOptions
-  };
-
+// 제품 선택 핸들러
+const pdServiceHandleSelect = (selectedList, selectedItem) => {
+  console.log('선택된 제품:', selectedItem);
+  fetchVersionOptions(selectedItem.value); // 제품 선택 시 버전 옵션 업데이트
 };
 
 export function patchNotificationService(
@@ -221,10 +211,6 @@ export function patchNotificationService(
         versionSelect, // 241223 추가
       }) => {
         // 데이터 로드
-        const { productOptions } = await fetchProductOptions();
-        const { versionOptions } = await fetchVersionOptions();
-
-        console.log(productOptions, versionOptions);
 
         return new Promise<string | null>(resolve => {
           let value = autofill || '';
