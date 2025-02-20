@@ -213,37 +213,23 @@ export function patchNotificationService(
         const { productOptions } = await fetchProductOptions();
         console.log(productOptions);
 
-        // 🔥 선택한 제품의 버전 목록 (초기에는 없음)
-        let versionMultiselect = null;
-
-
-        // 🔥 제품 선택 시 버전 `Multiselect`를 동적으로 생성
+        // 🔥 제품 선택 시 실행되는 함수 (기존 로직 유지)
         async function handleProductSelect(selectedList, selectedItem) {
           console.log('선택된 제품:', selectedItem);
-          const versions = await fetchVersionOptions(selectedItem.value);
-          console.log('불러온 버전 목록:', versions);
+          const { versionOptions: newVersionOptions } = await fetchVersionOptions(selectedItem.value);
+          console.log('불러온 버전 목록:', newVersionOptions);
 
-          // 🔥 새로운 `Multiselect` 생성
-          versionMultiselect = (
-            <li style={{ marginBottom: 5 }}>
-              <strong style={{ fontSize: 13, marginBottom: 5 }}>
-                버전
-              </strong>
-              <Multiselect
-                displayValue="key"
-                options={versions}
-                placeholder="버전 선택"
-                style={{
-                  searchBox: {
-                    border: '1px solid #e6e6e6',
-                    borderRadius: '8px',
-                  },
-                }}
-                singleSelect
-              />
-            </li>
-          );
-
+          // 🔥 직접 DOM을 수정하여 버전 목록 업데이트
+          const versionDropdown = document.getElementById('version-multiselect');
+          if (versionDropdown) {
+            versionDropdown.innerHTML = ''; // 기존 옵션 제거
+            newVersionOptions.forEach(option => {
+              const optionElement = document.createElement('option');
+              optionElement.value = option.value;
+              optionElement.textContent = option.key;
+              versionDropdown.appendChild(optionElement);
+            });
+          }
         }
 
 
@@ -254,71 +240,58 @@ export function patchNotificationService(
 
           // 첫 번째 Multiselect 선택 시 실행
 
-          const description = // 241223 수정
-            (
-              <div>
-                {message && (
-                  <p style={{ marginBottom: 12, display: 'block' }}>
-                    {toReactNode(message)}
-                  </p>
-                )}
-                {inputTitle && (
+          // ✅ 기존 코드 유지하면서 versionSelect만 동적 업데이트
+          const description = (
+            <div>
+              {message && <p style={{ marginBottom: 12, display: 'block' }}>{toReactNode(message)}</p>}
+              {inputTitle && (
+                <strong style={{ fontSize: 14, marginBottom: 5, display: 'block' }}>
+                  ✔ {toReactNode(inputTitle)}
+                </strong>
+              )}
+              <Input
+                placeholder={placeholder}
+                defaultValue={value}
+                onChange={e => (value = e)}
+                ref={input => input?.select()}
+              />
+              {versionSelect && (
+                <div>
                   <strong
-                    style={{ fontSize: 14, marginBottom: 5, display: 'block' }}
+                    style={{
+                      marginTop: 20,
+                      marginBottom: 10,
+                      display: 'block',
+                      fontSize: 14,
+                    }}
                   >
-                    ✔ {toReactNode(inputTitle)}
+                    ✔ 요구사항을 생성할 대상 제품(서비스) + 버전을 선택하세요.
                   </strong>
-                )}
-                <Input
-                  placeholder={placeholder}
-                  defaultValue={value}
-                  onChange={e => (value = e)}
-                  ref={input => input?.select()}
-                />
-                {versionSelect && (
-                  <div>
-                    <strong
-                      style={{
-                        marginTop: 20,
-                        marginBottom: 10,
-                        display: 'block',
-                        fontSize: 14,
-                      }}
-                    >
-                      ✔ 요구사항을 생성할 대상 제품(서비스) + 버전을
-                      선택하세요.
-                    </strong>
-                    <ul>
-                      <li style={{ marginBottom: 5 }}>
-                        <strong
-                          style={{
-                            fontSize: 13,
-                            marginBottom: 5,
-                            display: 'block',
-                          }}
-                        >
-                          제품(서비스)
-                        </strong>
-                        <Multiselect
-                          displayValue="key"
-                          options={productOptions}
-                          placeholder="제품(서비스) 선택"
-                          style={{
-                            searchBox: {
-                              border: '1px solid #e6e6e6',
-                              borderRadius: '8px',
-                            },
-                          }}
-                          singleSelect
-                          onSelect={handleProductSelect}
-                        />
-                      </li>
-                      {versionMultiselect} {/* 🔥 선택된 제품이 있으면 렌더링 */}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            );
+                  <ul>
+                    <li style={{ marginBottom: 5 }}>
+                      <strong style={{ fontSize: 13, marginBottom: 5, display: 'block' }}>
+                        제품(서비스)
+                      </strong>
+                      <Multiselect
+                        displayValue="key"
+                        options={productOptions}
+                        placeholder="제품(서비스) 선택"
+                        style={{ searchBox: { border: '1px solid #e6e6e6', borderRadius: '8px' } }}
+                        singleSelect
+                        onSelect={handleProductSelect}
+                      />
+                    </li>
+                    <li style={{ marginBottom: 5 }}>
+                      <strong style={{ fontSize: 13, marginBottom: 5 }}>버전</strong>
+                      <select id="version-multiselect" style={{ width: '100%', padding: '5px' }}>
+                        <option value="">버전 선택</option>
+                      </select>
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
+          );
 
           openConfirmModal({
             title: toReactNode(title),
