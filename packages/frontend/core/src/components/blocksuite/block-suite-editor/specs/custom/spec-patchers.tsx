@@ -224,6 +224,7 @@ export function patchNotificationService(
             console.log('선택된 제품:', selectedItem);
             const versions = await fetchVersionOptions(selectedItem.value);
             console.log(versions);
+            console.log(versionOptions);
           }
 
           const description = // 241223 수정
