@@ -138,6 +138,28 @@ async function fetchProductOptions() {
   }
 }
 
+// 데이터 로드를 외부로 분리
+async function fetchVersionOptions() {
+  try {
+    const versionResponse = await axios.get('/api/auth/version');
+    // 응답 데이터에서 필요한 부분 추출
+    const versionOptions =
+      versionResponse.data?.result?.map(
+        (item: { c_id: number; c_title: string }) => ({
+          key: item.c_title, // value는 c_title (멀티 셀렉트에서 보여질 값)
+          value: item.c_id, // key는 c_id
+        })
+      ) || [];
+
+    return {
+      versionOptions
+    };
+  } catch (error) {
+    console.error('Failed to fetch options:', error);
+    return { productOptions: [], versionOptions: [] };
+  }
+}
+
 
 export function patchNotificationService(
   specs: BlockSpec[],
@@ -187,8 +209,9 @@ export function patchNotificationService(
                        inputTitle, // 241223 추가
                        versionSelect, // 241223 추가
                      }) => {
-        // 데이터 로드
+        // 제품 (서비스) 데이터 로드
         const { productOptions } = await fetchProductOptions();
+        const { versionOptions } = await fetchVersionOptions();
 
         console.log(productOptions);
 
@@ -259,7 +282,7 @@ export function patchNotificationService(
                         </strong>
                         <Multiselect
                           displayValue="key"
-                          options={productOptions}
+                          options={versionOptions}
                           placeholder="제품(서비스) 의 Version 선택"
                           style={{
                             searchBox: {
