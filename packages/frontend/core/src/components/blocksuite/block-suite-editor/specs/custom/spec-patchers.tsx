@@ -41,6 +41,7 @@ import {
 import { type TemplateResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { literal } from 'lit/static-html.js';
+import { useState } from 'react';
 import Multiselect from 'multiselect-react-dropdown'; // 241223 추가
 import axios from 'axios';
 
@@ -118,22 +119,33 @@ export function patchReferenceRenderer(
 // 데이터 로드를 외부로 분리
 async function fetchProductOptions() {
   try {
-    const productResponse = await axios.get('/api/auth/pdService');
+    const response = await axios.get('/api/auth/pdService');
     // 응답 데이터에서 필요한 부분 추출
-    const productOptions =
-      productResponse.data?.result?.map(
-        (item: { c_id: number; c_title: string }) => ({
-          key: item.c_title, // value는 c_title (멀티 셀렉트에서 보여질 값)
-          value: item.c_id, // key는 c_id
-        })
-      ) || [];
-
-    return {
-      productOptions,
-    };
+    return (
+      response.data?.result?.map(item => ({
+        key: item.c_title,
+        value: item.c_id,
+      })) || []
+    );
   } catch (error) {
-    console.error('Failed to fetch options:', error);
-    return { productOptions: [], versionOptions: [] };
+    console.error('Failed to fetch product options:', error);
+    return [];
+  }
+}
+
+// 특정 제품 ID에 대한 버전 데이터 불러오기
+async function fetchVersionOptions(productId) {
+  try {
+    const response = await axios.get(`/api/auth/versionService?productId=${productId}`);
+    return (
+      response.data?.result?.map(item => ({
+        key: item.version_name, // 버전 이름
+        value: item.version_id, // 버전 ID
+      })) || []
+    );
+  } catch (error) {
+    console.error('Failed to fetch version options:', error);
+    return [];
   }
 }
 
@@ -194,15 +206,17 @@ export function patchNotificationService(
 
           let value = autofill || '';
 
-          async function pdServiceHandleSelect (selectedList, selectedItem) {
-            console.log("선택된 항목:", selectedList);
-            console.log("선택된 항목:", selectedItem);
+          const productOptions = await fetchProductOptions();
+          const [selectedProduct, setSelectedProduct] = useState(null);
+          const [versionOptions, setVersionOptions] = useState([]);
 
-            console.log(
-              '확인:', productOptions
-            );
-          };
-
+          // 첫 번째 Multiselect 선택 시 실행
+          async function handleProductSelect(selectedList, selectedItem) {
+            console.log('선택된 제품:', selectedItem);
+            setSelectedProduct(selectedItem);
+            const versions = await fetchVersionOptions(selectedItem.value);
+            setVersionOptions(versions);
+          }
 
           const description = // 241223 수정
             (
@@ -260,7 +274,7 @@ export function patchNotificationService(
                             },
                           }}
                           singleSelect
-                          onSelect={pdServiceHandleSelect} // 선택 시 호출
+                          onSelect={handleProductSelect} // 선택 시 호출
                         />
                       </li>
                       <li style={{ marginBottom: 5 }}>
@@ -269,7 +283,7 @@ export function patchNotificationService(
                         </strong>
                         <Multiselect
                           displayValue="key"
-                          options={productOptions}
+                          options={versionOptions}
                           placeholder="제품(서비스) 의 Version 선택"
                           style={{
                             searchBox: {
@@ -278,6 +292,7 @@ export function patchNotificationService(
                             },
                           }}
                           singleSelect
+                          disabled={!selectedProduct} // 제품이 선택되지 않으면 비활성화
                         />
                       </li>
                     </ul>
