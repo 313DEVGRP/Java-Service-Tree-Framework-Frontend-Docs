@@ -175,6 +175,11 @@ export function patchNotificationService(
   }
 
   patchSpecService(rootSpec, service => {
+
+    // 제품 (서비스) 데이터 로드
+    const { productOptions } = await fetchProductOptions();
+    const [versionOptions, setVersionOptions] = useState([]); // 버전 목록 상태
+
     service.notificationService = {
       confirm: async ({ title, message, confirmText, cancelText, abort }) => {
         return new Promise<boolean>(resolve => {
@@ -210,9 +215,6 @@ export function patchNotificationService(
                        inputTitle, // 241223 추가
                        versionSelect, // 241223 추가
                      }) => {
-        // 제품 (서비스) 데이터 로드
-        const { productOptions } = await fetchProductOptions();
-        const [versionOptions, setVersionOptions] = useState([]); // 버전 목록 상태
 
         console.log(productOptions);
 
