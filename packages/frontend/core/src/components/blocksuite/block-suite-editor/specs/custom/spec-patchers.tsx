@@ -43,7 +43,6 @@ import { customElement } from 'lit/decorators.js';
 import { literal } from 'lit/static-html.js';
 import Multiselect from 'multiselect-react-dropdown'; // 241223 추가
 import axios from 'axios';
-import {useState} from "react";
 
 
 export type ReferenceReactRenderer = (
@@ -175,10 +174,6 @@ export function patchNotificationService(
   }
 
   patchSpecService(rootSpec, service => {
-
-    // 제품 (서비스) 데이터 로드
-    const [versionOptions, setVersionOptions] = useState([]); // 버전 목록 상태
-
     service.notificationService = {
       confirm: async ({ title, message, confirmText, cancelText, abort }) => {
         return new Promise<boolean>(resolve => {
@@ -214,8 +209,10 @@ export function patchNotificationService(
                        inputTitle, // 241223 추가
                        versionSelect, // 241223 추가
                      }) => {
-
+        // 제품 (서비스) 데이터 로드
         const { productOptions } = await fetchProductOptions();
+        const { versionOptions } = await fetchVersionOptions();
+
         console.log(productOptions);
 
         return new Promise<string | null>(resolve => {
@@ -226,10 +223,8 @@ export function patchNotificationService(
           async function handleProductSelect(selectedList, selectedItem) {
             console.log('선택된 제품:', selectedItem);
             const versions = await fetchVersionOptions(selectedItem.value);
-            setVersionOptions(versions);
-
-            // 🔹 versionOptions 값 확인
-            console.log('로드된 버전 목록:', versions);
+            console.log(versions);
+            console.log(versionOptions);
           }
 
           const description = // 241223 수정
@@ -296,7 +291,6 @@ export function patchNotificationService(
                           버전
                         </strong>
                         <Multiselect
-                          id="versionID"
                           displayValue="key"
                           options={versionOptions}
                           placeholder="제품(서비스) 의 Version 선택"
