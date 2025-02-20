@@ -41,8 +41,6 @@ import {
 import { type TemplateResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { literal } from 'lit/static-html.js';
-
-import { useRef, useEffect } from "react";
 import Multiselect from 'multiselect-react-dropdown'; // 241223 추가
 import axios from 'axios';
 
@@ -152,9 +150,6 @@ export function patchNotificationService(
   }
 
   patchSpecService(rootSpec, service => {
-
-    const multiSelectRef = useRef(null);
-
     service.notificationService = {
       confirm: async ({ title, message, confirmText, cancelText, abort }) => {
         return new Promise<boolean>(resolve => {
@@ -200,24 +195,8 @@ export function patchNotificationService(
           let value = autofill || '';
 
           async function pdServiceHandleSelect (selectedList, selectedItem) {
-
             console.log("선택된 항목:", selectedList);
             console.log("선택된 항목:", selectedItem);
-
-            const initialOptions = [
-              { name: "Apple", id: 1 },
-              { name: "Banana", id: 2 },
-              { name: "Cherry", id: 3 },
-              { name: "Date", id: 4 },
-              { name: "Elderberry", id: 5 }
-            ];
-
-            useEffect(() => {
-              if (multiSelectRef.current) {
-                multiSelectRef.current.resetSelectedValues(); // 기존 선택값 초기화
-                multiSelectRef.current.setOptions(initialOptions); // 옵션 변경
-              }
-            }, []);
 
             console.log(
               '확인:', productOptions
@@ -289,8 +268,6 @@ export function patchNotificationService(
                           버전
                         </strong>
                         <Multiselect
-                          id="versionMultiSelect"
-                          ref={multiSelectRef}
                           displayValue="key"
                           options={productOptions}
                           placeholder="제품(서비스) 의 Version 선택"
