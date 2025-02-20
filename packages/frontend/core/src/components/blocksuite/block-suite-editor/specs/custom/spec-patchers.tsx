@@ -43,6 +43,7 @@ import { customElement } from 'lit/decorators.js';
 import { literal } from 'lit/static-html.js';
 import Multiselect from 'multiselect-react-dropdown'; // 241223 추가
 import axios from 'axios';
+import {useState} from "react";
 
 
 export type ReferenceReactRenderer = (
@@ -211,7 +212,7 @@ export function patchNotificationService(
                      }) => {
         // 제품 (서비스) 데이터 로드
         const { productOptions } = await fetchProductOptions();
-        const { versionOptions } = await fetchVersionOptions();
+        const [versionOptions, setVersionOptions] = useState([]); // 버전 목록 상태
 
         console.log(productOptions);
 
@@ -223,8 +224,10 @@ export function patchNotificationService(
           async function handleProductSelect(selectedList, selectedItem) {
             console.log('선택된 제품:', selectedItem);
             const versions = await fetchVersionOptions(selectedItem.value);
-            console.log(versions);
-            console.log(versionID.options);
+            setVersionOptions(versions);
+
+            // 🔹 versionOptions 값 확인
+            console.log('로드된 버전 목록:', versions);
           }
 
           const description = // 241223 수정
