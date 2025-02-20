@@ -216,7 +216,16 @@ export function patchNotificationService(
         console.log(productOptions);
 
         return new Promise<string | null>(resolve => {
+
           let value = autofill || '';
+
+          // 첫 번째 Multiselect 선택 시 실행
+          async function handleProductSelect(selectedList, selectedItem) {
+            console.log('선택된 제품:', selectedItem);
+            const versions = await fetchVersionOptions(selectedItem.value);
+            console.log(versions);
+          }
+
           const description = // 241223 수정
             (
               <div>
@@ -273,7 +282,7 @@ export function patchNotificationService(
                             },
                           }}
                           singleSelect
-                          onSelect={ console.log(productOptions) } // 선택 시 호출
+                          onSelect={ handleProductSelect } // 선택 시 호출
                         />
                       </li>
                       <li style={{ marginBottom: 5 }}>
