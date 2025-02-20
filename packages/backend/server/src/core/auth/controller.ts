@@ -330,7 +330,7 @@ export class AuthController {
       var response_data = "";
       await axios({
         method: 'get',
-        url: 'http://backend-core:31313/arms/pdService/getMonitor.do'
+        url: 'http://backend-core:31313/arms/pdServicePure/getPdServiceMonitor.do'
       }).then((res) => {
         console.log(res.data);
         response_data = res.data;
