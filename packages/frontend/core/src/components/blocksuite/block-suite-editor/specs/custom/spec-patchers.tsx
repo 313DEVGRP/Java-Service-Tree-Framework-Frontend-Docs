@@ -224,7 +224,7 @@ export function patchNotificationService(
             console.log('선택된 제품:', selectedItem);
             const versions = await fetchVersionOptions(selectedItem.value);
             console.log(versions);
-            console.log(versionOptions);
+            console.log(versionID.options);
           }
 
           const description = // 241223 수정
@@ -291,6 +291,7 @@ export function patchNotificationService(
                           버전
                         </strong>
                         <Multiselect
+                          id="versionID"
                           displayValue="key"
                           options={versionOptions}
                           placeholder="제품(서비스) 의 Version 선택"
