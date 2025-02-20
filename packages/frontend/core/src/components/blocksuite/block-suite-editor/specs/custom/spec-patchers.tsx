@@ -44,7 +44,6 @@ import { literal } from 'lit/static-html.js';
 import Multiselect from 'multiselect-react-dropdown'; // 241223 추가
 import axios from 'axios';
 
-
 export type ReferenceReactRenderer = (
   reference: AffineReference
 ) => React.ReactElement;
@@ -73,11 +72,11 @@ function patchSpecService<Spec extends BlockSpec>(
     );
 
     onWidgetConnected &&
-    disposableGroup.add(
-      slots.widgetConnected.on(({ component }) => {
-        onWidgetConnected(component);
-      })
-    );
+      disposableGroup.add(
+        slots.widgetConnected.on(({ component }) => {
+          onWidgetConnected(component);
+        })
+      );
   };
   return spec;
 }
@@ -130,14 +129,13 @@ async function fetchProductOptions() {
       ) || [];
 
     return {
-      productOptions
+      productOptions,
     };
   } catch (error) {
     console.error('Failed to fetch options:', error);
     return { productOptions: [], versionOptions: [] };
   }
 }
-
 
 export function patchNotificationService(
   specs: BlockSpec[],
@@ -177,16 +175,16 @@ export function patchNotificationService(
         });
       },
       prompt: async ({
-                       title,
-                       message,
-                       confirmText,
-                       placeholder,
-                       cancelText,
-                       autofill,
-                       abort,
-                       inputTitle, // 241223 추가
-                       versionSelect, // 241223 추가
-                     }) => {
+        title,
+        message,
+        confirmText,
+        placeholder,
+        cancelText,
+        autofill,
+        abort,
+        inputTitle, // 241223 추가
+        versionSelect, // 241223 추가
+      }) => {
         // 데이터 로드
         const { productOptions } = await fetchProductOptions();
 
@@ -250,7 +248,9 @@ export function patchNotificationService(
                             },
                           }}
                           singleSelect
-                          onSelect={console.log("컴포넌트 내부에서 찍음");console.log(productOptions);} // 선택 시 호출
+                          onSelect={console.log(
+                            '컴포넌트 내부에서 찍음=' + productOptions
+                          )} // 선택 시 호출
                         />
                       </li>
                       <li style={{ marginBottom: 5 }}>
@@ -319,9 +319,9 @@ export function patchNotificationService(
             message: toReactNode(notification.message),
             action: notification.action?.onClick
               ? {
-                label: toReactNode(notification.action?.label),
-                onClick: notification.action.onClick,
-              }
+                  label: toReactNode(notification.action?.label),
+                  onClick: notification.action.onClick,
+                }
               : undefined,
             onDismiss: notification.onClose,
           },
