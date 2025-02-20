@@ -41,9 +41,10 @@ import {
 import { type TemplateResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { literal } from 'lit/static-html.js';
+
+import { useRef, useEffect } from "react";
 import Multiselect from 'multiselect-react-dropdown'; // 241223 추가
 import axios from 'axios';
-import {useState} from "react";
 
 export type ReferenceReactRenderer = (
   reference: AffineReference
@@ -195,10 +196,10 @@ export function patchNotificationService(
 
           let value = autofill || '';
 
-          // 상태로 관리하는 경우 (React의 useState 사용)
-          const [versionOptions, setVersionOptions] = useState([]);
-
           async function pdServiceHandleSelect (selectedList, selectedItem) {
+
+            const multiSelectRef = useRef(null);
+
             console.log("선택된 항목:", selectedList);
             console.log("선택된 항목:", selectedItem);
 
@@ -210,7 +211,12 @@ export function patchNotificationService(
               { name: "Elderberry", id: 5 }
             ];
 
-            setVersionOptions(initialOptions); // 상태 업데이트
+            useEffect(() => {
+              if (multiSelectRef.current) {
+                multiSelectRef.current.resetSelectedValues(); // 기존 선택값 초기화
+                multiSelectRef.current.setOptions(initialOptions); // 옵션 변경
+              }
+            }, []);
 
             console.log(
               '확인:', productOptions
@@ -282,6 +288,8 @@ export function patchNotificationService(
                           버전
                         </strong>
                         <Multiselect
+                          id="versionMultiSelect"
+                          ref={multiSelectRef}
                           displayValue="key"
                           options={productOptions}
                           placeholder="제품(서비스) 의 Version 선택"
