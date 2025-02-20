@@ -287,7 +287,7 @@ export function patchNotificationService(
                       </strong>
                       <select
                         id="version-multiselect"
-                        style={{ border: '1px solid #e6e6e6', borderRadius: '8px' }}>
+                        style={{ border: '1px solid #e6e6e6', borderRadius: '8px', width: '100%', minHeight: '22px', padding: '5px'}}>
                         <option value="">버전 선택</option>
                       </select>
                     </li>
