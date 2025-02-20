@@ -163,7 +163,7 @@ export function toolbarDefaultConfig(toolbar: AffineFormatBarWidget) {
           );
           console.log("========================");
           console.log(selectedModels);
-          console.log(title);
+          console.log(host.std);
           console.log("========================");
           const linkedDocService = host.spec.getService(
             'affine:embed-linked-doc'
@@ -297,6 +297,8 @@ export function promptDocTitle(host: EditorHost, autofill?: string) {
   }else{
     req_title = range.startContainer.data.toString() + " " + range.endContainer.data.toString();
   }
+
+
 
   return notification.prompt({
     title: "A-RMS 요구사항 생성",
