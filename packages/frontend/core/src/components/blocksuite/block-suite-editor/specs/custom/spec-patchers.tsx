@@ -144,7 +144,7 @@ async function fetchVersionOptions(selectedProduct?:number) {
     const versionResponse = await axios.get('/api/auth/version?c_req_pdservice='+selectedProduct);
     // 응답 데이터에서 필요한 부분 추출
     const versionOptions =
-      versionResponse.data?.result?.map(
+      versionResponse.data?.result?.response?.map(
         (item: { c_id: number; c_title: string }) => ({
           key: item.c_title, // value는 c_title (멀티 셀렉트에서 보여질 값)
           value: item.c_id, // key는 c_id
