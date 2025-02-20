@@ -198,6 +198,16 @@ export function patchNotificationService(
             console.log("선택된 항목:", selectedList);
             console.log("선택된 항목:", selectedItem);
 
+            const initialOptions = [
+              { name: "Apple", id: 1 },
+              { name: "Banana", id: 2 },
+              { name: "Cherry", id: 3 },
+              { name: "Date", id: 4 },
+              { name: "Elderberry", id: 5 }
+            ];
+
+
+
             console.log(
               '확인:', productOptions
             );
