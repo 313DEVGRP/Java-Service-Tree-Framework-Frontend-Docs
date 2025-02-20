@@ -213,6 +213,9 @@ export function patchNotificationService(
         const { productOptions } = await fetchProductOptions();
         console.log(productOptions);
 
+        // React useState 없이 `versionOptions`을 저장하는 변수
+        let versionOptions = [];
+
         // ✅ 첫 번째 Multiselect 선택 시 실행
         async function handleProductSelect(selectedList, selectedItem, setVersionOptions) {
           console.log('선택된 제품:', selectedItem);
@@ -230,8 +233,6 @@ export function patchNotificationService(
 
           let value = autofill || '';
 
-          // React useState 없이 `versionOptions`을 저장하는 변수
-          let versionOptions = [];
 
           // 첫 번째 Multiselect 선택 시 실행
 
