@@ -213,19 +213,57 @@ export function patchNotificationService(
         const { productOptions } = await fetchProductOptions();
         console.log(productOptions);
 
-        // React useState 없이 `versionOptions`을 저장하는 변수
-        let versionOptions = [];
+        // 🔥 선택한 제품의 버전 목록 (초기에는 없음)
+        let versionMultiselect = null;
 
-        // ✅ 첫 번째 Multiselect 선택 시 실행
-        async function handleProductSelect(selectedList, selectedItem, setVersionOptions) {
+        // 🔥 UI를 강제 업데이트할 함수
+        function forceUpdate() {
+          openConfirmModal({
+            title: toReactNode(title),
+            description: renderModalContent(),
+            confirmText: confirmText ?? 'Confirm',
+            confirmButtonOptions: {
+              variant: 'primary',
+            },
+            cancelText: cancelText ?? 'Cancel',
+            onConfirm: () => {
+              resolve(value);
+            },
+            onCancel: () => {
+              resolve(null);
+            },
+          });
+        }
+
+        // 🔥 제품 선택 시 버전 `Multiselect`를 동적으로 생성
+        async function handleProductSelect(selectedList, selectedItem) {
           console.log('선택된 제품:', selectedItem);
-
-          // 🔥 제품에 대한 버전 옵션을 가져와서 `options` 속성에 직접 적용
           const versions = await fetchVersionOptions(selectedItem.value);
           console.log('불러온 버전 목록:', versions);
 
-          // ✅ `Multiselect`의 options 상태 업데이트
-          setVersionOptions(versions);
+          // 🔥 새로운 `Multiselect` 생성
+          versionMultiselect = (
+            <li style={{ marginBottom: 5 }}>
+              <strong style={{ fontSize: 13, marginBottom: 5 }}>
+                버전
+              </strong>
+              <Multiselect
+                displayValue="key"
+                options={versions}
+                placeholder="버전 선택"
+                style={{
+                  searchBox: {
+                    border: '1px solid #e6e6e6',
+                    borderRadius: '8px',
+                  },
+                }}
+                singleSelect
+              />
+            </li>
+          );
+
+          // UI 업데이트
+          forceUpdate();
         }
 
 
@@ -292,30 +330,10 @@ export function patchNotificationService(
                             },
                           }}
                           singleSelect
-                          onSelect={(selectedList, selectedItem) =>
-                            handleProductSelect(selectedList, selectedItem, newOptions => {
-                              versionOptions = newOptions;
-                            })
-                          }
+                          onSelect={handleProductSelect}
                         />
                       </li>
-                      <li style={{ marginBottom: 5 }}>
-                        <strong style={{ fontSize: 13, marginBottom: 5 }}>
-                          버전
-                        </strong>
-                        <Multiselect
-                          displayValue="key"
-                          options={versionOptions}
-                          placeholder="제품(서비스) 의 Version 선택"
-                          style={{
-                            searchBox: {
-                              border: '1px solid #e6e6e6',
-                              borderRadius: '8px',
-                            },
-                          }}
-                          singleSelect
-                        />
-                      </li>
+                      {versionMultiselect} {/* 🔥 선택된 제품이 있으면 렌더링 */}
                     </ul>
                   </div>
                 )}
