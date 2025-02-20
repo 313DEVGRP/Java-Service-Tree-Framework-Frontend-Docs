@@ -282,8 +282,12 @@ export function patchNotificationService(
                       />
                     </li>
                     <li style={{ marginBottom: 5 }}>
-                      <strong style={{ fontSize: 13, marginBottom: 5 }}>버전</strong>
-                      <select id="version-multiselect" style={{ border: '1px solid #e6e6e6', borderRadius: '8px' }}>
+                      <strong style={{ fontSize: 13, marginBottom: 5, display: 'block' }}>
+                        버전
+                      </strong>
+                      <select
+                        id="version-multiselect"
+                        style={{ border: '1px solid #e6e6e6', borderRadius: '8px' }}>
                         <option value="">버전 선택</option>
                       </select>
                     </li>
