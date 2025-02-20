@@ -216,24 +216,6 @@ export function patchNotificationService(
         // 🔥 선택한 제품의 버전 목록 (초기에는 없음)
         let versionMultiselect = null;
 
-        // 🔥 UI를 강제 업데이트할 함수
-        function forceUpdate() {
-          openConfirmModal({
-            title: toReactNode(title),
-            description: renderModalContent(),
-            confirmText: confirmText ?? 'Confirm',
-            confirmButtonOptions: {
-              variant: 'primary',
-            },
-            cancelText: cancelText ?? 'Cancel',
-            onConfirm: () => {
-              resolve(value);
-            },
-            onCancel: () => {
-              resolve(null);
-            },
-          });
-        }
 
         // 🔥 제품 선택 시 버전 `Multiselect`를 동적으로 생성
         async function handleProductSelect(selectedList, selectedItem) {
@@ -262,8 +244,6 @@ export function patchNotificationService(
             </li>
           );
 
-          // UI 업데이트
-          forceUpdate();
         }
 
 
