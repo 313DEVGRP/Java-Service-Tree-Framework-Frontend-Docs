@@ -258,7 +258,6 @@ export function patchNotificationService(
                           버전
                         </strong>
                         <Multiselect
-                          id
                           displayValue="key"
                           options={productOptions}
                           placeholder="제품(서비스) 의 Version 선택"
