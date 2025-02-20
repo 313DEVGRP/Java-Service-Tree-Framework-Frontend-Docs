@@ -139,9 +139,9 @@ async function fetchProductOptions() {
 }
 
 // 데이터 로드를 외부로 분리
-async function fetchVersionOptions() {
+async function fetchVersionOptions(selectedProduct?:number) {
   try {
-    const versionResponse = await axios.get('/api/auth/version');
+    const versionResponse = await axios.get('/api/auth/version?c_req_pdservice='+selectedProduct);
     // 응답 데이터에서 필요한 부분 추출
     const versionOptions =
       versionResponse.data?.result?.map(
