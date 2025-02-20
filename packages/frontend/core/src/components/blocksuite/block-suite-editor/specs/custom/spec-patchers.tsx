@@ -43,6 +43,7 @@ import { customElement } from 'lit/decorators.js';
 import { literal } from 'lit/static-html.js';
 import Multiselect from 'multiselect-react-dropdown'; // 241223 추가
 import axios from 'axios';
+import {useState} from "react";
 
 export type ReferenceReactRenderer = (
   reference: AffineReference
@@ -191,7 +192,32 @@ export function patchNotificationService(
         console.log(productOptions);
 
         return new Promise<string | null>(resolve => {
+
           let value = autofill || '';
+
+          // 상태로 관리하는 경우 (React의 useState 사용)
+          const [versionOptions, setVersionOptions] = useState([]);
+
+          async function pdServiceHandleSelect (selectedList, selectedItem) {
+            console.log("선택된 항목:", selectedList);
+            console.log("선택된 항목:", selectedItem);
+
+            const initialOptions = [
+              { name: "Apple", id: 1 },
+              { name: "Banana", id: 2 },
+              { name: "Cherry", id: 3 },
+              { name: "Date", id: 4 },
+              { name: "Elderberry", id: 5 }
+            ];
+
+            setVersionOptions(initialOptions); // 상태 업데이트
+
+            console.log(
+              '확인:', productOptions
+            );
+          };
+
+
           const description = // 241223 수정
             (
               <div>
@@ -248,9 +274,7 @@ export function patchNotificationService(
                             },
                           }}
                           singleSelect
-                          onSelect={console.log(
-                            '컴포넌트 내부에서 찍음=' + productOptions
-                          )} // 선택 시 호출
+                          onSelect={pdServiceHandleSelect} // 선택 시 호출
                         />
                       </li>
                       <li style={{ marginBottom: 5 }}>
