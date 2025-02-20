@@ -211,21 +211,29 @@ export function patchNotificationService(
                      }) => {
         // 제품 (서비스) 데이터 로드
         const { productOptions } = await fetchProductOptions();
-        const { versionOptions } = await fetchVersionOptions();
-
         console.log(productOptions);
+
+        // ✅ 첫 번째 Multiselect 선택 시 실행
+        async function handleProductSelect(selectedList, selectedItem, setVersionOptions) {
+          console.log('선택된 제품:', selectedItem);
+
+          // 🔥 제품에 대한 버전 옵션을 가져와서 `options` 속성에 직접 적용
+          const versions = await fetchVersionOptions(selectedItem.value);
+          console.log('불러온 버전 목록:', versions);
+
+          // ✅ `Multiselect`의 options 상태 업데이트
+          setVersionOptions(versions);
+        }
+
 
         return new Promise<string | null>(resolve => {
 
           let value = autofill || '';
 
+          // React useState 없이 `versionOptions`을 저장하는 변수
+          let versionOptions = [];
+
           // 첫 번째 Multiselect 선택 시 실행
-          async function handleProductSelect(selectedList, selectedItem) {
-            console.log('선택된 제품:', selectedItem);
-            const versions = await fetchVersionOptions(selectedItem.value);
-            console.log(versions);
-            console.log(versionOptions);
-          }
 
           const description = // 241223 수정
             (
@@ -283,7 +291,11 @@ export function patchNotificationService(
                             },
                           }}
                           singleSelect
-                          onSelect={ handleProductSelect } // 선택 시 호출
+                          onSelect={(selectedList, selectedItem) =>
+                            handleProductSelect(selectedList, selectedItem, newOptions => {
+                              versionOptions = newOptions;
+                            })
+                          }
                         />
                       </li>
                       <li style={{ marginBottom: 5 }}>
