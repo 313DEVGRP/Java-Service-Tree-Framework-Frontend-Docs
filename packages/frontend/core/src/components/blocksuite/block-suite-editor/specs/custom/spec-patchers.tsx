@@ -41,7 +41,7 @@ import {
 import { type TemplateResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { literal } from 'lit/static-html.js';
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import Multiselect from 'multiselect-react-dropdown'; // 241223 추가
 import axios from 'axios';
 
@@ -116,15 +116,14 @@ export function patchReferenceRenderer(
   });
 }
 
-// 데이터 로드를 외부로 분리
+// 제품 목록 불러오기
 async function fetchProductOptions() {
   try {
     const response = await axios.get('/api/auth/pdService');
-    // 응답 데이터에서 필요한 부분 추출
     return (
       response.data?.result?.map(item => ({
-        key: item.c_title,
-        value: item.c_id,
+        key: item.c_title, // 표시될 값
+        value: item.c_id,  // 실제 값
       })) || []
     );
   } catch (error) {
@@ -133,14 +132,14 @@ async function fetchProductOptions() {
   }
 }
 
-// 특정 제품 ID에 대한 버전 데이터 불러오기
+// 특정 제품 ID의 버전 목록 불러오기
 async function fetchVersionOptions(productId) {
   try {
     const response = await axios.get(`/api/auth/versionService?productId=${productId}`);
     return (
       response.data?.result?.map(item => ({
-        key: item.version_name, // 버전 이름
-        value: item.version_id, // 버전 ID
+        key: item.version_name, // 버전명
+        value: item.version_id,  // 버전 ID
       })) || []
     );
   } catch (error) {
@@ -197,26 +196,33 @@ export function patchNotificationService(
         inputTitle, // 241223 추가
         versionSelect, // 241223 추가
       }) => {
-        // 데이터 로드
-        const { productOptions } = await fetchProductOptions();
-
-        console.log(productOptions);
 
         return new Promise<string | null>(resolve => {
 
           let value = autofill || '';
 
-          const productOptions = await fetchProductOptions();
-          const [selectedProduct, setSelectedProduct] = useState(null);
-          const [versionOptions, setVersionOptions] = useState([]);
+          const [productOptions, setProductOptions] = useState([]); // 제품 목록 상태
+          const [versionOptions, setVersionOptions] = useState([]); // 버전 목록 상태
+          const [selectedProduct, setSelectedProduct] = useState(null); // 선택된 제품
 
-          // 첫 번째 Multiselect 선택 시 실행
+          // 🔹 첫 번째 Multiselect (제품)에서 선택 시 실행
           async function handleProductSelect(selectedList, selectedItem) {
             console.log('선택된 제품:', selectedItem);
             setSelectedProduct(selectedItem);
+
+            // 제품 선택 시 해당 제품의 버전 목록 로드
             const versions = await fetchVersionOptions(selectedItem.value);
             setVersionOptions(versions);
           }
+
+          // 🔹 제품 목록을 처음 로드할 때 실행
+          useEffect(() => {
+            async function loadProducts() {
+              const products = await fetchProductOptions();
+              setProductOptions(products);
+            }
+            loadProducts();
+          }, []); // []: 컴포넌트 마운트 시 한 번만 실행
 
           const description = // 241223 수정
             (
