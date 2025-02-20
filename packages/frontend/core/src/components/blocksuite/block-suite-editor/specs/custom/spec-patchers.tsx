@@ -46,6 +46,8 @@ import { useRef, useEffect } from "react";
 import Multiselect from 'multiselect-react-dropdown'; // 241223 추가
 import axios from 'axios';
 
+const multiSelectRef = useRef(null);
+
 export type ReferenceReactRenderer = (
   reference: AffineReference
 ) => React.ReactElement;
@@ -197,8 +199,6 @@ export function patchNotificationService(
           let value = autofill || '';
 
           async function pdServiceHandleSelect (selectedList, selectedItem) {
-
-            const multiSelectRef = useRef(null);
 
             console.log("선택된 항목:", selectedList);
             console.log("선택된 항목:", selectedItem);
