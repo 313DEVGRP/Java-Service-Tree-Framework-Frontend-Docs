@@ -250,10 +250,7 @@ export function patchNotificationService(
                             },
                           }}
                           singleSelect
-                          onSelect={
-                                console.log("컴포넌트 내부에서 찍음");
-                                console.log(productOptions);
-                        } // 선택 시 호출
+                          onSelect={console.log("컴포넌트 내부에서 찍음");console.log(productOptions);} // 선택 시 호출
                         />
                       </li>
                       <li style={{ marginBottom: 5 }}>
@@ -261,6 +258,7 @@ export function patchNotificationService(
                           버전
                         </strong>
                         <Multiselect
+                          id
                           displayValue="key"
                           options={productOptions}
                           placeholder="제품(서비스) 의 Version 선택"
