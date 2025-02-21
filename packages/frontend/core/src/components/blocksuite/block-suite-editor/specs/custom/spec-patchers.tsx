@@ -237,6 +237,7 @@ export function patchNotificationService(
           if (versionSelect) {
             versionSelect.addEventListener('change', (e) => {
               const selectedVersion = (e.target as HTMLSelectElement).value;
+              console.log("Selected pdService:" + selectedItem);
               console.log('Selected version:', selectedVersion);
             });
           }
