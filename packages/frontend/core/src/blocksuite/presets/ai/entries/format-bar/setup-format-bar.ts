@@ -154,10 +154,6 @@ export function toolbarDefaultConfig(toolbar: AffineFormatBarWidget) {
         const doc = host.doc;
         const autofill = getTitleFromSelectedModels(selectedModels);
 
-        console.log("autofill========================start");
-        console.log(autofill)
-        console.log("autofill========================end");
-
         void promptDocTitle(host, autofill).then(title => {
           if (title === null) return;
           const linkedDoc = convertSelectedBlocksToLinkedDoc(
@@ -165,10 +161,15 @@ export function toolbarDefaultConfig(toolbar: AffineFormatBarWidget) {
             selectedModels,
             title
           );
+
           console.log("========================");
           console.log(selectedModels);
           console.log(host.std);
           console.log("========================");
+          console.log("autofill========================start");
+          console.log(autofill)
+          console.log("autofill========================end");
+
           const linkedDocService = host.spec.getService(
             'affine:embed-linked-doc'
           );
