@@ -232,11 +232,27 @@ export function patchNotificationService(
           }
         }
 
-
         return new Promise<string | null>(resolve => {
 
           let value = autofill || '';
 
+          // version select 변경 이벤트 핸들러
+          const handleVersionSelect = (_selectedVersion: any) => {
+            // select 엘리먼트에서 선택된 버전 값 가져오기
+            const versionSelect = document.getElementById('version-multiselect') as HTMLSelectElement;
+            const selectedValue = versionSelect.value;
+
+            console.log("=========선택한 값 :" + selectedValue);
+
+          };
+
+          // version select 엘리먼트에 이벤트 리스너 추가
+          const versionSelect = document.getElementById('version-multiselect');
+          if (versionSelect) {
+            versionSelect.addEventListener('change', (e) => {
+              handleVersionSelect((e.target as HTMLSelectElement).value);
+            });
+          }
 
           // 첫 번째 Multiselect 선택 시 실행
 
