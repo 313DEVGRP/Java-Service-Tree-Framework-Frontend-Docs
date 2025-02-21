@@ -306,7 +306,9 @@ export function patchNotificationService(
             },
             cancelText: cancelText ?? 'Cancel',
             onConfirm: () => {
+              console.log("onConfirm===========start");
               resolve(value);
+              console.log("onConfirm===========end");
             },
             onCancel: () => {
               resolve(null);
