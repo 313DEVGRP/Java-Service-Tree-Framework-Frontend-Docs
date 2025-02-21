@@ -44,6 +44,9 @@ import { literal } from 'lit/static-html.js';
 import Multiselect from 'multiselect-react-dropdown'; // 241223 추가
 import axios from 'axios';
 
+let selectedPdServiceID = "";
+let selectedVersionID = "";
+
 
 export type ReferenceReactRenderer = (
   reference: AffineReference
@@ -237,6 +240,9 @@ export function patchNotificationService(
           if (versionSelect) {
             versionSelect.addEventListener('change', (e) => {
               const selectedVersion = (e.target as HTMLSelectElement).value;
+
+              selectedPdServiceID = selectedItem.value;
+              selectedVersionID = selectedVersion;
               console.log("Selected pdService:" + selectedItem.value);
               console.log('Selected version:', selectedVersion);
             });
@@ -370,6 +376,7 @@ export function patchNotificationService(
       },
     };
   });
+
   return specs;
 }
 

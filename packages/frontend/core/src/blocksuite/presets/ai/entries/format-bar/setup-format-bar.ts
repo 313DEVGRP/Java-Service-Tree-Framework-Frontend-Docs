@@ -154,6 +154,10 @@ export function toolbarDefaultConfig(toolbar: AffineFormatBarWidget) {
         const doc = host.doc;
         const autofill = getTitleFromSelectedModels(selectedModels);
 
+        console.log("autofill========================start");
+        console.log(autofill)
+        console.log("autofill========================end");
+
         void promptDocTitle(host, autofill).then(title => {
           if (title === null) return;
           const linkedDoc = convertSelectedBlocksToLinkedDoc(
