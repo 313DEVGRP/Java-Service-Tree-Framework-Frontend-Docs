@@ -166,9 +166,6 @@ export function toolbarDefaultConfig(toolbar: AffineFormatBarWidget) {
           console.log(selectedModels);
           console.log(host.std);
           console.log("========================");
-          console.log("autofill========================start");
-          console.log(autofill)
-          console.log("autofill========================end");
 
           const linkedDocService = host.spec.getService(
             'affine:embed-linked-doc'
