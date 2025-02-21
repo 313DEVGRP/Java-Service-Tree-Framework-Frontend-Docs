@@ -307,6 +307,19 @@ export function patchNotificationService(
             cancelText: cancelText ?? 'Cancel',
             onConfirm: () => {
               console.log("onConfirm===========start");
+
+
+              // Add event listener to the version select element
+              const versionSelect = document.getElementById('version-multiselect');
+              if (versionSelect) {
+                versionSelect.addEventListener('change', (e) => {
+                  const selectedVersion = (e.target as HTMLSelectElement).value;
+                  // Handle the selected version value
+                  console.log('------------------Selected version:', selectedVersion);
+                });
+              }
+
+
               resolve(value);
               console.log("onConfirm===========end");
             },
