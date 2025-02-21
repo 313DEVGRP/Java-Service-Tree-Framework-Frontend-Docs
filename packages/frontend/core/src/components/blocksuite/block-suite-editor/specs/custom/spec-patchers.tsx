@@ -237,9 +237,6 @@ export function patchNotificationService(
 
           let value = autofill || '';
 
-
-          // 첫 번째 Multiselect 선택 시 실행
-
           // ✅ 기존 코드 유지하면서 versionSelect만 동적 업데이트
           const description = (
             <div>
@@ -307,19 +304,6 @@ export function patchNotificationService(
             cancelText: cancelText ?? 'Cancel',
             onConfirm: () => {
               console.log("onConfirm===========start");
-
-
-              // Add event listener to the version select element
-              const versionSelect = document.getElementById('version-multiselect');
-              if (versionSelect) {
-                versionSelect.addEventListener('change', (e) => {
-                  const selectedVersion = (e.target as HTMLSelectElement).value;
-                  // Handle the selected version value
-                  console.log('------------------Selected version:', selectedVersion);
-                });
-              }
-
-
               resolve(value);
               console.log("onConfirm===========end");
             },
@@ -327,10 +311,22 @@ export function patchNotificationService(
               resolve(null);
             },
           });
+
           abort?.addEventListener('abort', () => {
             resolve(null);
             closeConfirmModal();
           });
+
+          // Add event listener to the version select element
+          const versionSelect = document.getElementById('version-multiselect');
+          if (versionSelect) {
+            versionSelect.addEventListener('change', (e) => {
+              const selectedVersion = (e.target as HTMLSelectElement).value;
+              // Handle the selected version value
+              console.log('------------------Selected version:', selectedVersion);
+            });
+          }
+
         });
       },
       toast: (message: string, options: ToastOptions) => {
