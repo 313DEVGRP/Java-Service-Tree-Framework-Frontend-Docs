@@ -230,6 +230,17 @@ export function patchNotificationService(
               versionDropdown.appendChild(optionElement);
             });
           }
+
+
+          // 버전 선택 이벤트 리스너
+          const versionSelect = document.getElementById('version-multiselect');
+          if (versionSelect) {
+            versionSelect.addEventListener('change', (e) => {
+              const selectedVersion = (e.target as HTMLSelectElement).value;
+              console.log('Selected version:', selectedVersion);
+            });
+          }
+
         }
 
 
@@ -311,22 +322,10 @@ export function patchNotificationService(
               resolve(null);
             },
           });
-
           abort?.addEventListener('abort', () => {
             resolve(null);
             closeConfirmModal();
           });
-
-          // Add event listener to the version select element
-          const versionSelect = document.getElementById('version-multiselect');
-          if (versionSelect) {
-            versionSelect.addEventListener('change', (e) => {
-              const selectedVersion = (e.target as HTMLSelectElement).value;
-              // Handle the selected version value
-              console.log('------------------Selected version:', selectedVersion);
-            });
-          }
-
         });
       },
       toast: (message: string, options: ToastOptions) => {
