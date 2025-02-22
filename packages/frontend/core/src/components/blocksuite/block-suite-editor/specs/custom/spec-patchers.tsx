@@ -115,6 +115,10 @@ export function patchReferenceRenderer(
       );
     }
 
+    console.log("spec return --------------- start");
+    console.log(spec);
+    console.log("spec return --------------- end");
+
     return spec;
   });
 }
