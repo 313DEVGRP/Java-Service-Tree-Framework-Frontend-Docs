@@ -18,3 +18,8 @@ COPY ./packages/frontend/admin/dist ./admin
 COPY ./packages/backend/server /app
 COPY ./packages/frontend/web/dist /app/static
 COPY ./packages/frontend/admin/dist /app/static/admin
+
+아래 오류 시. 관리자 권한 파워쉘 실행
+yarn : 이 시스템에서 스크립트를 실행할 수 없으므로 C:\Users\spear\AppData\Roaming\npm\yarn.ps1 파일을 로드할 수 없습니다.
+get-help Set-ExecutionPolicy
+Set-ExecutionPolicy RemoteSigned
