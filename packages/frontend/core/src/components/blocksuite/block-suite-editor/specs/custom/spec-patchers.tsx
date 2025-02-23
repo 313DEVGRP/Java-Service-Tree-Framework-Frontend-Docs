@@ -232,6 +232,10 @@ export function patchNotificationService(
               optionElement.textContent = option.key;
               versionDropdown.appendChild(optionElement);
             });
+
+            //디폴트 셋팅
+            selectedPdServiceID = selectedItem.value;
+            selectedVersionID = newVersionOptions[0].value;
           }
 
 
