@@ -323,7 +323,7 @@ export function promptDocTitle(host: EditorHost, autofill?: string) {
 async function arms_add_req(title: string, host: EditorHost) {
 
   console.log("=================");
-  console.log(host);
+  console.log(host.std.range.host);
   console.log("=================");
   // GET 요청
   // @ts-ignore
