@@ -216,7 +216,7 @@ export class AuthController {
   @Get('/arms')
   async arms(
     @Query('c_title') c_title?: string,
-    @Query('c_req_pdservice_link') c_req_pdservice_link?: number,
+    @Query('c_req_pdservice_link') c_req_pdservice_link?: string,
     @Query('c_req_pdservice_versionset_link') c_req_pdservice_versionset_link?: string,
     @Query('c_req_contents') c_req_contents?: string,
     @Query('c_req_desc') c_req_desc?: string,
@@ -256,7 +256,7 @@ export class AuthController {
       formData.append('ref', "2");
       formData.append('c_title', c_title || '');
       formData.append('c_type', "default");
-      formData.append('c_req_pdservice_link', c_req_pdservice_link?.toString() || '');
+      formData.append('c_req_pdservice_link', c_req_pdservice_link || '');
       formData.append('c_req_pdservice_versionset_link', c_req_pdservice_versionset_link || '');
       formData.append('c_req_start_date', c_req_start_date);
       formData.append('c_req_end_date', c_req_end_date);
