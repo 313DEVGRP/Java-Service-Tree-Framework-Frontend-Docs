@@ -154,12 +154,31 @@ export function toolbarDefaultConfig(toolbar: AffineFormatBarWidget) {
         const doc = host.doc;
         const autofill = getTitleFromSelectedModels(selectedModels);
 
+        let selectedPdServiceID = "";
+        let selectedVersionID = "";
+
         void promptDocTitle(host, autofill).then(title => {
           if (title === null) return;
 
           //여기가 타이틀 들어오는 곳
           console.log("title============start");
           console.log(title);
+
+          const parts = title.split(':::'); // ':::'을 기준으로 분기
+
+          if (parts.length > 1) {
+            var ids = parts[1].split(',');
+
+            if(ids.length > 1){
+              selectedPdServiceID = ids[0].trim();
+              selectedVersionID = ids[1].trim();
+            }
+
+          }
+
+          //원복
+          title = parts[0].trim();
+
           console.log("title============end");
           const linkedDoc = convertSelectedBlocksToLinkedDoc(
             doc,

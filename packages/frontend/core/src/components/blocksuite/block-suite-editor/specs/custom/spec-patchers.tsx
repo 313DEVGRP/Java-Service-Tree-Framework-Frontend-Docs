@@ -324,7 +324,7 @@ export function patchNotificationService(
               console.log("onConfirm===========start");
               console.log("-----------value check start");
               console.log(value);
-              value = value + ":::313,313";
+              value = value + ":::"+selectedPdServiceID+","+selectedVersionID;
               console.log("-----------value check end");
 
               resolve(value);
