@@ -184,9 +184,13 @@ export function toolbarDefaultConfig(toolbar: AffineFormatBarWidget) {
               type: 'embed-linked-doc',
             });
           console.log('여기에서 ARMS 연동=============시작');
+          console.log('여기에서 ARMS 연동=============doc');
           console.log(doc);
+          console.log('여기에서 ARMS 연동=============selectedModels');
           console.log(selectedModels);
+          console.log('여기에서 ARMS 연동=============host');
           console.log(host);
+          console.log('여기에서 ARMS 연동=============linkedDoc');
           console.log(linkedDoc);
           console.log('여기에서 ARMS 연동=============종료');
           arms_add_req(title, host);
