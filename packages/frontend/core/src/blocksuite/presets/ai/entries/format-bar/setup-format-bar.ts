@@ -156,6 +156,11 @@ export function toolbarDefaultConfig(toolbar: AffineFormatBarWidget) {
 
         void promptDocTitle(host, autofill).then(title => {
           if (title === null) return;
+
+          //여기가 타이틀 들어오는 곳
+          console.log("title============start");
+          console.log(title);
+          console.log("title============end");
           const linkedDoc = convertSelectedBlocksToLinkedDoc(
             doc,
             selectedModels,
