@@ -162,11 +162,6 @@ export function toolbarDefaultConfig(toolbar: AffineFormatBarWidget) {
             title
           );
 
-          console.log("========================");
-          console.log(selectedModels);
-          console.log(host.std);
-          console.log("========================");
-
           const linkedDocService = host.spec.getService(
             'affine:embed-linked-doc'
           );
@@ -188,10 +183,12 @@ export function toolbarDefaultConfig(toolbar: AffineFormatBarWidget) {
               module: 'format toolbar',
               type: 'embed-linked-doc',
             });
-          console.log('여기에서 ARMS 연동');
-
-          console.log(linkedDoc.Text);
-          console.log(linkedDoc.id);
+          console.log('여기에서 ARMS 연동=============시작');
+          console.log(doc);
+          console.log(selectedModels);
+          console.log(host);
+          console.log(linkedDoc);
+          console.log('여기에서 ARMS 연동=============종료');
           arms_add_req(title, host);
         });
       },

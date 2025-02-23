@@ -34,33 +34,6 @@ export const ConfirmModal = ({
                                ...props
                              }: ConfirmModalProps) => {
 
-  // 서버에서 데이터 가져오기
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const productsResponse = await axios.get('/api/auth/arms/pdService');
-  //       setProductOptions(
-  //         productsResponse.data.map((item: any) => ({
-  //           key: item.name,
-  //           cat: item.category,
-  //         }))
-  //       );
-  //
-  //       const versionsResponse = await axios.get('/api/auth/arms/pdServiceVersion + 선택한 제품(서비스)');
-  //       setVersionOptions(
-  //         versionsResponse.data.map((item: any) => ({
-  //           key: item.version,
-  //           cat: item.category,
-  //         }))
-  //       );
-  //     } catch (error) {
-  //       console.error('데이터 로드 실패:', error);
-  //     }
-  //   };
-  //
-  //   fetchData();
-  // }, []);
-
   const onConfirmClick = useCallback(() => {
     Promise.resolve(onConfirm?.()).catch((err) => {
       console.error(err);
