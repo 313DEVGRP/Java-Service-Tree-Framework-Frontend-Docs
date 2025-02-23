@@ -178,7 +178,8 @@ export function toolbarDefaultConfig(toolbar: AffineFormatBarWidget) {
 
           //원복
           title = parts[0].trim();
-
+          console.log(selectedPdServiceID);
+          console.log(selectedVersionID);
           console.log("title============end");
           const linkedDoc = convertSelectedBlocksToLinkedDoc(
             doc,
@@ -217,7 +218,7 @@ export function toolbarDefaultConfig(toolbar: AffineFormatBarWidget) {
           console.log('여기에서 ARMS 연동=============linkedDoc');
           console.log(linkedDoc);
           console.log('여기에서 ARMS 연동=============종료');
-          arms_add_req(title, host);
+          arms_add_req(title, host, selectedPdServiceID, selectedVersionID);
         });
       },
       showWhen: chain => {
@@ -344,7 +345,7 @@ export function promptDocTitle(host: EditorHost, autofill?: string) {
 }
 
 
-async function arms_add_req(title: string, host: EditorHost) {
+async function arms_add_req(title: string, host: EditorHost, selectedPdServiceID: string, selectedVersionID: string) {
 
   console.log("=================");
   console.log(host.std.range.host);
@@ -356,13 +357,11 @@ async function arms_add_req(title: string, host: EditorHost) {
     url: '/api/auth/arms',
     params: {
       c_title: title,
-      c_req_pdservice_link: 11,
-      c_req_pdservice_versionset_link: '["37"]',
-      c_req_contents: '제품(*서비스) 이름 : A' + '\n' +
-                      '제품(*서비스) 버전 : B' + '\n' +
-                      '제품(*서비스) 내용 : Adoc 문서 제목 : ' + host.std.range.host.ownerDocument.title,
+      c_req_pdservice_link: selectedPdServiceID,
+      c_req_pdservice_versionset_link: '["'+ selectedVersionID + '"]',
+      c_req_contents: '제품(*서비스) 내용 : Adoc 문서 제목 : ' + host.std.range.host.ownerDocument.title,
       c_req_desc: '설명',
-      c_req_etc: '비고'
+      c_req_etc: 'N/A'
     },
     headers: {
       'Access-Control-Allow-Origin': '*'
