@@ -284,7 +284,7 @@ export class AuthController {
       // @ts-ignore
       axios({
         method: 'post',
-        url: 'http://backend-core:31313/arms/reqAdd/T_ARMS_REQADD_11/addNode.do',
+        url: 'http://backend-core:31313/arms/reqAdd/T_ARMS_REQADD_'+ c_req_pdservice_link +'/addNode.do',
         data: formData,
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
