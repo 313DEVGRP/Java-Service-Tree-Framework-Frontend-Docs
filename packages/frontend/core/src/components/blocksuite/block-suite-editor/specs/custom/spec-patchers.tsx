@@ -238,7 +238,7 @@ export function patchNotificationService(
           // 버전 선택 이벤트 리스너
           const versionSelect = document.getElementById('version-multiselect');
           if (versionSelect) {
-            versionSelect.addEventListener('change', (e) => {
+            versionSelect.addEventListener('input', (e) => {
               const selectedVersion = (e.target as HTMLSelectElement).value;
 
               selectedPdServiceID = selectedItem.value;
