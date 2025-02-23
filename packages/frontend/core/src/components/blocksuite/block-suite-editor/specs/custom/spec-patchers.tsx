@@ -325,6 +325,7 @@ export function patchNotificationService(
               console.log("-----------value check start");
               console.log(value);
               value = value + ":::"+selectedPdServiceID+","+selectedVersionID;
+              console.log(value);
               console.log("-----------value check end");
 
               resolve(value);
