@@ -313,7 +313,7 @@ export function patchNotificationService(
           );
 
           openConfirmModal({
-            title: toReactNode(title + ":::313,313"),
+            title: toReactNode(title),
             description: description,
             confirmText: confirmText ?? 'Confirm',
             confirmButtonOptions: {
@@ -322,6 +322,10 @@ export function patchNotificationService(
             cancelText: cancelText ?? 'Cancel',
             onConfirm: () => {
               console.log("onConfirm===========start");
+              console.log("-----------value check start");
+              console.log(value);
+              console.log("-----------value check end");
+
               resolve(value);
               console.log("onConfirm===========end");
             },
