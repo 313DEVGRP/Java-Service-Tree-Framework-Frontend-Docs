@@ -20,16 +20,15 @@ const appNames = {
   beta: 'AFFiNE Beta',
   internal: 'AFFiNE Internal',
 } satisfies Record<Channel, string>;
-const appName = appNames[BUILD_CONFIG.appBuildType];
 
 const links = [
   {
-    href: BUILD_CONFIG.githubUrl,
+    href: runtimeConfig.githubUrl,
     icon: <GithubIcon size={20} />,
     label: 'Star AFFiNE on GitHub',
   },
   {
-    href: BUILD_CONFIG.githubUrl,
+    href: runtimeConfig.githubUrl,
     icon: <MailWarningIcon size={20} />,
     label: 'Report an Issue',
   },
@@ -46,6 +45,9 @@ const links = [
 ];
 
 export function AboutAFFiNE() {
+  const { appBuildType, appVersion, editorVersion } = runtimeConfig;
+  const appName = appNames[appBuildType];
+
   return (
     <div className="flex flex-col h-full gap-3 py-5 px-6 w-full">
       <div className="flex items-center">
@@ -78,8 +80,8 @@ export function AboutAFFiNE() {
         </div>
       </div>
       <div className="space-y-3 text-sm font-normal text-gray-500">
-        <div>{`App Version: ${appName} ${BUILD_CONFIG.appVersion}`}</div>
-        <div>{`Editor Version: ${BUILD_CONFIG.editorVersion}`}</div>
+        <div>{`App Version: ${appName} ${appVersion}`}</div>
+        <div>{`Editor Version: ${editorVersion}`}</div>
       </div>
     </div>
   );

@@ -1,9 +1,7 @@
-import {
-  Entity,
-  generateFractionalIndexingKeyBetween,
-} from '@toeverything/infra';
+import { generateFractionalIndexingKeyBetween } from '@affine/core/utils/fractional-indexing';
+import { Entity } from '@toeverything/infra';
 
-import type { FavoriteSupportTypeUnion } from '../constant';
+import type { FavoriteSupportType } from '../constant';
 import type { FavoriteRecord, FavoriteStore } from '../stores/favorite';
 
 export class FavoriteList extends Entity {
@@ -20,16 +18,16 @@ export class FavoriteList extends Entity {
   /**
    * get favorite record by type and id
    */
-  favorite$(type: FavoriteSupportTypeUnion, id: string) {
+  favorite$(type: FavoriteSupportType, id: string) {
     return this.store.watchFavorite(type, id);
   }
 
-  isFavorite$(type: FavoriteSupportTypeUnion, id: string) {
+  isFavorite$(type: FavoriteSupportType, id: string) {
     return this.favorite$(type, id).map(v => !!v);
   }
 
   add(
-    type: FavoriteSupportTypeUnion,
+    type: FavoriteSupportType,
     id: string,
     index: string = this.indexAt('before')
   ) {
@@ -37,7 +35,7 @@ export class FavoriteList extends Entity {
   }
 
   toggle(
-    type: FavoriteSupportTypeUnion,
+    type: FavoriteSupportType,
     id: string,
     index: string = this.indexAt('before')
   ) {
@@ -48,18 +46,18 @@ export class FavoriteList extends Entity {
     }
   }
 
-  remove(type: FavoriteSupportTypeUnion, id: string) {
+  remove(type: FavoriteSupportType, id: string) {
     return this.store.removeFavorite(type, id);
   }
 
-  reorder(type: FavoriteSupportTypeUnion, id: string, index: string) {
+  reorder(type: FavoriteSupportType, id: string, index: string) {
     return this.store.reorderFavorite(type, id, index);
   }
 
   indexAt(
     at: 'before' | 'after',
     targetRecord?: {
-      type: FavoriteSupportTypeUnion;
+      type: FavoriteSupportType;
       id: string;
     }
   ) {

@@ -16,7 +16,6 @@ export const Skeleton = ({
   variant = 'text',
   children,
 
-  flex,
   width: _width,
   height: _height,
   style: _style,
@@ -30,7 +29,6 @@ export const Skeleton = ({
   const style = {
     width,
     height,
-    flex,
     ..._style,
   };
 

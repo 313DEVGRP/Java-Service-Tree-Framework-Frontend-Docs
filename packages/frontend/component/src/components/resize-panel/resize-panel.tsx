@@ -1,9 +1,16 @@
+import { assertExists } from '@blocksuite/global/utils';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
 import clsx from 'clsx';
-import { forwardRef, useCallback, useLayoutEffect, useRef } from 'react';
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useTransition } from 'react-transition-state';
 
-import { Tooltip, type TooltipProps } from '../../ui/tooltip';
 import * as styles from './resize-panel.css';
 
 export interface ResizeHandleProps
@@ -18,10 +25,6 @@ export interface ResizeHandleProps
   onOpen: (open: boolean) => void;
   onResizing: (resizing: boolean) => void;
   onWidthChange: (width: number) => void;
-  tooltip?: TooltipProps['content'];
-  tooltipShortcut?: TooltipProps['shortcut'];
-  tooltipOptions?: Partial<Omit<TooltipProps, 'content' | 'shortcut'>>;
-  tooltipShortcutClassName?: string;
 }
 
 export interface ResizePanelProps
@@ -34,12 +37,6 @@ export interface ResizePanelProps
   resizeHandlePos: 'left' | 'right';
   resizeHandleOffset?: number;
   resizeHandleVerticalPadding?: number;
-  resizeHandleTooltip?: TooltipProps['content'];
-  resizeHandleTooltipShortcut?: TooltipProps['shortcut'];
-  resizeHandleTooltipShortcutClassName?: string;
-  resizeHandleTooltipOptions?: Partial<
-    Omit<TooltipProps, 'content' | 'shortcut'>
-  >;
   enableAnimation?: boolean;
   width: number;
   unmountOnExit?: boolean;
@@ -60,89 +57,84 @@ const ResizeHandle = ({
   onOpen,
   onResizing,
   onWidthChange,
-  tooltip,
-  tooltipShortcut,
-  tooltipOptions,
-  tooltipShortcutClassName,
   ...rest
 }: ResizeHandleProps) => {
   const ref = useRef<HTMLDivElement>(null);
-  const onResizeStart = useCallback(
-    (event: React.MouseEvent<HTMLDivElement>) => {
-      event.preventDefault();
-      let resized = false;
-      const panelContainer = ref.current?.parentElement;
+  const onResizeStart = useCallback(() => {
+    let resized = false;
+    const panelContainer = ref.current?.parentElement;
+    assertExists(
+      panelContainer,
+      'parent element not found for resize indicator'
+    );
+
+    const { left: anchorLeft, right: anchorRight } =
+      panelContainer.getBoundingClientRect();
+
+    function onMouseMove(e: MouseEvent) {
+      e.preventDefault();
       if (!panelContainer) return;
-
-      // add cursor style to body
-      document.body.style.cursor = 'col-resize';
-
-      const { left: anchorLeft, right: anchorRight } =
-        panelContainer.getBoundingClientRect();
-
-      function onMouseMove(e: MouseEvent) {
-        e.preventDefault();
-        if (!panelContainer) return;
-        const newWidth = Math.min(
-          maxWidth,
-          Math.max(
-            resizeHandlePos === 'right'
-              ? e.clientX - anchorLeft
-              : anchorRight - e.clientX,
-            minWidth
-          )
-        );
-        onWidthChange(newWidth);
-        onResizing(true);
-        resized = true;
-      }
-
-      document.addEventListener('mousemove', onMouseMove);
-      document.addEventListener(
-        'mouseup',
-        () => {
-          // if not resized, toggle sidebar
-          if (!resized) {
-            onOpen(false);
-          }
-          onResizing(false);
-          document.removeEventListener('mousemove', onMouseMove);
-          document.body.style.cursor = '';
-        },
-        { once: true }
+      const newWidth = Math.min(
+        maxWidth,
+        Math.max(
+          resizeHandlePos === 'right'
+            ? e.clientX - anchorLeft
+            : anchorRight - e.clientX,
+          minWidth
+        )
       );
-    },
-    [maxWidth, resizeHandlePos, minWidth, onWidthChange, onResizing, onOpen]
-  );
+      onWidthChange(newWidth);
+      onResizing(true);
+      resized = true;
+    }
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener(
+      'mouseup',
+      () => {
+        // if not resized, toggle sidebar
+        if (!resized) {
+          onOpen(false);
+        }
+        onResizing(false);
+        document.removeEventListener('mousemove', onMouseMove);
+      },
+      { once: true }
+    );
+  }, [maxWidth, resizeHandlePos, minWidth, onWidthChange, onResizing, onOpen]);
 
   return (
-    <Tooltip
-      content={tooltip}
-      shortcut={tooltipShortcut}
-      shortcutClassName={tooltipShortcutClassName}
-      {...tooltipOptions}
+    <div
+      {...rest}
+      data-testid="resize-handle"
+      ref={ref}
+      style={assignInlineVars({
+        [styles.resizeHandleOffsetVar]: `${resizeHandleOffset ?? 0}px`,
+        [styles.resizeHandleVerticalPadding]: `${
+          resizeHandleVerticalPadding ?? 0
+        }px`,
+      })}
+      className={clsx(styles.resizeHandleContainer, className)}
+      data-handle-position={resizeHandlePos}
+      data-resizing={resizing}
+      data-open={open}
+      onMouseDown={onResizeStart}
     >
-      <div
-        {...rest}
-        data-testid="resize-handle"
-        ref={ref}
-        style={assignInlineVars({
-          [styles.resizeHandleOffsetVar]: `${resizeHandleOffset ?? 0}px`,
-          [styles.resizeHandleVerticalPadding]: `${
-            resizeHandleVerticalPadding ?? 0
-          }px`,
-        })}
-        className={clsx(styles.resizeHandleContainer, className)}
-        data-handle-position={resizeHandlePos}
-        data-resizing={resizing}
-        data-open={open}
-        onMouseDown={onResizeStart}
-      >
-        <div className={styles.resizerInner} />
-      </div>
-    </Tooltip>
+      <div className={styles.resizerInner} />
+    </div>
   );
 };
+
+// delay initial animation to avoid flickering
+function useEnableAnimation() {
+  const [enable, setEnable] = useState(false);
+  useEffect(() => {
+    window.setTimeout(() => {
+      setEnable(true);
+    }, 500);
+  }, []);
+  return enable;
+}
 
 const animationTimeout = 300;
 
@@ -156,7 +148,7 @@ export const ResizePanel = forwardRef<HTMLDivElement, ResizePanelProps>(
       maxWidth,
       width,
       floating,
-      enableAnimation = true,
+      enableAnimation: _enableAnimation = true,
       open,
       unmountOnExit,
       onOpen,
@@ -165,14 +157,11 @@ export const ResizePanel = forwardRef<HTMLDivElement, ResizePanelProps>(
       resizeHandlePos,
       resizeHandleOffset,
       resizeHandleVerticalPadding,
-      resizeHandleTooltip,
-      resizeHandleTooltipShortcut,
-      resizeHandleTooltipShortcutClassName,
-      resizeHandleTooltipOptions,
       ...rest
     },
     ref
   ) {
+    const enableAnimation = useEnableAnimation() && _enableAnimation;
     const safeWidth = Math.min(maxWidth, Math.max(minWidth, width));
     const [{ status }, toggle] = useTransition({
       timeout: animationTimeout,
@@ -195,17 +184,11 @@ export const ResizePanel = forwardRef<HTMLDivElement, ResizePanelProps>(
         data-handle-position={resizeHandlePos}
         data-enable-animation={enableAnimation && !resizing}
       >
-        <div className={styles.content}>
-          {!(status === 'exited' && unmountOnExit !== false) && children}
-        </div>
+        {!(status === 'exited' && unmountOnExit !== false) && children}
         <ResizeHandle
           resizeHandlePos={resizeHandlePos}
           resizeHandleOffset={resizeHandleOffset}
           resizeHandleVerticalPadding={resizeHandleVerticalPadding}
-          tooltip={resizeHandleTooltip}
-          tooltipOptions={resizeHandleTooltipOptions}
-          tooltipShortcut={resizeHandleTooltipShortcut}
-          tooltipShortcutClassName={resizeHandleTooltipShortcutClassName}
           maxWidth={maxWidth}
           minWidth={minWidth}
           onOpen={onOpen}

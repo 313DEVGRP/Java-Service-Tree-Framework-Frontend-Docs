@@ -31,7 +31,10 @@ export const Divider = forwardRef<HTMLDivElement, DividerProps>(
           styles.divider,
           {
             [styles.verticalDivider]: orientation === 'vertical',
-            [styles.thinner]: size === 'thinner',
+            [styles.thinner]:
+              size === 'thinner' && orientation === 'horizontal',
+            [styles.verticalThinner]:
+              size === 'thinner' && orientation === 'vertical',
           },
           className
         )}

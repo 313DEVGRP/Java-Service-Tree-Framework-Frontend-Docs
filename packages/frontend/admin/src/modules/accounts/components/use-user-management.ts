@@ -1,9 +1,9 @@
+import { useAsyncCallback } from '@affine/core/hooks/affine-async-hooks';
 import {
   useMutateQueryResource,
   useMutation,
-} from '@affine/admin/use-mutation';
-import { useQuery } from '@affine/admin/use-query';
-import { useAsyncCallback } from '@affine/core/components/hooks/affine-async-hooks';
+} from '@affine/core/hooks/use-mutation';
+import { useQuery } from '@affine/core/hooks/use-query';
 import {
   createChangePasswordUrlMutation,
   createUserMutation,
@@ -53,7 +53,7 @@ export const useCreateUser = () => {
         toast.error('Failed to update account: ' + (e as Error).message);
       }
     },
-    [createAccount, revalidate, updateAccountFeatures]
+    [createAccount, revalidate]
   );
 
   return { creating: creating || !!error, create };
@@ -99,7 +99,7 @@ export const useUpdateUser = () => {
         toast.error('Failed to update account: ' + (e as Error).message);
       }
     },
-    [revalidate, updateAccount, updateAccountFeatures]
+    [revalidate, updateAccount]
   );
 
   return { updating: updating || !!error, update };
@@ -116,7 +116,7 @@ export const useResetUserPassword = () => {
       setResetPasswordLink('');
       resetPassword({
         userId: id,
-        callbackUrl: '/auth/changePassword',
+        callbackUrl: '/auth/changePassword?isClient=false',
       })
         .then(res => {
           setResetPasswordLink(res.createChangePasswordUrl);

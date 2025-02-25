@@ -40,7 +40,7 @@ export function Prompts() {
         <div className="flex flex-col rounded-md border w-full">
           {list.map((item, index) => (
             <PromptRow
-              key={`${item.name}-${index}`}
+              key={item.name.concat(index.toString())}
               item={item}
               index={index}
             />
@@ -54,16 +54,14 @@ export function Prompts() {
 export const PromptRow = ({ item, index }: { item: Prompt; index: number }) => {
   const { setRightPanelContent, openPanel, isOpen } = useRightPanel();
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [canSave, setCanSave] = useState(false);
 
   const handleDiscardChangesCancel = useCallback(() => {
     setDialogOpen(false);
-    setCanSave(false);
   }, []);
 
   const handleConfirm = useCallback(
     (item: Prompt) => {
-      setRightPanelContent(<EditPrompt item={item} setCanSave={setCanSave} />);
+      setRightPanelContent(<EditPrompt item={item} />);
       if (dialogOpen) {
         handleDiscardChangesCancel();
       }
@@ -83,13 +81,13 @@ export const PromptRow = ({ item, index }: { item: Prompt; index: number }) => {
 
   const handleEdit = useCallback(
     (item: Prompt) => {
-      if (isOpen && canSave) {
+      if (isOpen) {
         setDialogOpen(true);
       } else {
         handleConfirm(item);
       }
     },
-    [canSave, handleConfirm, isOpen]
+    [handleConfirm, isOpen]
   );
   return (
     <div>

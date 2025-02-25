@@ -5,11 +5,7 @@ config:
   strict: true
   maybeValue: T | null
   declarationKind: interface
-  avoidOptionals:
-    field: true
-    inputValue: false
-    object: false
-    defaultValue: false
+  avoidOptionals: true
   preResolveTypes: true
   namingConvention:
     enumValues: keep
@@ -30,5 +26,7 @@ generates:
     plugins:
       - typescript
       - typescript-operations
+      - add:
+          content: '/* eslint-disable */'
       - ./export-gql-plugin.cjs:
           output: ./src/graphql/index.ts

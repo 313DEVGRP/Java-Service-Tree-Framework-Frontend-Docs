@@ -1,12 +1,12 @@
 import { IconButton } from '@affine/component';
-import { AffineErrorBoundary } from '@affine/core/components/affine/affine-error-boundary';
 import { RightSidebarIcon } from '@blocksuite/icons/rc';
 import { useLiveData, useService } from '@toeverything/infra';
+import { useAtomValue } from 'jotai';
 import { Suspense, useCallback } from 'react';
-import { Outlet } from 'react-router-dom';
 
-import { AppSidebarService } from '../../app-sidebar';
-import { SidebarSwitch } from '../../app-sidebar/views/sidebar-header';
+import { AffineErrorBoundary } from '../../../components/affine/affine-error-boundary';
+import { appSidebarOpenAtom } from '../../../components/app-sidebar/index.jotai';
+import { SidebarSwitch } from '../../../components/app-sidebar/sidebar-header/sidebar-switch';
 import { ViewService } from '../services/view';
 import { WorkbenchService } from '../services/workbench';
 import * as styles from './route-container.css';
@@ -34,17 +34,15 @@ const ToggleButton = ({
       onClick={onToggle}
       className={className}
       data-show={show}
-      data-testid="right-sidebar-toggle"
     >
       <RightSidebarIcon />
     </IconButton>
   );
 };
 
-export const RouteContainer = () => {
+export const RouteContainer = ({ route }: Props) => {
   const viewPosition = useViewPosition();
-  const appSidebarService = useService(AppSidebarService).sidebar;
-  const leftSidebarOpen = useLiveData(appSidebarService.open$);
+  const leftSidebarOpen = useAtomValue(appSidebarOpenAtom);
   const workbench = useService(WorkbenchService).workbench;
   const view = useService(ViewService).view;
   const sidebarOpen = useLiveData(workbench.sidebarOpen$);
@@ -55,7 +53,7 @@ export const RouteContainer = () => {
   return (
     <div className={styles.root}>
       <div className={styles.header}>
-        {!BUILD_CONFIG.isElectron && viewPosition.isFirst && (
+        {viewPosition.isFirst && !environment.isDesktop && (
           <SidebarSwitch
             show={!leftSidebarOpen}
             className={styles.leftSidebarButton}
@@ -65,7 +63,7 @@ export const RouteContainer = () => {
           viewId={view.id}
           className={styles.viewHeaderContainer}
         />
-        {!BUILD_CONFIG.isElectron && viewPosition.isLast && (
+        {viewPosition.isLast && !environment.isDesktop && (
           <ToggleButton
             show={!sidebarOpen}
             className={styles.rightSidebarButton}
@@ -76,7 +74,7 @@ export const RouteContainer = () => {
 
       <AffineErrorBoundary>
         <Suspense>
-          <Outlet />
+          <route.Component />
         </Suspense>
       </AffineErrorBoundary>
       <ViewBodyTarget viewId={view.id} className={styles.viewBodyContainer} />

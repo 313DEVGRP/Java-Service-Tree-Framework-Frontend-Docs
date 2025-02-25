@@ -1,15 +1,16 @@
-import type { EditorHost } from '@blocksuite/affine/block-std';
-import type { AffineAIPanelWidgetConfig } from '@blocksuite/affine/blocks';
+import type { EditorHost } from '@blocksuite/block-std';
+import type { AffineAIPanelWidgetConfig } from '@blocksuite/blocks';
 import { css, html, LitElement, nothing } from 'lit';
-import { property } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 
-import { getAIPanelWidget } from '../utils/ai-widgets';
+import { getAIPanel } from '../ai-panel';
 import { preprocessHtml } from '../utils/html';
 
 type AIAnswerWrapperOptions = {
   height: number;
 };
 
+@customElement('ai-answer-wrapper')
 export class AIAnswerWrapper extends LitElement {
   static override styles = css`
     :host {
@@ -62,7 +63,7 @@ export const createIframeRenderer: (
 ) => AffineAIPanelWidgetConfig['answerRenderer'] = (host, options) => {
   return (answer, state) => {
     if (state === 'generating') {
-      const panel = getAIPanelWidget(host);
+      const panel = getAIPanel(host);
       panel.generatingElement?.updateLoadingProgress(2);
       return nothing;
     }
@@ -91,7 +92,7 @@ export const createImageRenderer: (
 ) => AffineAIPanelWidgetConfig['answerRenderer'] = (host, options) => {
   return (answer, state) => {
     if (state === 'generating') {
-      const panel = getAIPanelWidget(host);
+      const panel = getAIPanel(host);
       panel.generatingElement?.updateLoadingProgress(2);
       return nothing;
     }

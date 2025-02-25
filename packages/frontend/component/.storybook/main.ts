@@ -1,80 +1,42 @@
-import { dirname, join } from 'path';
 import { StorybookConfig } from '@storybook/react-vite';
 import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
-import swc from 'unplugin-swc';
 import { mergeConfig } from 'vite';
-import { getBuildConfig } from '@affine-tools/utils/build-config';
+import { getRuntimeConfig } from '@affine/cli/src/webpack/runtime-config';
 
 export default {
-  stories: ['../src/ui/**/*.@(mdx|stories.@(js|jsx|ts|tsx))'],
-
+  stories: ['../src/ui/**/*.stories.@(js|jsx|ts|tsx|mdx)'],
   addons: [
-    getAbsolutePath('@storybook/addon-links'),
-    getAbsolutePath('@storybook/addon-essentials'),
-    getAbsolutePath('@storybook/addon-interactions'),
-    getAbsolutePath('@storybook/addon-mdx-gfm'),
-    '@chromatic-com/storybook',
+    '@storybook/addon-links',
+    '@storybook/addon-essentials',
+    '@storybook/addon-interactions',
+    '@storybook/addon-mdx-gfm',
+    'storybook-dark-mode',
   ],
-
   framework: {
-    name: getAbsolutePath('@storybook/react-vite'),
+    name: '@storybook/react-vite',
     options: {},
   },
-
-  features: {},
-
-  docs: {},
-
+  features: {
+    storyStoreV7: true,
+  },
+  docs: {
+    autodocs: true,
+  },
   async viteFinal(config, _options) {
     return mergeConfig(config, {
-      plugins: [
-        vanillaExtractPlugin(),
-        swc.vite({
-          jsc: {
-            preserveAllComments: true,
-            parser: {
-              syntax: 'typescript',
-              dynamicImport: true,
-              tsx: true,
-              decorators: true,
-            },
-            target: 'es2022',
-            externalHelpers: false,
-            transform: {
-              react: {
-                runtime: 'automatic',
-              },
-              useDefineForClassFields: false,
-              decoratorVersion: '2022-03',
-            },
-          },
-          sourceMaps: true,
-          inlineSourcesContent: true,
-        }),
-      ],
+      plugins: [vanillaExtractPlugin()],
+      esbuild: {
+        target: 'ES2022',
+      },
       define: {
         'process.env.CAPTCHA_SITE_KEY': `"${process.env.CAPTCHA_SITE_KEY}"`,
-        ...Object.entries(
-          getBuildConfig({
-            distribution: 'web',
-            mode: 'development',
-            channel: 'canary',
-            static: false,
-            coverage: false,
-          })
-        ).reduce((envs, [key, value]) => {
-          envs[`BUILD_CONFIG.${key}`] = JSON.stringify(value);
-          return envs;
-        }, {}),
+        runtimeConfig: getRuntimeConfig({
+          distribution: 'browser',
+          mode: 'development',
+          channel: 'canary',
+          coverage: false,
+        }),
       },
     });
   },
-
-  // typescript: {
-  //   reactDocgen: 'react-docgen-typescript',
-  // },
 } satisfies StorybookConfig;
-
-function getAbsolutePath(value: string): any {
-  return dirname(require.resolve(join(value, 'package.json')));
-}

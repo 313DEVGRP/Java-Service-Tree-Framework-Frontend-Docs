@@ -139,9 +139,7 @@ export function Layout({ children }: PropsWithChildren) {
                 {children}
               </ResizablePanel>
               <RightPanel
-                rightPanelRef={
-                  rightPanelRef as RefObject<ImperativePanelHandle>
-                }
+                rightPanelRef={rightPanelRef}
                 onExpand={handleExpand}
                 onCollapse={handleCollapse}
               />

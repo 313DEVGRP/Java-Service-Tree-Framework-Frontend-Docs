@@ -33,7 +33,7 @@ export const AllPageListOperationsMenu = ({
           prefix={<FilterIcon />}
           data-testid="create-first-filter"
         >
-          {t['com.affine.filter']()}
+          {t['com.arms.filter']()}
         </Button>
       </Menu>
     </FlexWrapper>

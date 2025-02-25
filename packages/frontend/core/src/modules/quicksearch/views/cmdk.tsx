@@ -232,13 +232,12 @@ export const CMDKGroup = ({
       style={{ overflowAnchor: 'none' }}
     >
       {items.map(item => {
-        const [title, subTitle] = isI18nString(item.label)
-          ? [i18n.t(item.label), null]
-          : [
-              i18n.t(item.label.title),
-              item.label.subTitle ? i18n.t(item.label.subTitle) : null,
-            ];
-
+        const title = !isI18nString(item.label)
+          ? i18n.t(item.label.title)
+          : i18n.t(item.label);
+        const subTitle = !isI18nString(item.label)
+          ? item.label.subTitle && i18n.t(item.label.subTitle)
+          : null;
         return (
           <Command.Item
             key={item.id}
@@ -284,7 +283,7 @@ export const CMDKGroup = ({
 };
 
 const CMDKKeyBinding = ({ keyBinding }: { keyBinding: string }) => {
-  const isMacOS = environment.isMacOs;
+  const isMacOS = environment.isBrowser && environment.isMacOs;
   const fragments = useMemo(() => {
     return keyBinding.split('+').map(fragment => {
       if (fragment === '$mod') {
@@ -314,9 +313,9 @@ const CMDKKeyBinding = ({ keyBinding }: { keyBinding: string }) => {
 
   return (
     <div className={styles.keybinding}>
-      {fragments.map(fragment => {
+      {fragments.map((fragment, index) => {
         return (
-          <div key={fragment} className={styles.keybindingFragment}>
+          <div key={index} className={styles.keybindingFragment}>
             {fragment}
           </div>
         );

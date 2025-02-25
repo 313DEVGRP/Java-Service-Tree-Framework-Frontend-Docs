@@ -13,6 +13,7 @@ import * as styles from './tag-list-item.css';
 
 const TagListTitleCell = ({
   title,
+  pageCount,
 }: Pick<TagListItemProps, 'title' | 'pageCount'>) => {
   const t = useI18n();
   return (
@@ -23,13 +24,12 @@ const TagListTitleCell = ({
       >
         {title || t['Untitled']()}
       </div>
-      {/* // TODO(@EYHN): when indexer is ready, add this back
       <div
         data-testid="page-list-item-preview-text"
         className={styles.titleCellPreview}
       >
-        {` · ${t['com.affine.tags.count']({ count: pageCount || 0 })}`}
-      </div> */}
+        {` · ${t['com.arms.tags.count']({ count: pageCount || 0 })}`}
+      </div>
     </div>
   );
 };
@@ -198,7 +198,6 @@ const TagListItemWrapper = forwardRef(
 
     const commonProps = useMemo(
       () => ({
-        role: 'list-item',
         'data-testid': 'tag-list-item',
         'data-tag-id': tagId,
         'data-draggable': draggable,

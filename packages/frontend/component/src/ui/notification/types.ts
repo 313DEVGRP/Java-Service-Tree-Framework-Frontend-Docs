@@ -44,7 +44,3 @@ export interface NotificationCenterProps {
 export interface NotificationCustomRendererProps {
   onDismiss?: () => void;
 }
-
-export interface NotificationCardProps extends HTMLAttributes<HTMLDivElement> {
-  notification: Notification;
-}

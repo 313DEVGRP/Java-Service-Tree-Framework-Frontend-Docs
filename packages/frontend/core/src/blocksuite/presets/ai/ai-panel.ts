@@ -1,17 +1,17 @@
-import type { EditorHost } from '@blocksuite/affine/block-std';
+import type { EditorHost } from '@blocksuite/block-std';
 import {
-  type AffineAIPanelWidget,
+  AFFINE_AI_PANEL_WIDGET,
+  AffineAIPanelWidget,
   type AffineAIPanelWidgetConfig,
   type AIItemConfig,
   ImageBlockModel,
   isInsideEdgelessEditor,
   matchFlavours,
   NoteDisplayMode,
-} from '@blocksuite/affine/blocks';
-import { assertExists, Bound } from '@blocksuite/affine/global/utils';
+} from '@blocksuite/blocks';
+import { assertExists, Bound } from '@blocksuite/global/utils';
 import type { TemplateResult } from 'lit';
 
-import { createTextRenderer, insertFromMarkdown } from '../_common';
 import {
   AIPenIcon,
   AIStarIconWithAnimation,
@@ -23,21 +23,36 @@ import {
   ReplaceIcon,
   RetryIcon,
 } from './_common/icons';
-import {
-  EXCLUDING_REPLACE_ACTIONS,
-  INSERT_ABOVE_ACTIONS,
-} from './actions/consts';
-import {
-  pageResponseHandler,
-  replaceWithMarkdown,
-} from './actions/page-response';
+import { INSERT_ABOVE_ACTIONS } from './actions/consts';
+import { createTextRenderer } from './messages/text';
 import { AIProvider } from './provider';
 import { reportResponse } from './utils/action-reporter';
-import { getAIPanelWidget } from './utils/ai-widgets';
-import { AIContext } from './utils/context';
 import { findNoteBlockModel, getService } from './utils/edgeless';
-import { copyTextAnswer } from './utils/editor-actions';
+import {
+  copyTextAnswer,
+  insertAbove,
+  insertBelow,
+  replace,
+} from './utils/editor-actions';
+import { insertFromMarkdown } from './utils/markdown-utils';
 import { getSelections } from './utils/selection-utils';
+
+function getSelection(host: EditorHost) {
+  const textSelection = host.selection.find('text');
+  const mode = textSelection ? 'flat' : 'highest';
+  const { selectedBlocks } = getSelections(host, mode);
+  assertExists(selectedBlocks);
+  const length = selectedBlocks.length;
+  const firstBlock = selectedBlocks[0];
+  const lastBlock = selectedBlocks[length - 1];
+  const selectedModels = selectedBlocks.map(block => block.model);
+  return {
+    textSelection,
+    selectedModels,
+    firstBlock,
+    lastBlock,
+  };
+}
 
 function asCaption<T extends keyof BlockSuitePresets.AIActions>(
   host: EditorHost,
@@ -47,12 +62,12 @@ function asCaption<T extends keyof BlockSuitePresets.AIActions>(
     name: 'Use as caption',
     icon: AIPenIcon,
     showWhen: () => {
-      const panel = getAIPanelWidget(host);
+      const panel = getAIPanel(host);
       return id === 'generateCaption' && !!panel.answer;
     },
     handler: () => {
       reportResponse('result:use-as-caption');
-      const panel = getAIPanelWidget(host);
+      const panel = getAIPanel(host);
       const caption = panel.answer;
       if (!caption) return;
 
@@ -73,7 +88,7 @@ function createNewNote(host: EditorHost): AIItemConfig {
     name: 'Create new note',
     icon: CreateIcon,
     showWhen: () => {
-      const panel = getAIPanelWidget(host);
+      const panel = getAIPanel(host);
       return !!panel.answer && isInsideEdgelessEditor(host);
     },
     handler: () => {
@@ -89,7 +104,7 @@ function createNewNote(host: EditorHost): AIItemConfig {
       const bound = Bound.deserialize(noteModel.xywh);
       const newBound = new Bound(bound.x - bound.w - 20, bound.y, bound.w, 72);
       const doc = host.doc;
-      const panel = getAIPanelWidget(host);
+      const panel = getAIPanel(host);
       const service = getService(host);
       doc.transact(() => {
         assertExists(doc.root);
@@ -98,7 +113,7 @@ function createNewNote(host: EditorHost): AIItemConfig {
           {
             xywh: newBound.serialize(),
             displayMode: NoteDisplayMode.EdgelessOnly,
-            index: service.generateIndex(),
+            index: service.generateIndex('affine:note'),
           },
           doc.root.id
         );
@@ -133,11 +148,43 @@ function createNewNote(host: EditorHost): AIItemConfig {
   };
 }
 
-function buildPageResponseConfig<T extends keyof BlockSuitePresets.AIActions>(
-  panel: AffineAIPanelWidget,
-  id: T,
-  ctx: AIContext
-) {
+async function replaceWithAnswer(panel: AffineAIPanelWidget) {
+  const { host } = panel;
+  const selection = getSelection(host);
+  if (!selection || !panel.answer) return;
+
+  const { textSelection, firstBlock, selectedModels } = selection;
+  await replace(host, panel.answer, firstBlock, selectedModels, textSelection);
+
+  panel.hide();
+}
+
+async function insertAnswerBelow(panel: AffineAIPanelWidget) {
+  const { host } = panel;
+  const selection = getSelection(host);
+
+  if (!selection || !panel.answer) {
+    return;
+  }
+
+  const { lastBlock } = selection;
+  await insertBelow(host, panel.answer, lastBlock);
+  panel.hide();
+}
+
+async function insertAnswerAbove(panel: AffineAIPanelWidget) {
+  const { host } = panel;
+  const selection = getSelection(host);
+  if (!selection || !panel.answer) return;
+
+  const { firstBlock } = selection;
+  await insertAbove(host, panel.answer, firstBlock);
+  panel.hide();
+}
+
+export function buildTextResponseConfig<
+  T extends keyof BlockSuitePresets.AIActions,
+>(panel: AffineAIPanelWidget, id?: T) {
   const host = panel.host;
 
   return [
@@ -151,8 +198,7 @@ function buildPageResponseConfig<T extends keyof BlockSuitePresets.AIActions>(
             !!panel.answer && (!id || !INSERT_ABOVE_ACTIONS.includes(id)),
           handler: () => {
             reportResponse('result:insert');
-            pageResponseHandler(id, host, ctx, 'after').catch(console.error);
-            panel.hide();
+            insertAnswerBelow(panel).catch(console.error);
           },
         },
         {
@@ -162,20 +208,17 @@ function buildPageResponseConfig<T extends keyof BlockSuitePresets.AIActions>(
             !!panel.answer && !!id && INSERT_ABOVE_ACTIONS.includes(id),
           handler: () => {
             reportResponse('result:insert');
-            pageResponseHandler(id, host, ctx, 'before').catch(console.error);
-            panel.hide();
+            insertAnswerAbove(panel).catch(console.error);
           },
         },
         asCaption(host, id),
         {
           name: 'Replace selection',
           icon: ReplaceIcon,
-          showWhen: () =>
-            !!panel.answer && !EXCLUDING_REPLACE_ACTIONS.includes(id),
+          showWhen: () => !!panel.answer,
           handler: () => {
             reportResponse('result:replace');
-            replaceWithMarkdown(host).catch(console.error);
-            panel.hide();
+            replaceWithAnswer(panel).catch(console.error);
           },
         },
         createNewNote(host),
@@ -189,10 +232,7 @@ function buildPageResponseConfig<T extends keyof BlockSuitePresets.AIActions>(
           icon: ChatWithAIIcon,
           handler: () => {
             reportResponse('result:continue-in-chat');
-            AIProvider.slots.requestOpenWithChat.emit({
-              host,
-              appendCard: true,
-            });
+            AIProvider.slots.requestOpenWithChat.emit({ host });
             panel.hide();
           },
         },
@@ -216,8 +256,46 @@ function buildPageResponseConfig<T extends keyof BlockSuitePresets.AIActions>(
   ];
 }
 
-export function buildErrorResponseConfig(panel: AffineAIPanelWidget) {
+export function buildErrorResponseConfig<
+  T extends keyof BlockSuitePresets.AIActions,
+>(panel: AffineAIPanelWidget, id?: T) {
+  const host = panel.host;
+
   return [
+    {
+      name: 'Response',
+      items: [
+        {
+          name: 'Replace selection',
+          icon: ReplaceIcon,
+          showWhen: () => !!panel.answer,
+          handler: () => {
+            replaceWithAnswer(panel).catch(console.error);
+          },
+        },
+        {
+          name: 'Insert below',
+          icon: InsertBelowIcon,
+          showWhen: () =>
+            !!panel.answer && (!id || !INSERT_ABOVE_ACTIONS.includes(id)),
+          handler: () => {
+            insertAnswerBelow(panel).catch(console.error);
+          },
+        },
+        {
+          name: 'Insert above',
+          icon: InsertTopIcon,
+          showWhen: () =>
+            !!panel.answer && !!id && INSERT_ABOVE_ACTIONS.includes(id),
+          handler: () => {
+            reportResponse('result:insert');
+            insertAnswerAbove(panel).catch(console.error);
+          },
+        },
+        asCaption(host, id),
+        createNewNote(host),
+      ],
+    },
     {
       name: '',
       items: [
@@ -245,16 +323,18 @@ export function buildErrorResponseConfig(panel: AffineAIPanelWidget) {
 
 export function buildFinishConfig<T extends keyof BlockSuitePresets.AIActions>(
   panel: AffineAIPanelWidget,
-  id: T,
-  ctx: AIContext
+  id?: T
 ) {
   return {
-    responses: buildPageResponseConfig(panel, id, ctx),
+    responses: buildTextResponseConfig(panel, id),
     actions: [],
   };
 }
 
-export function buildErrorConfig(panel: AffineAIPanelWidget) {
+export function buildErrorConfig<T extends keyof BlockSuitePresets.AIActions>(
+  panel: AffineAIPanelWidget,
+  id?: T
+) {
   return {
     upgrade: () => {
       AIProvider.slots.requestUpgradePlan.emit({ host: panel.host });
@@ -267,7 +347,7 @@ export function buildErrorConfig(panel: AffineAIPanelWidget) {
     cancel: () => {
       panel.hide();
     },
-    responses: buildErrorResponseConfig(panel),
+    responses: buildErrorResponseConfig(panel, id),
   };
 }
 
@@ -289,12 +369,22 @@ export function buildCopyConfig(panel: AffineAIPanelWidget) {
 export function buildAIPanelConfig(
   panel: AffineAIPanelWidget
 ): AffineAIPanelWidgetConfig {
-  const ctx = new AIContext();
   return {
     answerRenderer: createTextRenderer(panel.host, { maxHeight: 320 }),
-    finishStateConfig: buildFinishConfig(panel, 'chat', ctx),
+    finishStateConfig: buildFinishConfig(panel),
     generatingStateConfig: buildGeneratingConfig(),
     errorStateConfig: buildErrorConfig(panel),
     copy: buildCopyConfig(panel),
   };
 }
+
+export const getAIPanel = (host: EditorHost): AffineAIPanelWidget => {
+  const rootBlockId = host.doc.root?.id;
+  assertExists(rootBlockId);
+  const aiPanel = host.view.getWidget(AFFINE_AI_PANEL_WIDGET, rootBlockId);
+  assertExists(aiPanel);
+  if (!(aiPanel instanceof AffineAIPanelWidget)) {
+    throw new Error('AI panel not found');
+  }
+  return aiPanel;
+};

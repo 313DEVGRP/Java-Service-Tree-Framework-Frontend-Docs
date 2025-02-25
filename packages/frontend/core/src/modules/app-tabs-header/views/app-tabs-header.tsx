@@ -1,4 +1,3 @@
-// credits: tab overlay impl inspired by Figma desktop
 import {
   type DropTargetDropEvent,
   type DropTargetOptions,
@@ -7,19 +6,26 @@ import {
   useDraggable,
   useDropTarget,
 } from '@affine/component';
-import { useAsyncCallback } from '@affine/core/components/hooks/affine-async-hooks';
-import { useCatchEventCallback } from '@affine/core/components/hooks/use-catch-event-hook';
+import {
+  appSidebarOpenAtom,
+  appSidebarResizingAtom,
+} from '@affine/core/components/app-sidebar';
+import { appSidebarWidthAtom } from '@affine/core/components/app-sidebar/index.jotai';
+import { WindowsAppControls } from '@affine/core/components/pure/header/windows-app-controls';
+import { useAsyncCallback } from '@affine/core/hooks/affine-async-hooks';
+import { useCatchEventCallback } from '@affine/core/hooks/use-catch-event-hook';
+import { track } from '@affine/core/mixpanel';
 import type { AffineDNDData } from '@affine/core/types/dnd';
+import { apis, events } from '@affine/electron-api';
 import { useI18n } from '@affine/i18n';
-import { track } from '@affine/track';
 import { CloseIcon, PlusIcon, RightSidebarIcon } from '@blocksuite/icons/rc';
 import {
   useLiveData,
   useService,
   useServiceOptional,
 } from '@toeverything/infra';
-import { assignInlineVars } from '@vanilla-extract/dynamic';
 import clsx from 'clsx';
+import { useAtomValue } from 'jotai';
 import { partition } from 'lodash-es';
 import {
   Fragment,
@@ -29,9 +35,6 @@ import {
   useState,
 } from 'react';
 
-import { AppSidebarService } from '../../app-sidebar';
-import { DesktopApiService } from '../../desktop-api';
-import { resolveLinkToDoc } from '../../navigation';
 import { iconNameToIcon } from '../../workbench/constants';
 import { DesktopStateSynchronizer } from '../../workbench/services/desktop-state-synchronizer';
 import {
@@ -40,7 +43,7 @@ import {
 } from '../services/app-tabs-header-service';
 import * as styles from './styles.css';
 
-const TabSupportType = new Set(['collection', 'tag', 'doc']);
+const TabSupportType = ['collection', 'tag', 'doc'];
 
 const tabCanDrop =
   (tab?: TabStatus): NonNullable<DropTargetOptions<AffineDNDData>['canDrop']> =>
@@ -54,7 +57,7 @@ const tabCanDrop =
 
     if (
       ctx.source.data.entity?.type &&
-      TabSupportType.has(ctx.source.data.entity?.type)
+      TabSupportType.includes(ctx.source.data.entity?.type)
     ) {
       return true;
     }
@@ -129,9 +132,6 @@ const WorkbenchTab = ({
   );
   const onActivateView = useAsyncCallback(
     async (viewIdx: number) => {
-      if (viewIdx === activeViewIndex && tabActive) {
-        return;
-      }
       await tabsHeaderService.activateView?.(workbench.id, viewIdx);
       if (tabActive) {
         track.$.appTabsHeader.$.tabAction({
@@ -145,7 +145,7 @@ const WorkbenchTab = ({
         });
       }
     },
-    [activeViewIndex, tabActive, tabsHeaderService, workbench.id]
+    [tabActive, tabsHeaderService, workbench.id]
   );
   const handleAuxClick: MouseEventHandler = useCatchEventCallback(
     async e => {
@@ -177,55 +177,23 @@ const WorkbenchTab = ({
       dropEffect: 'move',
       canDrop: tabCanDrop(workbench),
       isSticky: true,
-      allowExternal: true,
     }),
     [onDrop, workbench]
   );
 
-  const { dragRef } = useDraggable<AffineDNDData>(() => {
-    const urls = workbench.views.map(view => {
-      const url = new URL(
-        workbench.basename + (view.path?.pathname ?? ''),
-        location.origin
-      );
-      url.search = view.path?.search ?? '';
-      return url.toString();
-    });
-
-    let entity: AffineDNDData['draggable']['entity'];
-
-    for (const url of urls) {
-      const maybeDocLink = resolveLinkToDoc(url);
-      if (maybeDocLink && maybeDocLink.docId) {
-        entity = {
-          type: 'doc',
-          id: maybeDocLink.docId,
-        };
-      }
-    }
-
-    return {
+  const { dragRef } = useDraggable<AffineDNDData>(
+    () => ({
       canDrag: dnd,
       data: {
         from: {
           at: 'app-header:tabs',
           tabId: workbench.id,
         },
-        entity,
       },
       dragPreviewPosition: 'pointer-outside',
-      toExternalData: () => {
-        return {
-          'text/uri-list': urls.join('\n'),
-        };
-      },
-      onDragStart: () => {
-        track.$.appTabsHeader.$.dragStart({
-          type: 'tab',
-        });
-      },
-    };
-  }, [dnd, workbench.basename, workbench.id, workbench.views]);
+    }),
+    [dnd, workbench.id]
+  );
 
   return (
     <div
@@ -240,13 +208,8 @@ const WorkbenchTab = ({
         data-testid="workbench-tab"
         data-active={tabActive}
         data-pinned={workbench.pinned}
+        data-padding-right={tabsLength > 1 && !workbench.pinned}
         className={styles.tab}
-        style={assignInlineVars({
-          [styles.tabMaxWidth]: `${Math.max(
-            workbench.views.length * 52,
-            workbench.pinned ? 64 : 200
-          )}px`,
-        })}
       >
         {workbench.views.map((view, viewIdx) => {
           return (
@@ -272,12 +235,8 @@ const WorkbenchTab = ({
                     <Loading />
                   )}
                 </div>
-                {!view.title ? null : (
-                  <div
-                    title={view.title}
-                    className={styles.splitViewLabelText}
-                    data-padding-right={tabsLength > 1 && !workbench.pinned}
-                  >
+                {workbench.pinned || !view.title ? null : (
+                  <div title={view.title} className={styles.splitViewLabelText}>
                     {view.title}
                   </div>
                 )}
@@ -289,17 +248,19 @@ const WorkbenchTab = ({
             </Fragment>
           );
         })}
-        <div className={styles.tabCloseButtonWrapper}>
-          {tabsLength > 1 && !workbench.pinned ? (
-            <button
-              data-testid="close-tab-button"
-              className={styles.tabCloseButton}
-              onClick={handleCloseTab}
-            >
-              <CloseIcon />
-            </button>
-          ) : null}
-        </div>
+        {!workbench.pinned ? (
+          <div className={styles.tabCloseButtonWrapper}>
+            {tabsLength > 1 ? (
+              <button
+                data-testid="close-tab-button"
+                className={styles.tabCloseButton}
+                onClick={handleCloseTab}
+              >
+                <CloseIcon />
+              </button>
+            ) : null}
+          </div>
+        ) : null}
       </div>
       <div className={styles.dropIndicator} data-edge={closestEdge} />
     </div>
@@ -307,18 +268,17 @@ const WorkbenchTab = ({
 };
 
 const useIsFullScreen = () => {
-  const desktopApi = useServiceOptional(DesktopApiService);
   const [fullScreen, setFullScreen] = useState(false);
 
   useEffect(() => {
-    desktopApi?.handler.ui
+    apis?.ui
       .isFullScreen()
       .then(setFullScreen)
       .then(() => {
-        desktopApi?.events.ui.onFullScreen(setFullScreen);
+        events?.ui.onFullScreen(setFullScreen);
       })
       .catch(console.error);
-  }, [desktopApi?.events.ui, desktopApi?.handler.ui]);
+  }, []);
   return fullScreen;
 };
 
@@ -334,16 +294,11 @@ export const AppTabsHeader = ({
   left?: ReactNode;
 }) => {
   const t = useI18n();
-  const appSidebarService = useService(AppSidebarService).sidebar;
-  const sidebarWidth = useLiveData(appSidebarService.width$);
-  const sidebarOpen = useLiveData(appSidebarService.open$);
-  const sidebarResizing = useLiveData(appSidebarService.resizing$);
-
-  const isMacosDesktop = BUILD_CONFIG.isElectron && environment.isMacOs;
-  const isWindowsDesktop = BUILD_CONFIG.isElectron && environment.isWindows;
+  const sidebarWidth = useAtomValue(appSidebarWidthAtom);
+  const sidebarOpen = useAtomValue(appSidebarOpenAtom);
+  const sidebarResizing = useAtomValue(appSidebarResizingAtom);
+  const isMacosDesktop = environment.isDesktop && environment.isMacOs;
   const fullScreen = useIsFullScreen();
-
-  const desktopApi = useService(DesktopApiService);
 
   const tabsHeaderService = useService(AppTabsHeaderService);
   const tabs = useLiveData(tabsHeaderService.tabsStatus$);
@@ -364,9 +319,9 @@ export const AppTabsHeader = ({
 
   useEffect(() => {
     if (mode === 'app') {
-      desktopApi.handler.ui.pingAppLayoutReady().catch(console.error);
+      apis?.ui.pingAppLayoutReady().catch(console.error);
     }
-  }, [mode, desktopApi]);
+  }, [mode]);
 
   const onDrop = useAsyncCallback(
     async (data: DropTargetDropEvent<AffineDNDData>, targetId?: string) => {
@@ -451,7 +406,7 @@ export const AppTabsHeader = ({
       className={clsx(styles.root, className)}
       style={style}
       data-mode={mode}
-      data-is-windows={isWindowsDesktop}
+      data-is-windows={environment.isDesktop && environment.isWindows}
     >
       <div
         style={{
@@ -502,7 +457,7 @@ export const AppTabsHeader = ({
         <IconButton
           size={22.86}
           onClick={onAddTab}
-          tooltip={t['com.affine.multi-tab.new-tab']()}
+          tooltip={t['com.arms.multi-tab.new-tab']()}
           tooltipShortcut={['$mod', 'T']}
           data-testid="add-tab-view-button"
           style={{ width: 32, height: 32 }}
@@ -512,9 +467,9 @@ export const AppTabsHeader = ({
       <IconButton size="24" onClick={onToggleRightSidebar}>
         <RightSidebarIcon />
       </IconButton>
-      {isWindowsDesktop && (
-        <div className={styles.windowsAppControlsPlaceholder} />
-      )}
+      {environment.isDesktop && environment.isWindows ? (
+        <WindowsAppControls />
+      ) : null}
     </div>
   );
 };

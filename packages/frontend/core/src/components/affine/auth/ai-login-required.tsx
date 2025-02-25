@@ -1,8 +1,7 @@
 import { useConfirmModal } from '@affine/component';
-import { GlobalDialogService } from '@affine/core/modules/dialogs';
+import { authAtom } from '@affine/core/atoms';
 import { useI18n } from '@affine/i18n';
-import { useService } from '@toeverything/infra';
-import { atom, useAtom } from 'jotai';
+import { atom, useAtom, useSetAtom } from 'jotai';
 import { useCallback, useEffect } from 'react';
 
 export const showAILoginRequiredAtom = atom(false);
@@ -10,27 +9,27 @@ export const showAILoginRequiredAtom = atom(false);
 export const AiLoginRequiredModal = () => {
   const t = useI18n();
   const [open, setOpen] = useAtom(showAILoginRequiredAtom);
-  const globalDialogService = useService(GlobalDialogService);
+  const setAuth = useSetAtom(authAtom);
   const { openConfirmModal, closeConfirmModal } = useConfirmModal();
 
   const openSignIn = useCallback(() => {
-    globalDialogService.open('sign-in', {});
-  }, [globalDialogService]);
+    setAuth(prev => ({ ...prev, openModal: true }));
+  }, [setAuth]);
 
   useEffect(() => {
     if (open) {
       openConfirmModal({
-        title: t['com.affine.ai.login-required.dialog-title'](),
-        description: t['com.affine.ai.login-required.dialog-content'](),
+        title: t['com.arms.ai.login-required.dialog-title'](),
+        description: t['com.arms.ai.login-required.dialog-content'](),
         onConfirm: () => {
           setOpen(false);
           openSignIn();
         },
-        confirmText: t['com.affine.ai.login-required.dialog-confirm'](),
+        confirmText: t['com.arms.ai.login-required.dialog-confirm'](),
         confirmButtonOptions: {
           variant: 'primary',
         },
-        cancelText: t['com.affine.ai.login-required.dialog-cancel'](),
+        cancelText: t['com.arms.ai.login-required.dialog-cancel'](),
         onOpenChange: setOpen,
       });
     } else {

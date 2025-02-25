@@ -7,8 +7,7 @@ export const root = style({
   flexDirection: 'column',
   fontSize: cssVar('fontBase'),
   position: 'relative',
-  backgroundColor: cssVar('backgroundPrimaryColor'),
-  backgroundSize: 'cover',
+  background: cssVar('backgroundPrimaryColor'),
 });
 export const affineLogo = style({
   color: 'inherit',
@@ -27,12 +26,6 @@ export const topNav = style({
       padding: '16px 20px',
     },
   },
-});
-export const draggableHeader = style({
-  height: '52px',
-  width: '100%',
-  position: 'fixed',
-  ['WebkitAppRegion' as string]: 'drag',
 });
 export const topNavLinks = style({
   display: 'flex',

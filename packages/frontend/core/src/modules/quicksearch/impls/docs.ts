@@ -1,3 +1,4 @@
+import type { DocRecord, DocsService } from '@toeverything/infra';
 import {
   effect,
   Entity,
@@ -8,10 +9,10 @@ import {
 import { truncate } from 'lodash-es';
 import { EMPTY, map, mergeMap, of, switchMap } from 'rxjs';
 
-import type { DocRecord, DocsService } from '../../doc';
-import type { DocDisplayMetaService } from '../../doc-display-meta';
 import type { DocsSearchService } from '../../docs-search';
+import { resolveLinkToDoc } from '../../navigation';
 import type { QuickSearchSession } from '../providers/quick-search-provider';
+import type { DocDisplayMetaService } from '../services/doc-display-meta';
 import type { QuickSearchItem } from '../types/item';
 
 interface DocsPayload {
@@ -55,6 +56,25 @@ export class DocsQuickSearchSession
         out = of([] as QuickSearchItem<'docs', DocsPayload>[]);
       } else {
         out = this.docsSearchService.search$(query).pipe(
+          map(docs => {
+            const resolvedDoc = resolveLinkToDoc(query);
+            if (
+              resolvedDoc &&
+              !docs.some(doc => doc.docId === resolvedDoc.docId)
+            ) {
+              return [
+                {
+                  docId: resolvedDoc.docId,
+                  score: 100,
+                  blockId: resolvedDoc.blockId,
+                  blockContent: '',
+                },
+                ...docs,
+              ];
+            } else {
+              return docs;
+            }
+          }),
           map(docs =>
             docs
               .map(doc => {
@@ -76,7 +96,7 @@ export class DocsQuickSearchSession
                   group: {
                     id: 'docs',
                     label: {
-                      i18nKey: 'com.affine.quicksearch.group.searchfor',
+                      key: 'com.arms.quicksearch.group.searchfor',
                       options: { query: truncate(query) },
                     },
                     score: 5,

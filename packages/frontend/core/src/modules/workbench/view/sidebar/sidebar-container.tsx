@@ -26,7 +26,7 @@ export const SidebarContainer = ({
 
   return (
     <div className={clsx(styles.sidebarContainerInner, className)} {...props}>
-      <Header onToggle={handleToggleOpen}>
+      <Header floating={false} onToggle={handleToggleOpen}>
         <SidebarHeaderSwitcher />
       </Header>
       {sidebarTabs.length > 0 ? (
@@ -38,9 +38,8 @@ export const SidebarContainer = ({
             viewId={view.id}
             className={clsx(
               styles.sidebarBodyTarget,
-              !BUILD_CONFIG.isElectron && styles.borderTop
+              !environment.isDesktop && styles.borderTop
             )}
-            data-testid={`sidebar-tab-content-${sidebar.id}`}
           />
         ))
       ) : (

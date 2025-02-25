@@ -4,28 +4,20 @@ import { AIProvider } from '@affine/core/blocksuite/presets/ai';
 import { AffineErrorBoundary } from '@affine/core/components/affine/affine-error-boundary';
 import { BlockSuiteEditor } from '@affine/core/components/blocksuite/block-suite-editor';
 import { EditorOutlineViewer } from '@affine/core/components/blocksuite/outline-viewer';
-import { PageNotFound } from '@affine/core/desktop/pages/404';
-import { EditorService } from '@affine/core/modules/editor';
+import { useNavigateHelper } from '@affine/core/hooks/use-navigate-helper';
+import { PageNotFound } from '@affine/core/pages/404';
 import { DebugLogger } from '@affine/debug';
-import {
-  type EdgelessRootService,
-  RefNodeSlotsProvider,
-} from '@blocksuite/affine/blocks';
-import { Bound, DisposableGroup } from '@blocksuite/affine/global/utils';
-import type { AffineEditorContainer } from '@blocksuite/affine/presets';
-import {
-  FrameworkScope,
-  useLiveData,
-  useService,
-  useServices,
-} from '@toeverything/infra';
+import { type EdgelessRootService } from '@blocksuite/blocks';
+import { Bound, DisposableGroup } from '@blocksuite/global/utils';
+import type { AffineEditorContainer } from '@blocksuite/presets';
+import type { DocMode } from '@toeverything/infra';
+import { DocsService, FrameworkScope, useService } from '@toeverything/infra';
 import clsx from 'clsx';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { WorkbenchService } from '../../../workbench';
-import type { DocReferenceInfo } from '../../entities/peek-view';
 import { PeekViewService } from '../../services/peek-view';
-import { useEditor } from '../utils';
+import { useDoc } from '../utils';
 import * as styles from './doc-peek-view.css';
 
 const logger = new DebugLogger('doc-peek-view');
@@ -40,10 +32,7 @@ function fitViewport(
     }
 
     const rootService =
-      editor.host.std.getService<EdgelessRootService>('affine:page');
-    if (!rootService) {
-      return;
-    }
+      editor.host.std.spec.getService<EdgelessRootService>('affine:page');
     rootService.viewport.onResize();
 
     if (xywh) {
@@ -69,58 +58,46 @@ function fitViewport(
   }
 }
 
-function DocPeekPreviewEditor({
+export function DocPeekPreview({
+  docId,
+  blockId,
+  mode,
   xywh,
 }: {
+  docId: string;
+  blockId?: string;
+  mode?: DocMode;
   xywh?: `[${number},${number},${number},${number}]`;
 }) {
-  const { editorService } = useServices({
-    EditorService,
-  });
-  const editor = editorService.editor;
-  const doc = editor.doc;
-  const workspace = editor.doc.workspace;
-  const mode = useLiveData(editor.mode$);
-  const defaultOpenProperty = useLiveData(editor.defaultOpenProperty$);
+  const { doc, workspace, loading } = useDoc(docId);
+  const { jumpToTag } = useNavigateHelper();
   const workbench = useService(WorkbenchService).workbench;
   const peekView = useService(PeekViewService).peekView;
-  const editorElement = useLiveData(editor.editorContainer$);
+  const [editor, setEditor] = useState<AffineEditorContainer | null>(null);
 
-  const handleOnEditorReady = useCallback(
-    (editorContainer: AffineEditorContainer) => {
-      if (!editorContainer.host) {
-        return;
-      }
-      const disposableGroup = new DisposableGroup();
-      const refNodeSlots =
-        editorContainer.host.std.getOptional(RefNodeSlotsProvider);
-      if (!refNodeSlots) return;
-      // doc change event inside peek view should be handled by peek view
-      disposableGroup.add(
-        // todo(@pengx17): seems not working
-        refNodeSlots.docLinkClicked.on(options => {
-          peekView
-            .open({
-              docRef: { docId: options.pageId },
-              ...options.params,
-            })
-            .catch(console.error);
-        })
-      );
+  const onRef = (editor: AffineEditorContainer) => {
+    setEditor(editor);
+  };
 
-      const unbind = editor.bindEditorContainer(editorContainer);
+  const docs = useService(DocsService);
+  const [resolvedMode, setResolvedMode] = useState<DocMode | undefined>(mode);
 
-      if (mode === 'edgeless') {
-        fitViewport(editorContainer, xywh);
-      }
+  useEffect(() => {
+    editor?.updateComplete
+      .then(() => {
+        if (resolvedMode === 'edgeless') {
+          fitViewport(editor, xywh);
+        }
+      })
+      .catch(console.error);
+    return;
+  }, [editor, resolvedMode, xywh]);
 
-      return () => {
-        unbind();
-        disposableGroup.dispose();
-      };
-    },
-    [editor, mode, peekView, xywh]
-  );
+  useEffect(() => {
+    if (!mode || !resolvedMode) {
+      setResolvedMode(docs.list.doc$(docId).value?.mode$.value || 'page');
+    }
+  }, [docId, docs.list, resolvedMode, mode]);
 
   useEffect(() => {
     const disposable = AIProvider.slots.requestOpenWithChat.on(() => {
@@ -136,71 +113,47 @@ function DocPeekPreviewEditor({
     };
   }, [doc, peekView, workbench, workspace.id]);
 
+  useEffect(() => {
+    const disposableGroup = new DisposableGroup();
+    if (editor) {
+      editor.updateComplete
+        .then(() => {
+          if (!editor.host) {
+            return;
+          }
+
+          const rootService = editor.host.std.spec.getService('affine:page');
+          // doc change event inside peek view should be handled by peek view
+          disposableGroup.add(
+            rootService.slots.docLinkClicked.on(({ docId, blockId }) => {
+              peekView.open({ docId, blockId }).catch(console.error);
+            })
+          );
+          // TODO(@Peng): no tag peek view yet
+          disposableGroup.add(
+            rootService.slots.tagClicked.on(({ tagId }) => {
+              jumpToTag(workspace.id, tagId);
+              peekView.close();
+            })
+          );
+        })
+        .catch(console.error);
+    }
+    return () => {
+      disposableGroup.dispose();
+    };
+  }, [editor, jumpToTag, peekView, workspace.id]);
+
   const openOutlinePanel = useCallback(() => {
-    workbench.openDoc(doc.id);
+    workbench.openDoc(docId);
     workbench.openSidebar();
     workbench.activeView$.value.activeSidebarTab('outline');
     peekView.close();
-  }, [doc, peekView, workbench]);
-
-  return (
-    <AffineErrorBoundary>
-      <Scrollable.Root>
-        <Scrollable.Viewport
-          className={clsx('affine-page-viewport', styles.affineDocViewport)}
-        >
-          <BlockSuiteEditor
-            className={styles.editor}
-            mode={mode}
-            page={doc.blockSuiteDoc}
-            onEditorReady={handleOnEditorReady}
-            defaultOpenProperty={defaultOpenProperty}
-          />
-        </Scrollable.Viewport>
-        <Scrollable.Scrollbar />
-      </Scrollable.Root>
-      {!BUILD_CONFIG.isMobileEdition && !BUILD_CONFIG.isMobileWeb ? (
-        <EditorOutlineViewer
-          editor={editorElement}
-          show={mode === 'page'}
-          openOutlinePanel={openOutlinePanel}
-        />
-      ) : null}
-    </AffineErrorBoundary>
-  );
-}
-
-export function DocPeekPreview({ docRef }: { docRef: DocReferenceInfo }) {
-  const {
-    docId,
-    blockIds,
-    elementIds,
-    mode,
-    xywh,
-    databaseId,
-    databaseDocId,
-    databaseRowId,
-  } = docRef;
-  const { doc, editor, loading } = useEditor(
-    docId,
-    mode,
-    {
-      blockIds,
-      elementIds,
-    },
-    databaseId && databaseRowId && databaseDocId
-      ? {
-          docId: databaseDocId,
-          databaseId,
-          databaseRowId,
-          type: 'database',
-        }
-      : undefined
-  );
+  }, [docId, peekView, workbench]);
 
   // if sync engine has been synced and the page is null, show 404 page.
-  if (!doc || !editor) {
-    return loading ? (
+  if (!doc || !resolvedMode) {
+    return loading || !resolvedMode ? (
       <PageDetailSkeleton key="current-page-is-null" />
     ) : (
       <PageNotFound noPermission />
@@ -208,10 +161,29 @@ export function DocPeekPreview({ docRef }: { docRef: DocReferenceInfo }) {
   }
 
   return (
-    <FrameworkScope scope={doc.scope}>
-      <FrameworkScope scope={editor.scope}>
-        <DocPeekPreviewEditor xywh={xywh} />
-      </FrameworkScope>
-    </FrameworkScope>
+    <AffineErrorBoundary>
+      <Scrollable.Root>
+        <Scrollable.Viewport
+          className={clsx('affine-page-viewport', styles.affineDocViewport)}
+        >
+          <FrameworkScope scope={doc.scope}>
+            <BlockSuiteEditor
+              ref={onRef}
+              className={styles.editor}
+              mode={resolvedMode}
+              defaultSelectedBlockId={blockId}
+              page={doc.blockSuiteDoc}
+            />
+          </FrameworkScope>
+          <EditorOutlineViewer
+            editor={editor}
+            show={resolvedMode === 'page'}
+            openOutlinePanel={openOutlinePanel}
+          />
+        </Scrollable.Viewport>
+
+        <Scrollable.Scrollbar />
+      </Scrollable.Root>
+    </AffineErrorBoundary>
   );
 }

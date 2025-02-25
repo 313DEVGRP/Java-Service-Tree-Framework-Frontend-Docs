@@ -4,19 +4,15 @@ import {
   cloneElement,
   forwardRef,
   type HTMLAttributes,
-  type JSX,
   type ReactElement,
   type Ref,
-  type SVGAttributes,
   type SVGProps,
 } from 'react';
 
 import * as styles from './empty-section.css';
 
 interface ExplorerEmptySectionProps extends HTMLAttributes<HTMLDivElement> {
-  icon:
-    | ((props: SVGProps<SVGSVGElement>) => JSX.Element)
-    | ReactElement<SVGAttributes<SVGElement>>;
+  icon: ((props: SVGProps<SVGSVGElement>) => JSX.Element) | ReactElement;
   message: string;
   messageTestId?: string;
   actionText?: string;

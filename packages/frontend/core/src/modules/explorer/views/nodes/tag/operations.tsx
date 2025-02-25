@@ -1,21 +1,25 @@
-import { IconButton, MenuItem, MenuSeparator, toast } from '@affine/component';
-import { usePageHelper } from '@affine/core/components/blocksuite/block-suite-page-list/utils';
-import { IsFavoriteIcon } from '@affine/core/components/pure/icons';
-import { DocsService } from '@affine/core/modules/doc';
+import {
+  IconButton,
+  MenuIcon,
+  MenuItem,
+  MenuSeparator,
+  toast,
+} from '@affine/component';
+import { useAppSettingHelper } from '@affine/core/hooks/affine/use-app-setting-helper';
+import { track } from '@affine/core/mixpanel';
 import { FavoriteService } from '@affine/core/modules/favorite';
-import { FeatureFlagService } from '@affine/core/modules/feature-flag';
 import { TagService } from '@affine/core/modules/tag';
 import { WorkbenchService } from '@affine/core/modules/workbench';
-import { WorkspaceService } from '@affine/core/modules/workspace';
 import { useI18n } from '@affine/i18n';
-import { track } from '@affine/track';
 import {
   DeleteIcon,
+  FavoritedIcon,
+  FavoriteIcon,
   OpenInNewIcon,
   PlusIcon,
   SplitViewIcon,
 } from '@blocksuite/icons/rc';
-import { useLiveData, useServices } from '@toeverything/infra';
+import { DocsService, useLiveData, useServices } from '@toeverything/infra';
 import { useCallback, useMemo } from 'react';
 
 import type { NodeOperation } from '../../tree/types';
@@ -29,46 +33,34 @@ export const useExplorerTagNodeOperations = (
   }
 ): NodeOperation[] => {
   const t = useI18n();
-  const {
-    workbenchService,
-    workspaceService,
-    tagService,
-    favoriteService,
-    featureFlagService,
-  } = useServices({
-    WorkbenchService,
-    WorkspaceService,
-    TagService,
-    DocsService,
-    FavoriteService,
-    FeatureFlagService,
-  });
+  const { appSettings } = useAppSettingHelper();
+  const { docsService, workbenchService, tagService, favoriteService } =
+    useServices({
+      WorkbenchService,
+      TagService,
+      DocsService,
+      FavoriteService,
+    });
 
   const favorite = useLiveData(
     favoriteService.favoriteList.favorite$('tag', tagId)
   );
   const tagRecord = useLiveData(tagService.tagList.tagByTagId$(tagId));
-  const enableMultiView = useLiveData(
-    featureFlagService.flags.enable_multi_view.$
-  );
-
-  const { createPage } = usePageHelper(
-    workspaceService.workspace.docCollection
-  );
 
   const handleNewDoc = useCallback(() => {
     if (tagRecord) {
-      const newDoc = createPage();
+      const newDoc = docsService.createDoc();
       tagRecord?.tag(newDoc.id);
       track.$.navigationPanel.tags.createDoc();
+      workbenchService.workbench.openDoc(newDoc.id);
       openNodeCollapsed();
     }
-  }, [createPage, openNodeCollapsed, tagRecord]);
+  }, [docsService, openNodeCollapsed, tagRecord, workbenchService.workbench]);
 
   const handleMoveToTrash = useCallback(() => {
     tagService.tagList.deleteTag(tagId);
     track.$.navigationPanel.organize.deleteOrganizeItem({ type: 'tag' });
-    toast(t['com.affine.tags.delete-tags.toast']());
+    toast(t['com.arms.tags.delete-tags.toast']());
   }, [t, tagId, tagService.tagList]);
 
   const handleOpenInSplitView = useCallback(() => {
@@ -101,7 +93,7 @@ export const useExplorerTagNodeOperations = (
           <IconButton
             size="16"
             onClick={handleNewDoc}
-            tooltip={t['com.affine.rootAppSidebar.explorer.tag-add-tooltip']()}
+            tooltip={t['com.arms.rootAppSidebar.explorer.tag-add-tooltip']()}
           >
             <PlusIcon />
           </IconButton>
@@ -110,21 +102,32 @@ export const useExplorerTagNodeOperations = (
       {
         index: 50,
         view: (
-          <MenuItem prefixIcon={<OpenInNewIcon />} onClick={handleOpenInNewTab}>
-            {t['com.affine.workbench.tab.page-menu-open']()}
+          <MenuItem
+            preFix={
+              <MenuIcon>
+                <OpenInNewIcon />
+              </MenuIcon>
+            }
+            onClick={handleOpenInNewTab}
+          >
+            {t['com.arms.workbench.tab.page-menu-open']()}
           </MenuItem>
         ),
       },
-      ...(BUILD_CONFIG.isElectron && enableMultiView
+      ...(appSettings.enableMultiView
         ? [
             {
               index: 100,
               view: (
                 <MenuItem
-                  prefixIcon={<SplitViewIcon />}
+                  preFix={
+                    <MenuIcon>
+                      <SplitViewIcon />
+                    </MenuIcon>
+                  }
                   onClick={handleOpenInSplitView}
                 >
-                  {t['com.affine.workbench.split-view.page-menu-open']()}
+                  {t['com.arms.workbench.split-view.page-menu-open']()}
                 </MenuItem>
               ),
             },
@@ -134,12 +137,22 @@ export const useExplorerTagNodeOperations = (
         index: 199,
         view: (
           <MenuItem
-            prefixIcon={<IsFavoriteIcon favorite={!!favorite} />}
+            preFix={
+              <MenuIcon>
+                {favorite ? (
+                  <FavoritedIcon
+                    style={{ color: 'var(--affine-primary-color)' }}
+                  />
+                ) : (
+                  <FavoriteIcon />
+                )}
+              </MenuIcon>
+            }
             onClick={handleToggleFavoriteTag}
           >
             {favorite
-              ? t['com.affine.favoritePageOperation.remove']()
-              : t['com.affine.favoritePageOperation.add']()}
+              ? t['com.arms.favoritePageOperation.remove']()
+              : t['com.arms.favoritePageOperation.add']()}
           </MenuItem>
         ),
       },
@@ -152,7 +165,11 @@ export const useExplorerTagNodeOperations = (
         view: (
           <MenuItem
             type={'danger'}
-            prefixIcon={<DeleteIcon />}
+            preFix={
+              <MenuIcon>
+                <DeleteIcon />
+              </MenuIcon>
+            }
             onClick={handleMoveToTrash}
           >
             {t['Delete']()}
@@ -161,7 +178,7 @@ export const useExplorerTagNodeOperations = (
       },
     ],
     [
-      enableMultiView,
+      appSettings.enableMultiView,
       favorite,
       handleMoveToTrash,
       handleNewDoc,

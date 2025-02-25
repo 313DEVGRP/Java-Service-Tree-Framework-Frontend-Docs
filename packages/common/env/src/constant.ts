@@ -1,18 +1,22 @@
 // This file should has not side effect
-// oxlint-disable-next-line
-// @ts-ignore FIXME: typecheck error
-import type { DocCollection } from '@blocksuite/affine/store';
+import type { DocCollection } from '@blocksuite/store';
 
 declare global {
-  // oxlint-disable-next-line no-var
-  var __appInfo: {
-    electron: boolean;
-    scheme: string;
-    windowName: string;
-  };
+  interface Window {
+    appInfo: {
+      electron: boolean;
+      schema: string;
+      windowName: string;
+    };
+  }
 }
 
-export const DEFAULT_WORKSPACE_NAME = 'Demo Workspace';
+//#region runtime variables
+export const isBrowser = typeof window !== 'undefined';
+export const isServer = !isBrowser && typeof navigator === 'undefined';
+export const isDesktop = isBrowser && !!window.appInfo?.electron;
+//#endregion
+export const DEFAULT_WORKSPACE_NAME = 'ARMS';
 export const UNTITLED_WORKSPACE_NAME = 'Untitled';
 
 export const DEFAULT_SORT_KEY = 'updatedDate';

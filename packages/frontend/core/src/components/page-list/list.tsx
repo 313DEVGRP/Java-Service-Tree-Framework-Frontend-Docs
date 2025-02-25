@@ -61,9 +61,7 @@ const useItemSelectionStateEffect = () => {
         if (
           target.tagName === 'BUTTON' ||
           target.tagName === 'INPUT' ||
-          (e.target as HTMLElement).closest(
-            'button, input, [role="toolbar"], [role="list-item"]'
-          )
+          (e.target as HTMLElement).closest('button, input, [role="toolbar"]')
         ) {
           return;
         }

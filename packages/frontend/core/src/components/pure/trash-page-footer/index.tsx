@@ -1,15 +1,14 @@
 import { Button } from '@affine/component/ui/button';
 import { ConfirmModal } from '@affine/component/ui/modal';
-import { DocService } from '@affine/core/modules/doc';
-import { WorkspaceService } from '@affine/core/modules/workspace';
 import { useI18n } from '@affine/i18n';
 import { DeleteIcon, ResetIcon } from '@blocksuite/icons/rc';
-import { useService } from '@toeverything/infra';
+import { DocService, useService, WorkspaceService } from '@toeverything/infra';
 import { useCallback, useState } from 'react';
 
-import { useAppSettingHelper } from '../../../components/hooks/affine/use-app-setting-helper';
-import { useBlockSuiteMetaHelper } from '../../../components/hooks/affine/use-block-suite-meta-helper';
-import { useNavigateHelper } from '../../../components/hooks/use-navigate-helper';
+import { useAppSettingHelper } from '../../../hooks/affine/use-app-setting-helper';
+import { useBlockSuiteMetaHelper } from '../../../hooks/affine/use-block-suite-meta-helper';
+import { useNavigateHelper } from '../../../hooks/use-navigate-helper';
+import { WorkspaceSubPath } from '../../../shared';
 import { toast } from '../../../utils';
 import * as styles from './styles.css';
 
@@ -19,25 +18,25 @@ export const TrashPageFooter = () => {
   const doc = useService(DocService).doc;
   const t = useI18n();
   const { appSettings } = useAppSettingHelper();
-  const { jumpToPage } = useNavigateHelper();
-  const { restoreFromTrash } = useBlockSuiteMetaHelper();
+  const { jumpToSubPath } = useNavigateHelper();
+  const { restoreFromTrash } = useBlockSuiteMetaHelper(docCollection);
   const [open, setOpen] = useState(false);
-  const hintText = t['com.affine.cmdk.affine.editor.trash-footer-hint']();
+  const hintText = t['com.arms.cmdk.affine.editor.trash-footer-hint']();
 
   const onRestore = useCallback(() => {
     restoreFromTrash(doc.id);
     toast(
-      t['com.affine.toastMessage.restored']({
+      t['com.arms.toastMessage.restored']({
         title: doc.meta$.value.title || 'Untitled',
       })
     );
   }, [doc.id, doc.meta$.value.title, restoreFromTrash, t]);
 
   const onConfirmDelete = useCallback(() => {
-    jumpToPage(workspace.id, 'all');
+    jumpToSubPath(workspace.id, WorkspaceSubPath.ALL);
     docCollection.removeDoc(doc.id);
-    toast(t['com.affine.toastMessage.permanentlyDeleted']());
-  }, [jumpToPage, workspace.id, docCollection, doc.id, t]);
+    toast(t['com.arms.toastMessage.permanentlyDeleted']());
+  }, [jumpToSubPath, workspace.id, docCollection, doc.id, t]);
 
   const onDelete = useCallback(() => {
     setOpen(true);
@@ -51,7 +50,7 @@ export const TrashPageFooter = () => {
       <div className={styles.deleteHintText}>{hintText}</div>
       <div className={styles.group}>
         <Button
-          tooltip={t['com.affine.trashOperation.restoreIt']()}
+          tooltip={t['com.arms.trashOperation.restoreIt']()}
           data-testid="page-restore-button"
           variant="primary"
           onClick={onRestore}
@@ -60,7 +59,7 @@ export const TrashPageFooter = () => {
           prefixClassName={styles.icon}
         />
         <Button
-          tooltip={t['com.affine.trashOperation.deletePermanently']()}
+          tooltip={t['com.arms.trashOperation.deletePermanently']()}
           variant="error"
           onClick={onDelete}
           className={styles.buttonContainer}
@@ -69,10 +68,10 @@ export const TrashPageFooter = () => {
         />
       </div>
       <ConfirmModal
-        title={t['com.affine.trashOperation.delete.title']()}
-        cancelText={t['com.affine.confirmModal.button.cancel']()}
-        description={t['com.affine.trashOperation.delete.description']()}
-        confirmText={t['com.affine.trashOperation.delete']()}
+        title={t['com.arms.trashOperation.delete.title']()}
+        cancelText={t['com.arms.confirmModal.button.cancel']()}
+        description={t['com.arms.trashOperation.delete.description']()}
+        confirmText={t['com.arms.trashOperation.delete']()}
         confirmButtonOptions={{
           variant: 'error',
         }}

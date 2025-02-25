@@ -33,8 +33,8 @@ export const Unfolding = ({
       const handler = () => {
         onChanged?.(fold);
       };
-      paper.addEventListener('transitionend', handler, { once: true });
-      return () => paper.removeEventListener('transitionend', handler);
+      ref.current.addEventListener('transitionend', handler, { once: true });
+      return () => paper?.removeEventListener('transitionend', handler);
     }
 
     return () => null;

@@ -1,21 +1,19 @@
 import { DebugLogger } from '@affine/debug';
 import type { GetWorkspacePublicPagesQuery } from '@affine/graphql';
+import type { GlobalCache, WorkspaceService } from '@toeverything/infra';
 import {
   backoffRetry,
   catchErrorInto,
   effect,
   Entity,
-  exhaustMapWithTrailing,
   fromPromise,
   LiveData,
   onComplete,
   onStart,
 } from '@toeverything/infra';
-import { EMPTY, mergeMap } from 'rxjs';
+import { EMPTY, mergeMap, switchMap } from 'rxjs';
 
 import { isBackendError, isNetworkError } from '../../cloud';
-import type { GlobalCache } from '../../storage';
-import type { WorkspaceService } from '../../workspace';
 import type { ShareDocsStore } from '../stores/share-docs';
 
 type ShareDocListType =
@@ -37,7 +35,7 @@ export class ShareDocsList extends Entity {
   }
 
   revalidate = effect(
-    exhaustMapWithTrailing(() =>
+    switchMap(() =>
       fromPromise(signal => {
         return this.store.getWorkspacesShareDocs(
           this.workspaceService.workspace.id,
@@ -67,8 +65,4 @@ export class ShareDocsList extends Entity {
       )
     )
   );
-
-  override dispose(): void {
-    this.revalidate.unsubscribe();
-  }
 }

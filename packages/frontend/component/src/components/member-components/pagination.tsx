@@ -6,21 +6,19 @@ import ReactPaginate from 'react-paginate';
 import * as styles from './styles.css';
 export interface PaginationProps {
   totalCount: number;
-  pageNum?: number;
   countPerPage: number;
-  onPageChange: (skip: number, pageNum: number) => void;
+  onPageChange: (skip: number) => void;
 }
 
 export const Pagination = ({
   totalCount,
   countPerPage,
-  pageNum,
   onPageChange,
 }: PaginationProps) => {
   const handlePageClick = useCallback(
     (e: { selected: number }) => {
       const newOffset = (e.selected * countPerPage) % totalCount;
-      onPageChange(newOffset, e.selected);
+      onPageChange(newOffset);
     },
     [countPerPage, onPageChange, totalCount]
   );
@@ -36,7 +34,6 @@ export const Pagination = ({
       pageRangeDisplayed={3}
       marginPagesDisplayed={2}
       pageCount={pageCount}
-      forcePage={pageNum}
       previousLabel={<ArrowLeftSmallIcon />}
       nextLabel={<ArrowRightSmallIcon />}
       pageClassName={styles.pageItem}

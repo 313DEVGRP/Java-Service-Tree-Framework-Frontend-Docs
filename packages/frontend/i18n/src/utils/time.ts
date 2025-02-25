@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 
-import { I18n, type I18nInstance } from '../i18next';
+import { I18n } from '../i18n';
 
 export type TimeUnit =
   | 'second'
@@ -46,7 +46,7 @@ export function i18nTime(
   time: dayjs.ConfigType,
   options: {
     // override i18n instance, default is global I18n instance
-    i18n?: I18nInstance;
+    i18n?: I18n;
     // override now time, default is current time
     now?: dayjs.ConfigType;
     relative?:
@@ -118,7 +118,7 @@ export function i18nTime(
       second: () => {
         const diffSecond = time.diff(now) / 1000;
         if (Math.abs(diffSecond) < 1) {
-          return i18n['com.affine.time.now']();
+          return i18n['com.arms.time.now']();
         }
         if (
           relativeOption.max[1] === 'second' &&
@@ -134,7 +134,7 @@ export function i18nTime(
       minute: () => {
         const diffMinute = time.diff(now) / 1000 / 60;
         if (Math.abs(diffMinute) < 1) {
-          return i18n['com.affine.time.now']();
+          return i18n['com.arms.time.now']();
         }
         if (
           relativeOption.max[1] === 'minute' &&
@@ -150,7 +150,7 @@ export function i18nTime(
       hour: () => {
         const diffHour = time.diff(now) / 1000 / 60 / 60;
         if (Math.abs(diffHour) < 1) {
-          return i18n['com.affine.time.now']();
+          return i18n['com.arms.time.now']();
         }
         if (
           relativeOption.max[1] === 'hour' &&
@@ -166,7 +166,7 @@ export function i18nTime(
       day: () => {
         const diffDay = time.startOf('day').diff(now.startOf('day'), 'day');
         if (Math.abs(diffDay) < 1) {
-          return i18n['com.affine.time.today']();
+          return i18n['com.arms.time.today']();
         }
         if (
           relativeOption.max[1] === 'day' &&
@@ -189,7 +189,7 @@ export function i18nTime(
         const inSameMonth = time.startOf('month').isSame(now.startOf('month'));
         const diffWeek = time.startOf('week').diff(now.startOf('week'), 'week');
         if (Math.abs(diffWeek) < 1) {
-          return i18n['com.affine.time.this-week']();
+          return i18n['com.arms.time.this-week']();
         }
         if (
           relativeOption.max[1] === 'week' &&
@@ -207,7 +207,7 @@ export function i18nTime(
           .startOf('month')
           .diff(now.startOf('month'), 'month');
         if (Math.abs(diffMonth) < 1) {
-          return i18n['com.affine.time.this-mouth']();
+          return i18n['com.arms.time.this-mouth']();
         }
         if (
           relativeOption.max[1] === 'month' &&
@@ -223,7 +223,7 @@ export function i18nTime(
       year: () => {
         const diffYear = time.startOf('year').diff(now.startOf('year'), 'year');
         if (Math.abs(diffYear) < 1) {
-          return i18n['com.affine.time.this-year']();
+          return i18n['com.arms.time.this-year']();
         }
         if (
           relativeOption.max[1] === 'year' &&

@@ -1,55 +1,34 @@
 import { toast } from '@affine/component';
-import type { DocProps } from '@affine/core/blocksuite/initialization';
-import { AppSidebarService } from '@affine/core/modules/app-sidebar';
-import { DocsService } from '@affine/core/modules/doc';
-import { EditorSettingService } from '@affine/core/modules/editor-setting';
+import { useDocCollectionHelper } from '@affine/core/hooks/use-block-suite-workspace-helper';
 import { WorkbenchService } from '@affine/core/modules/workbench';
-import { type DocMode } from '@blocksuite/affine/blocks';
-import type { DocCollection } from '@blocksuite/affine/store';
-import { useServices } from '@toeverything/infra';
+import { DocsService, initEmptyPage, useService } from '@toeverything/infra';
 import { useCallback, useMemo } from 'react';
 
+import type { DocCollection } from '../../../shared';
+
 export const usePageHelper = (docCollection: DocCollection) => {
-  const {
-    docsService,
-    workbenchService,
-    editorSettingService,
-    appSidebarService,
-  } = useServices({
-    DocsService,
-    WorkbenchService,
-    EditorSettingService,
-    AppSidebarService,
-  });
-  const workbench = workbenchService.workbench;
-  const docRecordList = docsService.list;
-  const appSidebar = appSidebarService.sidebar;
+  const workbench = useService(WorkbenchService).workbench;
+  const { createDoc } = useDocCollectionHelper(docCollection);
+  const docRecordList = useService(DocsService).list;
+
+  const isPreferredEdgeless = useCallback(
+    (pageId: string) =>
+      docRecordList.doc$(pageId).value?.mode$.value === 'edgeless',
+    [docRecordList]
+  );
 
   const createPageAndOpen = useCallback(
-    (mode?: DocMode, open?: boolean | 'new-tab') => {
-      appSidebar.setHovering(false);
-      const docProps: DocProps = {
-        note: editorSettingService.editorSetting.get('affine:note'),
-      };
-      const page = docsService.createDoc({ docProps });
-
-      if (mode) {
-        docRecordList.doc$(page.id).value?.setPrimaryMode(mode);
-      }
-
+    (mode?: 'page' | 'edgeless', open?: boolean | 'new-tab') => {
+      const page = createDoc();
+      initEmptyPage(page);
+      docRecordList.doc$(page.id).value?.setMode(mode || 'page');
       if (open !== false)
         workbench.openDoc(page.id, {
           at: open === 'new-tab' ? 'new-tab' : 'active',
         });
       return page;
     },
-    [
-      appSidebar,
-      docRecordList,
-      docsService,
-      editorSettingService.editorSetting,
-      workbench,
-    ]
+    [createDoc, docRecordList, workbench]
   );
 
   const createEdgelessAndOpen = useCallback(
@@ -61,7 +40,7 @@ export const usePageHelper = (docCollection: DocCollection) => {
 
   const importFileAndOpen = useMemo(
     () => async () => {
-      const { showImportModal } = await import('@blocksuite/affine/blocks');
+      const { showImportModal } = await import('@blocksuite/blocks');
       const { promise, resolve, reject } =
         Promise.withResolvers<
           Parameters<
@@ -103,10 +82,16 @@ export const usePageHelper = (docCollection: DocCollection) => {
 
   return useMemo(() => {
     return {
-      createPage: (mode?: DocMode, open?: boolean | 'new-tab') =>
-        createPageAndOpen(mode, open),
+      isPreferredEdgeless,
+      createPage: (open?: boolean | 'new-tab') =>
+        createPageAndOpen('page', open),
       createEdgeless: createEdgelessAndOpen,
       importFile: importFileAndOpen,
     };
-  }, [createEdgelessAndOpen, createPageAndOpen, importFileAndOpen]);
+  }, [
+    isPreferredEdgeless,
+    createEdgelessAndOpen,
+    createPageAndOpen,
+    importFileAndOpen,
+  ]);
 };

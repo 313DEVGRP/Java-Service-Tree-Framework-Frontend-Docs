@@ -1,6 +1,5 @@
-import type { DocMode } from '@blocksuite/affine/blocks';
-import { NewXxxEdgelessIcon, NewXxxPageIcon } from '@blocksuite/icons/rc';
-import { Entity, LiveData } from '@toeverything/infra';
+import { EdgelessIcon, PageIcon } from '@blocksuite/icons/rc';
+import { type DocMode, Entity, LiveData } from '@toeverything/infra';
 
 import type { QuickSearchSession } from '../providers/quick-search-provider';
 import type { QuickSearchGroup } from '../types/group';
@@ -8,7 +7,7 @@ import type { QuickSearchItem } from '../types/item';
 
 const group = {
   id: 'creation',
-  label: { i18nKey: 'com.affine.quicksearch.group.creation' },
+  label: { key: 'com.arms.quicksearch.group.creation' },
   score: 0,
 } as QuickSearchGroup;
 
@@ -30,22 +29,22 @@ export class CreationQuickSearchSession
         id: 'creation:create-page',
         source: 'creation',
         label: {
-          i18nKey: 'com.affine.cmdk.affine.create-new-page-as',
+          key: 'com.arms.cmdk.affine.create-new-page-as',
           options: { keyWord: query },
         },
         group,
-        icon: NewXxxPageIcon,
+        icon: PageIcon,
         payload: { mode: 'edgeless', title: query },
       },
       {
         id: 'creation:create-edgeless',
         source: 'creation',
         label: {
-          i18nKey: 'com.affine.cmdk.affine.create-new-edgeless-as',
+          key: 'com.arms.cmdk.affine.create-new-edgeless-as',
           options: { keyWord: query },
         },
         group,
-        icon: NewXxxEdgelessIcon,
+        icon: EdgelessIcon,
         payload: { mode: 'edgeless', title: query },
       },
     ] as QuickSearchItem<'creation', { title: string; mode: DocMode }>[];

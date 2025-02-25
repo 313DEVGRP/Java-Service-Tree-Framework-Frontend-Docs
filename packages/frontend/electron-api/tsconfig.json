@@ -11,7 +11,7 @@
       "path": "../../common/infra"
     },
     {
-      "path": "../../frontend/apps/electron"
+      "path": "../../frontend/electron"
     }
   ]
 }

@@ -51,7 +51,8 @@ export class AuthController {
     private readonly user: UserService,
     private readonly token: TokenService,
     private readonly config: Config
-  ) {}
+  ) {
+  }
 
   @Public()
   @Post('/sign-in')
@@ -87,7 +88,7 @@ export class AuthController {
       }
 
       const result = await this.sendSignInEmail(
-        { email: credential.email, signUp: !user },
+        {email: credential.email, signUp: !user},
         redirectUri
       );
 
@@ -102,7 +103,7 @@ export class AuthController {
   }
 
   async sendSignInEmail(
-    { email, signUp }: { email: string; signUp: boolean },
+    {email, signUp}: { email: string; signUp: boolean },
     redirectUri: string
   ) {
     const token = await this.token.createToken(TokenType.SignIn, email);
@@ -150,7 +151,7 @@ export class AuthController {
   async magicLinkSignIn(
     @Req() req: Request,
     @Res() res: Response,
-    @Body() { email, token }: MagicLinkCredential
+    @Body() {email, token}: MagicLinkCredential
   ) {
     if (!token || !email) {
       throw new EmailTokenNotFound();
@@ -173,10 +174,10 @@ export class AuthController {
 
     await this.auth.setCookie(req, res, user);
 
-    res.send({ id: user.id, email: user.email, name: user.name });
+    res.send({id: user.id, email: user.email, name: user.name});
   }
 
-  @Throttle('default', { limit: 1200 })
+  @Throttle('default', {limit: 1200})
   @Public()
   @Get('/session')
   async currentSessionUser(@CurrentUser() user?: CurrentUser) {
@@ -185,7 +186,7 @@ export class AuthController {
     };
   }
 
-  @Throttle('default', { limit: 1200 })
+  @Throttle('default', {limit: 1200})
   @Public()
   @Get('/sessions')
   async currentSessionUsers(@Req() req: Request) {

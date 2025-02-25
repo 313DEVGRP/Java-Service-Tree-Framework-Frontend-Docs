@@ -1,8 +1,8 @@
 import { FavoriteTag } from '@affine/core/components/page-list';
-import { CompatibleFavoriteItemsAdapter } from '@affine/core/modules/favorite';
+import { track } from '@affine/core/mixpanel';
+import { CompatibleFavoriteItemsAdapter } from '@affine/core/modules/properties';
 import { toast } from '@affine/core/utils';
 import { useI18n } from '@affine/i18n';
-import { track } from '@affine/track';
 import { useLiveData, useService } from '@toeverything/infra';
 import { useCallback } from 'react';
 
@@ -20,8 +20,8 @@ export const useFavorite = (pageId: string) => {
     favAdapter.toggle(pageId, 'doc');
     toast(
       favorite
-        ? t['com.affine.toastMessage.removedFavorites']()
-        : t['com.affine.toastMessage.addedFavorites']()
+        ? t['com.arms.toastMessage.removedFavorites']()
+        : t['com.arms.toastMessage.addedFavorites']()
     );
   }, [favorite, pageId, t, favAdapter]);
 

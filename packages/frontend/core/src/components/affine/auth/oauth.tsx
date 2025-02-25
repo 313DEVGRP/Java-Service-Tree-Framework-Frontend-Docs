@@ -1,16 +1,19 @@
+import { notify, Skeleton } from '@affine/component';
 import { Button } from '@affine/component/ui/button';
-import { ServerService } from '@affine/core/modules/cloud';
-import { UrlService } from '@affine/core/modules/url';
+import { useAsyncCallback } from '@affine/core/hooks/affine-async-hooks';
+import { track } from '@affine/core/mixpanel';
 import { OAuthProviderType } from '@affine/graphql';
-import track from '@affine/track';
 import { GithubIcon, GoogleDuotoneIcon } from '@blocksuite/icons/rc';
 import { useLiveData, useService } from '@toeverything/infra';
-import { type ReactElement, type SVGAttributes, useCallback } from 'react';
+import type { ReactElement } from 'react';
+import { useState } from 'react';
+
+import { AuthService, ServerConfigService } from '../../../modules/cloud';
 
 const OAuthProviderMap: Record<
   OAuthProviderType,
   {
-    icon: ReactElement<SVGAttributes<SVGElement>>;
+    icon: ReactElement;
   }
 > = {
   [OAuthProviderType.Google]: {
@@ -27,69 +30,54 @@ const OAuthProviderMap: Record<
   },
 };
 
-export function OAuth({ redirectUrl }: { redirectUrl?: string }) {
-  const serverService = useService(ServerService);
-  const urlService = useService(UrlService);
-  const oauth = useLiveData(serverService.server.features$.map(r => r?.oauth));
+export function OAuth({ redirectUri }: { redirectUri?: string | null }) {
+  const serverConfig = useService(ServerConfigService).serverConfig;
+  const oauth = useLiveData(serverConfig.features$.map(r => r?.oauth));
   const oauthProviders = useLiveData(
-    serverService.server.config$.map(r => r?.oauthProviders)
+    serverConfig.config$.map(r => r?.oauthProviders)
   );
-  const scheme = urlService.getClientScheme();
 
   if (!oauth) {
-    return null;
+    return (
+      <>
+        <br />
+        <Skeleton height={50} />
+      </>
+    );
   }
 
   return oauthProviders?.map(provider => (
     <OAuthProvider
       key={provider}
       provider={provider}
-      redirectUrl={redirectUrl}
-      scheme={scheme}
-      popupWindow={url => {
-        urlService.openPopupWindow(url);
-      }}
+      redirectUri={redirectUri}
     />
   ));
 }
 
 function OAuthProvider({
   provider,
-  redirectUrl,
-  scheme,
-  popupWindow,
+  redirectUri,
 }: {
   provider: OAuthProviderType;
-  redirectUrl?: string;
-  scheme?: string;
-  popupWindow: (url: string) => void;
+  redirectUri?: string | null;
 }) {
-  const serverService = useService(ServerService);
   const { icon } = OAuthProviderMap[provider];
+  const authService = useService(AuthService);
+  const [isConnecting, setIsConnecting] = useState(false);
 
-  const onClick = useCallback(() => {
-    const params = new URLSearchParams();
-
-    params.set('provider', provider);
-
-    if (redirectUrl) {
-      params.set('redirect_uri', redirectUrl);
+  const onClick = useAsyncCallback(async () => {
+    try {
+      setIsConnecting(true);
+      await authService.signInOauth(provider, redirectUri);
+    } catch (err) {
+      console.error(err);
+      notify.error({ title: 'Failed to sign in, please try again.' });
+    } finally {
+      setIsConnecting(false);
+      track.$.$.auth.oauth({ provider });
     }
-
-    if (scheme) {
-      params.set('client', scheme);
-    }
-
-    // TODO: Android app scheme not implemented
-    // if (BUILD_CONFIG.isAndroid) {}
-
-    const oauthUrl =
-      serverService.server.baseUrl + `/oauth/login?${params.toString()}`;
-
-    track.$.$.auth.signIn({ method: 'oauth', provider });
-
-    popupWindow(oauthUrl);
-  }, [popupWindow, provider, redirectUrl, scheme, serverService]);
+  }, [authService, provider, redirectUri]);
 
   return (
     <Button
@@ -102,6 +90,7 @@ function OAuthProvider({
       onClick={onClick}
     >
       Continue with {provider}
+      {isConnecting && '...'}
     </Button>
   );
 }

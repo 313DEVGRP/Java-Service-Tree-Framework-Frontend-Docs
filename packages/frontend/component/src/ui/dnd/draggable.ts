@@ -4,30 +4,43 @@ import { disableNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/elem
 import { pointerOutsideOfPreview } from '@atlaskit/pragmatic-drag-and-drop/element/pointer-outside-of-preview';
 import { preserveOffsetOnSource } from '@atlaskit/pragmatic-drag-and-drop/element/preserve-offset-on-source';
 import { setCustomNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview';
-import type {
-  BaseEventPayload,
-  DropTargetRecord,
-  ElementDragType,
-} from '@atlaskit/pragmatic-drag-and-drop/types';
-import { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import type { DropTargetRecord } from '@atlaskit/pragmatic-drag-and-drop/types';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import ReactDOM, { flushSync } from 'react-dom';
 
-import { DNDContext } from './context';
-import {
-  type DNDData,
-  type DraggableGet,
-  draggableGet,
-  type DraggableGetFeedback,
-  type toExternalData,
-} from './types';
+import type { DNDData } from './types';
+
+type DraggableGetFeedback = Parameters<
+  NonNullable<Parameters<typeof draggable>[0]['getInitialData']>
+>[0];
+
+type DraggableGet<T> = T | ((data: DraggableGetFeedback) => T);
+
+function draggableGet<T>(
+  get: T
+): T extends undefined
+  ? undefined
+  : T extends DraggableGet<infer I>
+    ? (args: DraggableGetFeedback) => I
+    : never {
+  if (get === undefined) {
+    return undefined as any;
+  }
+  return ((args: DraggableGetFeedback) =>
+    typeof get === 'function' ? (get as any)(args) : get) as any;
+}
 
 export interface DraggableOptions<D extends DNDData = DNDData> {
   data?: DraggableGet<D['draggable']>;
-  toExternalData?: toExternalData<D>;
-  onDragStart?: (data: BaseEventPayload<ElementDragType>) => void;
-  onDrag?: (data: BaseEventPayload<ElementDragType>) => void;
-  onDrop?: (data: BaseEventPayload<ElementDragType>) => void;
-  onDropTargetChange?: (data: BaseEventPayload<ElementDragType>) => void;
+  dataForExternal?: DraggableGet<{
+    [Key in
+      | 'text/uri-list'
+      | 'text/plain'
+      | 'text/html'
+      | 'Files'
+      // eslint-disable-next-line @typescript-eslint/ban-types
+      | (string & {})]?: string;
+  }>;
   canDrag?: DraggableGet<boolean>;
   disableDragPreview?: boolean;
   dragPreviewPosition?: DraggableDragPreviewPosition;
@@ -69,23 +82,8 @@ export const useDraggable = <D extends DNDData = DNDData>(
   const enableDropTarget = useRef(false);
   const enableDragging = useRef(false);
 
-  const context = useContext(DNDContext);
-
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const options = useMemo(() => {
-    const opts = getOptions();
-
-    const toExternalData = opts.toExternalData ?? context.toExternalData;
-    return {
-      ...opts,
-      toExternalData: toExternalData
-        ? (args: DraggableGetFeedback) => {
-            return (opts.toExternalData ?? toExternalData)(args, opts.data);
-          }
-        : undefined,
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [...deps, context.toExternalData]);
+  const options = useMemo(getOptions, deps);
 
   useEffect(() => {
     if (!dragRef.current) {
@@ -105,14 +103,12 @@ export const useDraggable = <D extends DNDData = DNDData>(
       },
     };
 
-    dragRef.current.dataset.affineDraggable = 'true';
-
     const cleanupDraggable = draggable({
       element: dragRef.current,
       dragHandle: dragHandleRef.current ?? undefined,
       canDrag: draggableGet(options.canDrag),
       getInitialData: draggableGet(options.data),
-      getInitialDataForExternal: draggableGet(options.toExternalData),
+      getInitialDataForExternal: draggableGet(options.dataForExternal),
       onDragStart: args => {
         if (enableDragging.current) {
           setDragging(true);
@@ -134,9 +130,8 @@ export const useDraggable = <D extends DNDData = DNDData>(
         if (dragRef.current) {
           dragRef.current.dataset['dragging'] = 'true';
         }
-        options.onDragStart?.(args);
       },
-      onDrop: args => {
+      onDrop: () => {
         if (enableDragging.current) {
           setDragging(false);
         }
@@ -157,7 +152,6 @@ export const useDraggable = <D extends DNDData = DNDData>(
         if (dragRef.current) {
           delete dragRef.current.dataset['dragging'];
         }
-        options.onDrop?.(args);
       },
       onDrag: args => {
         if (enableDraggingPosition.current) {
@@ -173,13 +167,11 @@ export const useDraggable = <D extends DNDData = DNDData>(
             outWindow: prev.outWindow,
           }));
         }
-        options.onDrag?.(args);
       },
       onDropTargetChange(args) {
         if (enableDropTarget.current) {
           setDropTarget(args.location.current.dropTargets);
         }
-        options.onDropTargetChange?.(args);
       },
       onGenerateDragPreview({ nativeSetDragImage, source, location }) {
         if (options.disableDragPreview) {
@@ -189,11 +181,6 @@ export const useDraggable = <D extends DNDData = DNDData>(
 
         let previewPosition: DraggableDragPreviewPosition =
           options.dragPreviewPosition ?? 'native';
-
-        source.element.dataset['dragPreview'] = 'true';
-        requestAnimationFrame(() => {
-          delete source.element.dataset['dragPreview'];
-        });
 
         if (enableCustomDragPreview.current) {
           setCustomNativeDragPreview({

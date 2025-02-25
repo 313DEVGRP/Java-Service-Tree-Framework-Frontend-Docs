@@ -13,7 +13,7 @@ import {
 import { exhaustMap } from 'rxjs';
 
 import { isBackendError, isNetworkError } from '../error';
-import type { ServerService } from '../services/server';
+import type { ServerConfigService } from '../services/server-config';
 import type { SubscriptionStore } from '../stores/subscription';
 
 export class SubscriptionPrices extends Entity {
@@ -27,9 +27,6 @@ export class SubscriptionPrices extends Entity {
   aiPrice$ = this.prices$.map(prices =>
     prices ? prices.find(price => price.plan === 'AI') : null
   );
-  teamPrice$ = this.prices$.map(prices =>
-    prices ? prices.find(price => price.plan === 'Team') : null
-  );
 
   readableLifetimePrice$ = this.proPrice$.map(price =>
     price?.lifetimeAmount
@@ -38,7 +35,7 @@ export class SubscriptionPrices extends Entity {
   );
 
   constructor(
-    private readonly serverService: ServerService,
+    private readonly serverConfigService: ServerConfigService,
     private readonly store: SubscriptionStore
   ) {
     super();
@@ -47,7 +44,13 @@ export class SubscriptionPrices extends Entity {
   revalidate = effect(
     exhaustMap(() => {
       return fromPromise(async signal => {
-        const serverConfig = this.serverService.server.features$.value;
+        // ensure server config is loaded
+        this.serverConfigService.serverConfig.revalidateIfNeeded();
+
+        const serverConfig =
+          await this.serverConfigService.serverConfig.features$.waitForNonNull(
+            signal
+          );
 
         if (!serverConfig.payment) {
           // No payment feature, no subscription

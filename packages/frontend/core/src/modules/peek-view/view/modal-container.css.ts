@@ -1,12 +1,11 @@
 import { cssVar } from '@toeverything/theme';
-import { cssVarV2 } from '@toeverything/theme/v2';
 import { style } from '@vanilla-extract/css';
 
 export const modalOverlay = style({
   position: 'fixed',
   inset: 0,
   zIndex: cssVar('zIndexModal'),
-  backgroundColor: cssVarV2('layer/background/modal'),
+  backgroundColor: cssVar('black30'),
   pointerEvents: 'auto',
   selectors: {
     '&[data-anime-state="animating"]': {
@@ -25,45 +24,18 @@ export const modalContentWrapper = style({
 });
 
 export const modalContentContainer = style({
+  width: '100%',
+  height: '100%',
   position: 'relative',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
   borderRadius: 12,
-  '@media': {
-    // for small screen
-    'screen and (width <= 640px)': {
-      selectors: {
-        [`${modalContentWrapper}:is([data-mode="max"], [data-mode="fit"]) &`]: {
-          height: '80%',
-          width: 'calc(100% - 32px)',
-          paddingRight: 0,
-          paddingBottom: 32,
-          alignSelf: 'flex-end',
-        },
-      },
-    },
-    'screen and (width > 640px) and (width <= 1024px)': {
-      selectors: {
-        [`${modalContentWrapper}[data-mode="fit"] &`]: {
-          paddingRight: 12,
-        },
-      },
-    },
-  },
   selectors: {
-    [`${modalContentWrapper}[data-mode="max"] &`]: {
+    '[data-padding="true"] &': {
       width: 'calc(100% - 64px)',
       height: 'calc(100% - 64px)',
-    },
-    [`${modalContentWrapper}[data-mode="full"] &`]: {
-      width: '100%',
-      height: '100%',
-    },
-    [`${modalContentWrapper}[data-mode="fit"] &`]: {
-      width: '90%',
-      height: '90%',
-      maxWidth: 1248,
+      paddingRight: 48,
     },
     '&[data-anime-state="animating"]': {
       opacity: 0,
@@ -101,21 +73,10 @@ export const modalContent = style({
 
 export const modalControls = style({
   position: 'absolute',
-  right: -48,
+  right: 0,
   top: 0,
   zIndex: -1,
   minWidth: '48px',
   padding: '8px 0 0 16px',
   pointerEvents: 'auto',
-  '@media': {
-    'screen and (width <= 640px)': {
-      top: -48,
-      right: 0,
-      left: 0,
-      padding: '8px',
-    },
-    'screen and (width > 640px) and (width <= 1024px)': {
-      paddingLeft: 0,
-    },
-  },
 });

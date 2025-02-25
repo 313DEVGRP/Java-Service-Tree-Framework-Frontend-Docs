@@ -40,22 +40,15 @@ export interface TooltipProps {
   rootOptions?: Omit<RootProps, 'children'>;
   portalOptions?: TooltipPortalProps;
   options?: Omit<TooltipContentProps, 'side' | 'align'>;
-  shortcutClassName?: string;
 }
 
-const TooltipShortcut = ({
-  shortcut,
-  className,
-}: {
-  shortcut: string | string[];
-  className?: string;
-}) => {
+const TooltipShortcut = ({ shortcut }: { shortcut: string | string[] }) => {
   const commands = (Array.isArray(shortcut) ? shortcut : [shortcut])
     .map(cmd => cmd.trim())
     .map(cmd => getCommand(cmd));
 
   return (
-    <div className={clsx(styles.shortcut, className)}>
+    <div className={styles.shortcut}>
       {commands.map((cmd, index) => (
         <div
           key={`${index}-${cmd}`}
@@ -78,7 +71,6 @@ export const Tooltip = ({
   options,
   rootOptions,
   portalOptions,
-  shortcutClassName,
 }: TooltipProps) => {
   if (!content) {
     return children;
@@ -102,10 +94,7 @@ export const Tooltip = ({
             {shortcut ? (
               <div className={styles.withShortcut}>
                 <div className={styles.withShortcutContent}>{content}</div>
-                <TooltipShortcut
-                  shortcut={shortcut}
-                  className={shortcutClassName}
-                />
+                <TooltipShortcut shortcut={shortcut} />
               </div>
             ) : (
               content

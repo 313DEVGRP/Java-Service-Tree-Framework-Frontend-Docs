@@ -3,23 +3,22 @@ import {
   IconButton,
   useDropTarget,
 } from '@affine/component';
-import { usePageHelper } from '@affine/core/components/blocksuite/block-suite-page-list/utils';
+import { track } from '@affine/core/mixpanel';
 import {
   DropEffect,
   ExplorerTreeRoot,
 } from '@affine/core/modules/explorer/views/tree';
-import type { FavoriteSupportTypeUnion } from '@affine/core/modules/favorite';
+import type { FavoriteSupportType } from '@affine/core/modules/favorite';
 import {
   FavoriteService,
   isFavoriteSupportType,
 } from '@affine/core/modules/favorite';
-import { WorkspaceService } from '@affine/core/modules/workspace';
+import { WorkbenchService } from '@affine/core/modules/workbench';
 import type { AffineDNDData } from '@affine/core/types/dnd';
 import { isNewTabTrigger } from '@affine/core/utils';
 import { useI18n } from '@affine/i18n';
-import { track } from '@affine/track';
 import { PlusIcon } from '@blocksuite/icons/rc';
-import { useLiveData, useServices } from '@toeverything/infra';
+import { DocsService, useLiveData, useServices } from '@toeverything/infra';
 import { type MouseEventHandler, useCallback } from 'react';
 
 import { ExplorerService } from '../../../services/explorer';
@@ -37,11 +36,13 @@ import {
 import { RootEmpty } from './empty';
 
 export const ExplorerFavorites = () => {
-  const { favoriteService, workspaceService, explorerService } = useServices({
-    FavoriteService,
-    WorkspaceService,
-    ExplorerService,
-  });
+  const { favoriteService, docsService, workbenchService, explorerService } =
+    useServices({
+      FavoriteService,
+      DocsService,
+      WorkbenchService,
+      ExplorerService,
+    });
 
   const explorerSection = explorerService.sections.favorites;
 
@@ -50,10 +51,6 @@ export const ExplorerFavorites = () => {
   const isLoading = useLiveData(favoriteService.favoriteList.isLoading$);
 
   const t = useI18n();
-
-  const { createPage } = usePageHelper(
-    workspaceService.workspace.docCollection
-  );
 
   const handleDrop = useCallback(
     (data: DropTargetDropEvent<AffineDNDData>) => {
@@ -70,9 +67,6 @@ export const ExplorerFavorites = () => {
           type: data.source.data.entity.type,
           on: true,
         });
-        track.$.navigationPanel.favorites.drop({
-          type: data.source.data.entity.type,
-        });
         explorerSection.setCollapsed(false);
       }
     },
@@ -81,23 +75,28 @@ export const ExplorerFavorites = () => {
 
   const handleCreateNewFavoriteDoc: MouseEventHandler = useCallback(
     e => {
-      const newDoc = createPage(
-        undefined,
-        isNewTabTrigger(e) ? 'new-tab' : true
-      );
+      const newDoc = docsService.createDoc();
       favoriteService.favoriteList.add(
         'doc',
         newDoc.id,
         favoriteService.favoriteList.indexAt('before')
       );
+      workbenchService.workbench.openDoc(newDoc.id, {
+        at: isNewTabTrigger(e) ? 'new-tab' : 'active',
+      });
       explorerSection.setCollapsed(false);
     },
-    [createPage, explorerSection, favoriteService.favoriteList]
+    [
+      docsService,
+      explorerSection,
+      favoriteService.favoriteList,
+      workbenchService.workbench,
+    ]
   );
 
   const handleOnChildrenDrop = useCallback(
     (
-      favorite: { id: string; type: FavoriteSupportTypeUnion },
+      favorite: { id: string; type: FavoriteSupportType },
       data: DropTargetDropEvent<AffineDNDData>
     ) => {
       if (
@@ -141,9 +140,6 @@ export const ExplorerFavorites = () => {
             type: data.source.data.entity.type,
             on: true,
           });
-          track.$.navigationPanel.favorites.drop({
-            type: data.source.data.entity.type,
-          });
         } else {
           return; // not supported
         }
@@ -160,7 +156,6 @@ export const ExplorerFavorites = () => {
         },
         onDrop: handleDrop,
         canDrop: favoriteRootCanDrop,
-        allowExternal: true,
       }),
       [handleDrop]
     );
@@ -168,7 +163,7 @@ export const ExplorerFavorites = () => {
   return (
     <CollapsibleSection
       name="favorites"
-      title={t['com.affine.rootAppSidebar.favorites']()}
+      title={t['com.arms.rootAppSidebar.favorites']()}
       headerRef={dropTargetRef}
       testId="explorer-favorites"
       headerTestId="explorer-favorite-category-divider"
@@ -182,7 +177,7 @@ export const ExplorerFavorites = () => {
             onAuxClick={handleCreateNewFavoriteDoc}
             size="16"
             tooltip={t[
-              'com.affine.rootAppSidebar.explorer.fav-section-add-tooltip'
+              'com.arms.rootAppSidebar.explorer.fav-section-add-tooltip'
             ]()}
           >
             <PlusIcon />
@@ -223,12 +218,12 @@ const ExplorerFavoriteNode = ({
 }: {
   favorite: {
     id: string;
-    type: FavoriteSupportTypeUnion;
+    type: FavoriteSupportType;
   };
   onDrop: (
     favorite: {
       id: string;
-      type: FavoriteSupportTypeUnion;
+      type: FavoriteSupportType;
     },
     data: DropTargetDropEvent<AffineDNDData>
   ) => void;

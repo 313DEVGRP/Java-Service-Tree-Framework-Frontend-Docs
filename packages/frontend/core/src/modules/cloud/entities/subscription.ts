@@ -1,9 +1,5 @@
-import {
-  SubscriptionPlan,
-  type SubscriptionQuery,
-  SubscriptionRecurring,
-  SubscriptionVariant,
-} from '@affine/graphql';
+import { type SubscriptionQuery, SubscriptionRecurring } from '@affine/graphql';
+import { SubscriptionPlan } from '@affine/graphql';
 import {
   backoffRetry,
   catchErrorInto,
@@ -19,7 +15,7 @@ import { EMPTY, map, mergeMap } from 'rxjs';
 
 import { isBackendError, isNetworkError } from '../error';
 import type { AuthService } from '../services/auth';
-import type { ServerService } from '../services/server';
+import type { ServerConfigService } from '../services/server-config';
 import type { SubscriptionStore } from '../stores/subscription';
 
 export type SubscriptionType = NonNullable<
@@ -45,16 +41,10 @@ export class Subscription extends Entity {
   isBeliever$ = this.pro$.map(
     sub => sub?.recurring === SubscriptionRecurring.Lifetime
   );
-  isOnetimePro$ = this.pro$.map(
-    sub => sub?.variant === SubscriptionVariant.Onetime
-  );
-  isOnetimeAI$ = this.ai$.map(
-    sub => sub?.variant === SubscriptionVariant.Onetime
-  );
 
   constructor(
     private readonly authService: AuthService,
-    private readonly serverService: ServerService,
+    private readonly serverConfigService: ServerConfigService,
     private readonly store: SubscriptionStore
   ) {
     super();
@@ -100,7 +90,9 @@ export class Subscription extends Entity {
           }
 
           const serverConfig =
-            await this.serverService.server.features$.waitForNonNull(signal);
+            await this.serverConfigService.serverConfig.features$.waitForNonNull(
+              signal
+            );
 
           if (!serverConfig.payment) {
             // No payment feature, no subscription

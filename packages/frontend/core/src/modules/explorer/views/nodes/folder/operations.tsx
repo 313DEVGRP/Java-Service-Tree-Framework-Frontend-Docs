@@ -1,8 +1,9 @@
-import { MenuItem } from '@affine/component';
-import { IsFavoriteIcon } from '@affine/core/components/pure/icons';
-import { CompatibleFavoriteItemsAdapter } from '@affine/core/modules/favorite';
+import { MenuIcon, MenuItem } from '@affine/component';
+import { CompatibleFavoriteItemsAdapter } from '@affine/core/modules/properties';
 import { useI18n } from '@affine/i18n';
+import { FavoritedIcon, FavoriteIcon } from '@blocksuite/icons/rc';
 import { useLiveData, useService } from '@toeverything/infra';
+import { cssVar } from '@toeverything/theme';
 import { useMemo } from 'react';
 
 export const FavoriteFolderOperation = ({ id }: { id: string }) => {
@@ -19,12 +20,20 @@ export const FavoriteFolderOperation = ({ id }: { id: string }) => {
 
   return (
     <MenuItem
-      prefixIcon={<IsFavoriteIcon favorite={favorite} />}
+      preFix={
+        <MenuIcon>
+          {favorite ? (
+            <FavoritedIcon style={{ color: cssVar('primaryColor') }} />
+          ) : (
+            <FavoriteIcon />
+          )}
+        </MenuIcon>
+      }
       onClick={() => compatibleFavoriteItemsAdapter.toggle(id, 'folder')}
     >
       {favorite
-        ? t['com.affine.rootAppSidebar.organize.folder-rm-favorite']()
-        : t['com.affine.rootAppSidebar.organize.folder-add-favorite']()}
+        ? t['com.arms.rootAppSidebar.organize.folder-rm-favorite']()
+        : t['com.arms.rootAppSidebar.organize.folder-add-favorite']()}
     </MenuItem>
   );
 };

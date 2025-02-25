@@ -1,11 +1,10 @@
-export type FieldType = 'string' | 'number' | 'boolean' | 'json' | 'enum';
+export type FieldType = 'string' | 'number' | 'boolean' | 'json';
 
 export interface FieldSchema<Type = unknown> {
   type: FieldType;
   optional: boolean;
   isPrimaryKey: boolean;
   default?: () => Type;
-  values?: Type[];
 }
 
 export type TableSchema = Record<string, FieldSchema>;
@@ -13,10 +12,6 @@ export type TableSchemaBuilder = Record<
   string,
   FieldSchemaBuilder<any, boolean>
 >;
-export type DocumentTableSchemaBuilder = TableSchemaBuilder & {
-  __document: FieldSchemaBuilder<boolean, true, false>;
-};
-
 export type DBSchemaBuilder = Record<string, TableSchemaBuilder>;
 
 export class FieldSchemaBuilder<
@@ -29,12 +24,10 @@ export class FieldSchemaBuilder<
     optional: false,
     isPrimaryKey: false,
     default: undefined,
-    values: undefined,
   };
 
-  constructor(type: FieldType, values?: string[]) {
+  constructor(type: FieldType) {
     this.schema.type = type;
-    this.schema.values = values;
   }
 
   optional() {
@@ -59,15 +52,4 @@ export const f = {
   number: () => new FieldSchemaBuilder<number>('number'),
   boolean: () => new FieldSchemaBuilder<boolean>('boolean'),
   json: <T = any>() => new FieldSchemaBuilder<T>('json'),
-  enum: <T extends string>(...values: T[]) =>
-    new FieldSchemaBuilder<T>('enum', values),
-} as const;
-
-export const t = {
-  document: <T extends TableSchemaBuilder>(schema: T) => {
-    return {
-      ...schema,
-      __document: new FieldSchemaBuilder<boolean>('boolean').optional(),
-    };
-  },
-};
+} satisfies Record<FieldType, () => FieldSchemaBuilder<any>>;

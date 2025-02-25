@@ -1,48 +1,53 @@
 import type { InlineEditProps } from '@affine/component';
 import { InlineEdit } from '@affine/component';
-import { useAsyncCallback } from '@affine/core/components/hooks/affine-async-hooks';
-import { DocsService } from '@affine/core/modules/doc';
-import { WorkspaceService } from '@affine/core/modules/workspace';
-import { track } from '@affine/track';
-import { useLiveData, useService } from '@toeverything/infra';
+import {
+  useBlockSuiteDocMeta,
+  useDocMetaHelper,
+} from '@affine/core/hooks/use-block-suite-page-meta';
+import type { DocCollection } from '@affine/core/shared';
 import clsx from 'clsx';
 import type { HTMLAttributes } from 'react';
+import { useCallback } from 'react';
 
 import * as styles from './style.css';
 
 export interface BlockSuiteHeaderTitleProps {
-  docId: string;
+  docCollection: DocCollection;
+  pageId: string;
   /** if set, title cannot be edited */
+  isPublic?: boolean;
   inputHandleRef?: InlineEditProps['handleRef'];
   className?: string;
+  onEditSave?: () => void;
 }
 
 const inputAttrs = {
   'data-testid': 'title-content',
 } as HTMLAttributes<HTMLInputElement>;
 export const BlocksuiteHeaderTitle = (props: BlockSuiteHeaderTitleProps) => {
-  const { inputHandleRef, docId } = props;
-  const workspaceService = useService(WorkspaceService);
-  const isSharedMode = workspaceService.workspace.openOptions.isSharedMode;
-  const docsService = useService(DocsService);
+  const { docCollection, pageId, isPublic, inputHandleRef, onEditSave } = props;
+  const currentPage = docCollection.getDoc(pageId);
+  const pageMeta = useBlockSuiteDocMeta(docCollection).find(
+    meta => meta.id === currentPage?.id
+  );
+  const title = pageMeta?.title;
+  const { setDocTitle } = useDocMetaHelper(docCollection);
 
-  const docRecord = useLiveData(docsService.list.doc$(docId));
-  const docTitle = useLiveData(docRecord?.title$);
-
-  const onChange = useAsyncCallback(
-    async (v: string) => {
-      await docsService.changeDocTitle(docId, v);
-      track.$.header.actions.renameDoc();
+  const onChange = useCallback(
+    (v: string) => {
+      onEditSave?.();
+      setDocTitle(currentPage?.id || '', v);
     },
-    [docId, docsService]
+    [currentPage?.id, onEditSave, setDocTitle]
   );
 
   return (
     <InlineEdit
       className={clsx(styles.title, props.className)}
-      value={docTitle}
+      autoSelect
+      value={title}
       onChange={onChange}
-      editable={!isSharedMode}
+      editable={!isPublic}
       exitible={true}
       placeholder="Untitled"
       data-testid="title-edit-button"

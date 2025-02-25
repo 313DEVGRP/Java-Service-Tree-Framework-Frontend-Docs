@@ -8,7 +8,7 @@ export const inputWrapper = style({
   gap: '10px',
   color: cssVarV2('text/primary'),
   border: '1px solid',
-  backgroundColor: cssVarV2('input/background'),
+  backgroundColor: cssVarV2('layer/background/primary'),
   borderRadius: 8,
   display: 'flex',
   justifyContent: 'center',
@@ -30,19 +30,19 @@ export const inputWrapper = style({
     },
     // color
     '&.disabled': {
-      background: cssVarV2('layer/background/hoverOverlay'),
+      background: cssVar('hoverColor'),
     },
     '&.error': {
-      borderColor: cssVarV2('input/border/error'),
+      borderColor: cssVar('errorColor'),
     },
     '&.success': {
-      borderColor: cssVarV2('input/border/active'),
+      borderColor: cssVar('successColor'),
     },
     '&.warning': {
-      borderColor: cssVarV2('input/border/error'),
+      borderColor: cssVar('warningColor'),
     },
     '&.default': {
-      borderColor: cssVarV2.layer.insideBorder.blackBorder,
+      borderColor: cssVar('borderColor'),
     },
     '&.default:is(:focus-within, :focus, :focus-visible)': {
       borderColor: cssVarV2('button/primary'),
@@ -51,15 +51,6 @@ export const inputWrapper = style({
     },
   },
 });
-
-export const mobileInputWrapper = style([
-  inputWrapper,
-  {
-    height: 30,
-    borderRadius: 4,
-  },
-]);
-
 export const input = style({
   height: '100%',
   width: '0',
@@ -74,13 +65,13 @@ export const input = style({
   background: 'transparent',
   selectors: {
     '&::placeholder': {
-      color: cssVarV2('text/placeholder'),
+      color: cssVar('placeholderColor'),
     },
     '&:disabled': {
-      color: cssVarV2('text/disable'),
+      color: cssVar('textDisableColor'),
     },
     '&:-webkit-autofill': {
-      WebkitBoxShadow: `0 0 0 1000px ${cssVarV2('layer/white')} inset`,
+      WebkitBoxShadow: `0 0 0 1000px ${cssVar('white')} inset`,
     },
   },
 });

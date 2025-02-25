@@ -12,6 +12,9 @@
     },
     {
       "path": "../debug"
+    },
+    {
+      "path": "./tsconfig.node.json"
     }
   ]
 }

@@ -64,10 +64,6 @@ export class YjsTableAdapter implements TableAdapter {
 
     this.doc.transact(() => {
       for (const key in data) {
-        if (data[key] === undefined) {
-          // skip undefined fields, avoid unexpected override
-          continue;
-        }
         record.set(key, data[key]);
       }
 
@@ -212,7 +208,7 @@ export class YjsTableAdapter implements TableAdapter {
     if (select === 'key') {
       return this.keyof(record);
     } else if (select === '*') {
-      return this.toObject(record);
+      selectedFields = this.fields;
     } else {
       selectedFields = select;
     }

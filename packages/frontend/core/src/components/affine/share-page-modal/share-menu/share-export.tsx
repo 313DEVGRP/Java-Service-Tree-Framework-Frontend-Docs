@@ -1,45 +1,79 @@
-import { useExportPage } from '@affine/core/components/hooks/affine/use-export-page';
-import {
-  ExportMenuItems,
-  PrintMenuItems,
-} from '@affine/core/components/page-list';
-import { EditorService } from '@affine/core/modules/editor';
+import { MenuIcon, MenuItem } from '@affine/component';
+import { Divider } from '@affine/component/ui/divider';
+import { ExportMenuItems } from '@affine/core/components/page-list';
+import { useExportPage } from '@affine/core/hooks/affine/use-export-page';
+import { useSharingUrl } from '@affine/core/hooks/affine/use-share-url';
+import { WorkspaceFlavour } from '@affine/env/workspace';
 import { useI18n } from '@affine/i18n';
-import { useLiveData, useService } from '@toeverything/infra';
+import { CopyIcon } from '@blocksuite/icons/rc';
+import { DocService, useLiveData, useService } from '@toeverything/infra';
 
 import * as styles from './index.css';
+import type { ShareMenuProps } from './share-menu';
 
-export const ShareExport = () => {
+export const ShareExport = ({
+  workspaceMetadata: workspace,
+  currentPage,
+}: ShareMenuProps) => {
   const t = useI18n();
-  const editor = useService(EditorService).editor;
-  const exportHandler = useExportPage();
-  const currentMode = useLiveData(editor.mode$);
+  const doc = useService(DocService).doc;
+  const workspaceId = workspace.id;
+  const pageId = currentPage.id;
+  const { sharingUrl, onClickCopyLink } = useSharingUrl({
+    workspaceId,
+    pageId,
+    urlType: 'workspace',
+  });
+  const exportHandler = useExportPage(currentPage);
+  const currentMode = useLiveData(doc.mode$);
+  const isMac = environment.isBrowser && environment.isMacOs;
 
   return (
-    <div className={styles.exportContainerStyle}>
-      <div className={styles.descriptionStyle}>
-        {t['com.affine.share-menu.ShareViaExportDescription']()}
+    <>
+      <div className={styles.titleContainerStyle}>
+        {t['com.arms.share-menu.ShareViaExport']()}
       </div>
-      <div className={styles.exportContainerStyle}>
+      <div className={styles.descriptionStyle}>
+        {t['com.arms.share-menu.ShareViaExportDescription']()}
+      </div>
+      <div>
         <ExportMenuItems
           exportHandler={exportHandler}
-          className={styles.exportItemStyle}
+          className={styles.menuItemStyle}
           pageMode={currentMode}
         />
       </div>
-      {currentMode === 'page' && (
-        <>
+      {workspace.flavour !== WorkspaceFlavour.LOCAL ? (
+        <div className={styles.columnContainerStyle}>
+          <Divider size="thinner" />
+          <div className={styles.titleContainerStyle}>
+            {t['com.arms.share-menu.share-privately']()}
+          </div>
           <div className={styles.descriptionStyle}>
-            {t['com.affine.share-menu.ShareViaPrintDescription']()}
+            {t['com.arms.share-menu.share-privately.description']()}
           </div>
           <div>
-            <PrintMenuItems
-              exportHandler={exportHandler}
-              className={styles.exportItemStyle}
-            />
+            <MenuItem
+              className={styles.shareLinkStyle}
+              onSelect={onClickCopyLink}
+              block
+              disabled={!sharingUrl}
+              preFix={
+                <MenuIcon>
+                  <CopyIcon fontSize={16} />
+                </MenuIcon>
+              }
+              endFix={
+                <div className={styles.shortcutStyle}>
+                  {isMac ? '⌘ + ⌥ + C' : 'Ctrl + Shift + C'}
+                </div>
+              }
+            >
+              {t['com.arms.share-menu.copy-private-link']()}
+            </MenuItem>
           </div>
-        </>
-      )}
-    </div>
+        </div>
+      ) : null}
+    </>
   );
 };

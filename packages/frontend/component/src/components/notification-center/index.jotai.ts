@@ -1,6 +1,5 @@
 import { atom } from 'jotai';
 import { nanoid } from 'nanoid';
-import type { JSX, ReactNode } from 'react';
 
 /**
  * @deprecated use `import type { Notification } from '@affine/component'` instead
@@ -13,7 +12,7 @@ export type Notification = {
   theme?: 'light' | 'dark' | 'default';
   timeout?: number;
   progressingBar?: boolean;
-  multimedia?: ReactNode | JSX.Element;
+  multimedia?: React.ReactNode | JSX.Element;
   // actions
   action?: () => Promise<void>;
   actionLabel?: string;

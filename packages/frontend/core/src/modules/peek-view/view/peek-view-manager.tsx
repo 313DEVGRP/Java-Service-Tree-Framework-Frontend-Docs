@@ -1,12 +1,11 @@
 import { toReactNode } from '@affine/component';
 import { AIChatBlockPeekViewTemplate } from '@affine/core/blocksuite/presets/ai';
-import { BlockComponent } from '@blocksuite/affine/block-std';
+import { BlockComponent } from '@blocksuite/block-std';
 import { useLiveData, useService } from '@toeverything/infra';
 import { useEffect, useMemo } from 'react';
 
 import type { ActivePeekView } from '../entities/peek-view';
 import { PeekViewService } from '../services/peek-view';
-import { AttachmentPreviewPeekView } from './attachment-preview';
 import { DocPeekPreview } from './doc-preview';
 import { ImagePreviewPeekView } from './image-preview';
 import {
@@ -14,7 +13,6 @@ import {
   type PeekViewModalContainerProps,
 } from './modal-container';
 import {
-  AttachmentPeekViewControls,
   DefaultPeekViewControls,
   DocPeekViewControls,
 } from './peek-view-controls';
@@ -24,25 +22,18 @@ function renderPeekView({ info }: ActivePeekView) {
     return toReactNode(info.template);
   }
   if (info.type === 'doc') {
-    return <DocPeekPreview docRef={info.docRef} />;
-  }
-
-  if (info.type === 'attachment' && info.docRef.blockIds?.[0]) {
     return (
-      <AttachmentPreviewPeekView
-        docId={info.docRef.docId}
-        blockId={info.docRef.blockIds?.[0]}
+      <DocPeekPreview
+        mode={info.mode}
+        xywh={info.xywh}
+        docId={info.docId}
+        blockId={info.blockId}
       />
     );
   }
 
-  if (info.type === 'image' && info.docRef.blockIds?.[0]) {
-    return (
-      <ImagePreviewPeekView
-        docId={info.docRef.docId}
-        blockId={info.docRef.blockIds?.[0]}
-      />
-    );
+  if (info.type === 'image') {
+    return <ImagePreviewPeekView docId={info.docId} blockId={info.blockId} />;
   }
 
   if (info.type === 'ai-chat-block') {
@@ -55,11 +46,13 @@ function renderPeekView({ info }: ActivePeekView) {
 
 const renderControls = ({ info }: ActivePeekView) => {
   if (info.type === 'doc') {
-    return <DocPeekViewControls docRef={info.docRef} />;
-  }
-
-  if (info.type === 'attachment') {
-    return <AttachmentPeekViewControls docRef={info.docRef} />;
+    return (
+      <DocPeekViewControls
+        mode={info.mode}
+        docId={info.docId}
+        blockId={info.docId}
+      />
+    );
   }
 
   if (info.type === 'image') {
@@ -67,13 +60,6 @@ const renderControls = ({ info }: ActivePeekView) => {
   }
 
   return <DefaultPeekViewControls />;
-};
-
-const getMode = (info: ActivePeekView['info']) => {
-  if (info.type === 'image') {
-    return 'full';
-  }
-  return 'fit';
 };
 
 const getRendererProps = (
@@ -89,14 +75,10 @@ const getRendererProps = (
     children: preview,
     controls,
     target:
-      activePeekView?.target.element instanceof HTMLElement
-        ? activePeekView.target.element
+      activePeekView?.target instanceof HTMLElement
+        ? activePeekView.target
         : undefined,
-    mode: getMode(activePeekView.info),
-    animation:
-      activePeekView.target.element && getMode(activePeekView.info) !== 'full'
-        ? 'zoom'
-        : 'fade',
+    padding: activePeekView.info.type !== 'image',
     dialogFrame: activePeekView.info.type !== 'image',
   };
 };
@@ -115,8 +97,8 @@ export const PeekViewManagerModal = () => {
 
   useEffect(() => {
     const subscription = peekViewEntity.show$.subscribe(() => {
-      if (activePeekView?.target.element instanceof BlockComponent) {
-        activePeekView.target.element.requestUpdate();
+      if (activePeekView?.target instanceof BlockComponent) {
+        activePeekView.target.requestUpdate();
       }
     });
 
@@ -128,8 +110,8 @@ export const PeekViewManagerModal = () => {
   return (
     <PeekViewModalContainer
       {...renderProps}
-      animation={show?.animation ? renderProps?.animation : 'none'}
       open={!!show?.value && !!renderProps}
+      animation={show?.animation || 'none'}
       onOpenChange={open => {
         if (!open) {
           peekViewEntity.close();

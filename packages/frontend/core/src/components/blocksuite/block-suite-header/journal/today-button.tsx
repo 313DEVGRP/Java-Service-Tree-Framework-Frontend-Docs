@@ -1,11 +1,18 @@
 import { Button } from '@affine/component';
-import { useJournalRouteHelper } from '@affine/core/components/hooks/use-journal';
+import { useJournalRouteHelper } from '@affine/core/hooks/use-journal';
+import type { DocCollection } from '@affine/core/shared';
 import { useI18n } from '@affine/i18n';
 import { useCallback } from 'react';
 
-export const JournalTodayButton = () => {
+export interface JournalTodayButtonProps {
+  docCollection: DocCollection;
+}
+
+export const JournalTodayButton = ({
+  docCollection,
+}: JournalTodayButtonProps) => {
   const t = useI18n();
-  const journalHelper = useJournalRouteHelper();
+  const journalHelper = useJournalRouteHelper(docCollection);
 
   const onToday = useCallback(() => {
     journalHelper.openToday();
@@ -17,7 +24,7 @@ export const JournalTodayButton = () => {
       onClick={onToday}
       style={{ height: 32, padding: '0px 8px' }}
     >
-      {t['com.affine.today']()}
+      {t['com.arms.today']()}
     </Button>
   );
 };

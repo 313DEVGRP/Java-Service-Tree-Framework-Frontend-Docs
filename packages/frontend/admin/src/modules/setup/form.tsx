@@ -6,12 +6,13 @@ import {
   CarouselItem,
 } from '@affine/admin/components/ui/carousel';
 import { validateEmailAndPassword } from '@affine/admin/utils';
-import { useAsyncCallback } from '@affine/core/components/hooks/affine-async-hooks';
+import { useMutateQueryResource } from '@affine/core/hooks/use-mutation';
+import { serverConfigQuery } from '@affine/graphql';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
-import { useRevalidateServerConfig, useServerConfig } from '../common';
+import { useServerConfig } from '../common';
 import { CreateAdmin } from './create-admin';
 
 export enum CarouselSteps {
@@ -72,13 +73,14 @@ export const Form = () => {
   const [invalidPassword, setInvalidPassword] = useState(false);
 
   const serverConfig = useServerConfig();
-  const refreshServerConfig = useRevalidateServerConfig();
   const passwordLimits = serverConfig.credentialsRequirement.password;
 
   const isCreateAdminStep = current - 1 === CarouselSteps.CreateAdmin;
 
   const disableContinue =
     (!nameValue || !emailValue || !passwordValue) && isCreateAdminStep;
+
+  const revalidate = useMutateQueryResource();
 
   useEffect(() => {
     if (!api) {
@@ -112,16 +114,16 @@ export const Form = () => {
       }
 
       await createResponse.json();
-      await refreshServerConfig();
+      await revalidate(serverConfigQuery);
       toast.success('Admin account created successfully.');
     } catch (err) {
       toast.error((err as Error).message);
       console.error(err);
       throw err;
     }
-  }, [emailValue, passwordValue, refreshServerConfig]);
+  }, [emailValue, passwordValue, revalidate]);
 
-  const onNext = useAsyncCallback(async () => {
+  const onNext = useCallback(async () => {
     if (isCreateAdminStep) {
       if (
         !validateEmailAndPassword(
@@ -214,7 +216,7 @@ export const Form = () => {
       <div className="py-2 px-0 text-sm mt-16 max-lg:mt-5 relative">
         {Array.from({ length: count }).map((_, index) => (
           <span
-            key={`${index}`}
+            key={index}
             className={`inline-block w-16 h-1 rounded mr-1 ${
               index <= current - 1
                 ? 'bg-primary'

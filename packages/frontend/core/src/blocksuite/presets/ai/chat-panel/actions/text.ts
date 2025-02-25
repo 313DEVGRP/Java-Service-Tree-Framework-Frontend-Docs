@@ -1,14 +1,15 @@
 import './action-wrapper';
 
-import type { EditorHost } from '@blocksuite/affine/block-std';
-import { WithDisposable } from '@blocksuite/affine/global/utils';
+import type { EditorHost } from '@blocksuite/block-std';
+import { WithDisposable } from '@blocksuite/block-std';
 import { css, html, LitElement } from 'lit';
-import { property } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 
-import { createTextRenderer } from '../../../_common';
+import { createTextRenderer } from '../../messages/text';
 import type { ChatAction } from '../chat-context';
 
+@customElement('action-text')
 export class ActionText extends WithDisposable(LitElement) {
   static override styles = css`
     .original-text {

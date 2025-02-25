@@ -1,5 +1,6 @@
 import type { FrameworkProvider } from './provider';
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type Type<T = any> = abstract new (...args: any) => T;
 
 export type ComponentFactory<T = any> = (provider: FrameworkProvider) => T;

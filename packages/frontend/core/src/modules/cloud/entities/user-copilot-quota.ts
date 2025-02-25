@@ -13,7 +13,7 @@ import { EMPTY, map, mergeMap } from 'rxjs';
 
 import { isBackendError, isNetworkError } from '../error';
 import type { AuthService } from '../services/auth';
-import type { ServerService } from '../services/server';
+import type { ServerConfigService } from '../services/server-config';
 import type { UserCopilotQuotaStore } from '../stores/user-copilot-quota';
 
 export class UserCopilotQuota extends Entity {
@@ -26,7 +26,7 @@ export class UserCopilotQuota extends Entity {
   constructor(
     private readonly authService: AuthService,
     private readonly store: UserCopilotQuotaStore,
-    private readonly serverService: ServerService
+    private readonly serverConfigService: ServerConfigService
   ) {
     super();
   }
@@ -44,7 +44,9 @@ export class UserCopilotQuota extends Entity {
           }
 
           const serverConfig =
-            await this.serverService.server.features$.waitForNonNull(signal);
+            await this.serverConfigService.serverConfig.features$.waitForNonNull(
+              signal
+            );
 
           let aiQuota = null;
 

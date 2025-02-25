@@ -1,12 +1,12 @@
+import { WorkspaceSubPath } from '@affine/core/shared';
 import type { useI18n } from '@affine/i18n';
-import { track } from '@affine/track';
-import type { DocCollection } from '@blocksuite/affine/store';
 import { ArrowRightBigIcon } from '@blocksuite/icons/rc';
+import type { DocCollection } from '@blocksuite/store';
 import type { createStore } from 'jotai';
 
-import { openWorkspaceListModalAtom } from '../components/atoms';
-import type { useNavigateHelper } from '../components/hooks/use-navigate-helper';
-import type { GlobalDialogService } from '../modules/dialogs';
+import { openSettingModalAtom, openWorkspaceListModalAtom } from '../atoms';
+import type { useNavigateHelper } from '../hooks/use-navigate-helper';
+import { track } from '../mixpanel';
 import { registerAffineCommand } from './registry';
 
 export function registerAffineNavigationCommands({
@@ -14,13 +14,11 @@ export function registerAffineNavigationCommands({
   store,
   docCollection,
   navigationHelper,
-  globalDialogService,
 }: {
   t: ReturnType<typeof useI18n>;
   store: ReturnType<typeof createStore>;
   navigationHelper: ReturnType<typeof useNavigateHelper>;
   docCollection: DocCollection;
-  globalDialogService: GlobalDialogService;
 }) {
   const unsubs: Array<() => void> = [];
   unsubs.push(
@@ -28,13 +26,13 @@ export function registerAffineNavigationCommands({
       id: 'affine:goto-all-pages',
       category: 'affine:navigation',
       icon: <ArrowRightBigIcon />,
-      label: t['com.affine.cmdk.affine.navigation.goto-all-pages'](),
+      label: t['com.arms.cmdk.affine.navigation.goto-all-pages'](),
       run() {
         track.$.cmdk.navigation.navigate({
           to: 'allDocs',
         });
 
-        navigationHelper.jumpToPage(docCollection.id, 'all');
+        navigationHelper.jumpToSubPath(docCollection.id, WorkspaceSubPath.ALL);
       },
     })
   );
@@ -76,7 +74,7 @@ export function registerAffineNavigationCommands({
       id: 'affine:goto-workspace',
       category: 'affine:navigation',
       icon: <ArrowRightBigIcon />,
-      label: t['com.affine.cmdk.affine.navigation.goto-workspace'](),
+      label: t['com.arms.cmdk.affine.navigation.goto-workspace'](),
       run() {
         track.$.cmdk.navigation.navigate({
           to: 'workspace',
@@ -92,13 +90,14 @@ export function registerAffineNavigationCommands({
       id: 'affine:open-settings',
       category: 'affine:navigation',
       icon: <ArrowRightBigIcon />,
-      label: t['com.affine.cmdk.affine.navigation.open-settings'](),
+      label: t['com.arms.cmdk.affine.navigation.open-settings'](),
       keyBinding: '$mod+,',
       run() {
         track.$.cmdk.settings.openSettings();
-        globalDialogService.open('setting', {
+        store.set(openSettingModalAtom, s => ({
           activeTab: 'appearance',
-        });
+          open: !s.open,
+        }));
       },
     })
   );
@@ -108,12 +107,13 @@ export function registerAffineNavigationCommands({
       id: 'affine:open-account',
       category: 'affine:navigation',
       icon: <ArrowRightBigIcon />,
-      label: t['com.affine.cmdk.affine.navigation.open-account-settings'](),
+      label: t['com.arms.cmdk.affine.navigation.open-account-settings'](),
       run() {
         track.$.cmdk.settings.openSettings({ to: 'account' });
-        globalDialogService.open('setting', {
+        store.set(openSettingModalAtom, s => ({
           activeTab: 'account',
-        });
+          open: !s.open,
+        }));
       },
     })
   );
@@ -123,13 +123,16 @@ export function registerAffineNavigationCommands({
       id: 'affine:goto-trash',
       category: 'affine:navigation',
       icon: <ArrowRightBigIcon />,
-      label: t['com.affine.cmdk.affine.navigation.goto-trash'](),
+      label: t['com.arms.cmdk.affine.navigation.goto-trash'](),
       run() {
         track.$.cmdk.navigation.navigate({
           to: 'trash',
         });
 
-        navigationHelper.jumpToPage(docCollection.id, 'trash');
+        navigationHelper.jumpToSubPath(
+          docCollection.id,
+          WorkspaceSubPath.TRASH
+        );
       },
     })
   );

@@ -127,7 +127,7 @@ export const button = style({
         [bgVar]: cssVarV2('button/primary'),
         [textVar]: cssVarV2('button/pureWhiteText'),
         [iconColorVar]: cssVarV2('button/pureWhiteText'),
-        [borderColorVar]: cssVarV2.layer.insideBorder.blackBorder,
+        [borderColorVar]: cssVarV2('button/innerBlackBorder'),
       },
     },
     '&[data-variant="secondary"]': {
@@ -135,7 +135,7 @@ export const button = style({
         [bgVar]: cssVarV2('button/secondary'),
         [textVar]: cssVarV2('text/primary'),
         [iconColorVar]: cssVarV2('icon/primary'),
-        [borderColorVar]: cssVarV2.layer.insideBorder.blackBorder,
+        [borderColorVar]: cssVarV2('layer/border'),
       },
     },
     '&[data-variant="plain"]': {
@@ -152,7 +152,7 @@ export const button = style({
         [bgVar]: cssVarV2('button/error'),
         [textVar]: cssVarV2('button/pureWhiteText'),
         [iconColorVar]: cssVarV2('button/pureWhiteText'),
-        [borderColorVar]: cssVarV2.layer.insideBorder.blackBorder,
+        [borderColorVar]: cssVarV2('button/innerBlackBorder'),
       },
     },
     '&[data-variant="success"]': {
@@ -160,7 +160,7 @@ export const button = style({
         [bgVar]: cssVarV2('button/success'),
         [textVar]: cssVarV2('button/pureWhiteText'),
         [iconColorVar]: cssVarV2('button/pureWhiteText'),
-        [borderColorVar]: cssVarV2.layer.insideBorder.blackBorder,
+        [borderColorVar]: cssVarV2('button/innerBlackBorder'),
       },
     },
 
@@ -178,11 +178,7 @@ export const button = style({
       top: 0,
       left: 0,
       borderRadius: 'inherit',
-      boxShadow: `0 0 0 1px ${cssVarV2('layer/insideBorder/primaryBorder')}`,
-    },
-    '&[data-mobile=true]:focus-visible::after': {
-      content: 'none',
-      display: 'none',
+      boxShadow: `0 0 0 1px ${cssVarV2('layer/insideBorder/primary')}`,
     },
   },
 });

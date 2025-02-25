@@ -1,16 +1,17 @@
 import type { useI18n } from '@affine/i18n';
-import { track } from '@affine/track';
 import { SidebarIcon } from '@blocksuite/icons/rc';
+import type { createStore } from 'jotai';
 
-import type { AppSidebarService } from '../modules/app-sidebar';
+import { appSidebarOpenAtom } from '../components/app-sidebar';
+import { track } from '../mixpanel';
 import { registerAffineCommand } from './registry';
 
 export function registerAffineLayoutCommands({
   t,
-  appSidebarService,
+  store,
 }: {
   t: ReturnType<typeof useI18n>;
-  appSidebarService: AppSidebarService;
+  store: ReturnType<typeof createStore>;
 }) {
   const unsubs: Array<() => void> = [];
   unsubs.push(
@@ -19,18 +20,17 @@ export function registerAffineLayoutCommands({
       category: 'affine:layout',
       icon: <SidebarIcon />,
       label: () =>
-        appSidebarService.sidebar.open$.value
-          ? t['com.affine.cmdk.affine.left-sidebar.collapse']()
-          : t['com.affine.cmdk.affine.left-sidebar.expand'](),
+        store.get(appSidebarOpenAtom)
+          ? t['com.arms.cmdk.affine.left-sidebar.collapse']()
+          : t['com.arms.cmdk.affine.left-sidebar.expand'](),
 
       keyBinding: {
         binding: '$mod+/',
       },
       run() {
-        track.$.navigationPanel.$.toggle({
-          type: appSidebarService.sidebar.open$.value ? 'collapse' : 'expand',
-        });
-        appSidebarService.sidebar.toggleSidebar();
+        track.$.navigationPanel.$.toggle();
+
+        store.set(appSidebarOpenAtom, v => !v);
       },
     })
   );

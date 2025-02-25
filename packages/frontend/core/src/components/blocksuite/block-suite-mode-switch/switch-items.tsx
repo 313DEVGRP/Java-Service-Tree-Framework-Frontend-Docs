@@ -1,7 +1,4 @@
-import {
-  type CustomLottieProps,
-  InternalLottie,
-} from '@affine/component/internal-lottie';
+import { InternalLottie } from '@affine/component/internal-lottie';
 import type { HTMLAttributes } from 'react';
 import type React from 'react';
 import { cloneElement, useState } from 'react';
@@ -13,7 +10,7 @@ type HoverAnimateControllerProps = {
   active?: boolean;
   hide?: boolean;
   trash?: boolean;
-  children: React.ReactElement<CustomLottieProps>;
+  children: React.ReactElement;
 } & HTMLAttributes<HTMLDivElement>;
 
 const HoverAnimateController = ({

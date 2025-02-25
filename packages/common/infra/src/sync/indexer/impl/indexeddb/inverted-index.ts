@@ -21,11 +21,7 @@ export interface InvertedIndex {
 }
 
 export class StringInvertedIndex implements InvertedIndex {
-  constructor(
-    readonly fieldKey: string,
-    readonly index: boolean = true,
-    readonly store: boolean = true
-  ) {}
+  constructor(readonly fieldKey: string) {}
 
   async match(trx: DataStructROTransaction, term: string): Promise<Match> {
     const objs = await trx
@@ -73,11 +69,7 @@ export class StringInvertedIndex implements InvertedIndex {
 }
 
 export class IntegerInvertedIndex implements InvertedIndex {
-  constructor(
-    readonly fieldKey: string,
-    readonly index: boolean = true,
-    readonly store: boolean = true
-  ) {}
+  constructor(readonly fieldKey: string) {}
 
   async match(trx: DataStructROTransaction, term: string): Promise<Match> {
     const objs = await trx
@@ -126,11 +118,7 @@ export class IntegerInvertedIndex implements InvertedIndex {
 }
 
 export class BooleanInvertedIndex implements InvertedIndex {
-  constructor(
-    readonly fieldKey: string,
-    readonly index: boolean = true,
-    readonly store: boolean = true
-  ) {}
+  constructor(readonly fieldKey: string) {}
 
   // eslint-disable-next-line sonarjs/no-identical-functions
   async all(trx: DataStructROTransaction): Promise<Match> {
@@ -184,11 +172,7 @@ export class BooleanInvertedIndex implements InvertedIndex {
 }
 
 export class FullTextInvertedIndex implements InvertedIndex {
-  constructor(
-    readonly fieldKey: string,
-    readonly index: boolean = true,
-    readonly store: boolean = true
-  ) {}
+  constructor(readonly fieldKey: string) {}
 
   async match(trx: DataStructROTransaction, term: string): Promise<Match> {
     const queryTokens = new GeneralTokenizer().tokenize(term);
@@ -202,12 +186,6 @@ export class FullTextInvertedIndex implements InvertedIndex {
         }
       >
     >();
-    const avgFieldLength =
-      (
-        await trx
-          .objectStore('kvMetadata')
-          .get(`full-text:avg-field-length:${this.fieldKey}`)
-      )?.value ?? 0;
     for (const token of queryTokens) {
       const key = InvertedIndexKey.forString(this.fieldKey, token.term);
       const objs = await trx
@@ -235,6 +213,12 @@ export class FullTextInvertedIndex implements InvertedIndex {
         };
         const termFreq = position.rs.length;
         const totalCount = objs.length;
+        const avgFieldLength =
+          (
+            await trx
+              .objectStore('kvMetadata')
+              .get(`full-text:avg-field-length:${this.fieldKey}`)
+          )?.value ?? 0;
         const fieldLength = position.l;
         const score =
           bm25(termFreq, 1, totalCount, fieldLength, avgFieldLength) *
@@ -386,9 +370,9 @@ export class FullTextInvertedIndex implements InvertedIndex {
 
 export class InvertedIndexKey {
   constructor(
-    readonly field: Uint8Array,
-    readonly value: Uint8Array,
-    readonly gap: Uint8Array = new Uint8Array([58])
+    readonly field: ArrayBuffer,
+    readonly value: ArrayBuffer,
+    readonly gap: ArrayBuffer = new Uint8Array([58])
   ) {}
 
   asString() {
@@ -396,10 +380,7 @@ export class InvertedIndexKey {
   }
 
   asInt64() {
-    return new DataView(this.value.buffer).getBigInt64(
-      0,
-      false
-    ); /* big-endian */
+    return new DataView(this.value).getBigInt64(0, false); /* big-endian */
   }
 
   add1() {
@@ -415,7 +396,7 @@ export class InvertedIndexKey {
     } else {
       return new InvertedIndexKey(
         this.field,
-        new Uint8Array(0),
+        new ArrayBuffer(0),
         new Uint8Array([59])
       );
     }
@@ -424,7 +405,7 @@ export class InvertedIndexKey {
   static forPrefix(field: string) {
     return new InvertedIndexKey(
       new TextEncoder().encode(field),
-      new Uint8Array(0)
+      new ArrayBuffer(0)
     );
   }
 
@@ -442,8 +423,8 @@ export class InvertedIndexKey {
   }
 
   static forInt64(field: string, value: bigint) {
-    const bytes = new Uint8Array(8);
-    new DataView(bytes.buffer).setBigInt64(0, value, false); /* big-endian */
+    const bytes = new ArrayBuffer(8);
+    new DataView(bytes).setBigInt64(0, value, false); /* big-endian */
     return new InvertedIndexKey(new TextEncoder().encode(field), bytes);
   }
 

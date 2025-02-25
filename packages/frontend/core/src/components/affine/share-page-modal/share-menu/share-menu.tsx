@@ -1,12 +1,16 @@
-import { Tabs, Tooltip } from '@affine/component';
 import { Button } from '@affine/component/ui/button';
+import { Divider } from '@affine/component/ui/divider';
 import { Menu } from '@affine/component/ui/menu';
-import { ShareInfoService } from '@affine/core/modules/share-doc';
-import type { WorkspaceMetadata } from '@affine/core/modules/workspace';
+import { ShareService } from '@affine/core/modules/share-doc';
+import { WorkspaceFlavour } from '@affine/env/workspace';
 import { useI18n } from '@affine/i18n';
-import type { Doc } from '@blocksuite/affine/store';
-import { LockIcon, PublishIcon } from '@blocksuite/icons/rc';
-import { useLiveData, useService } from '@toeverything/infra';
+import { WebIcon } from '@blocksuite/icons/rc';
+import type { Doc } from '@blocksuite/store';
+import {
+  useLiveData,
+  useService,
+  type WorkspaceMetadata,
+} from '@toeverything/infra';
 import { forwardRef, type PropsWithChildren, type Ref, useEffect } from 'react';
 
 import * as styles from './index.css';
@@ -24,20 +28,17 @@ export const ShareMenuContent = (props: ShareMenuProps) => {
   const t = useI18n();
   return (
     <div className={styles.containerStyle}>
-      <Tabs.Root defaultValue="share">
-        <Tabs.List>
-          <Tabs.Trigger value="share">
-            {t['com.affine.share-menu.shareButton']()}
-          </Tabs.Trigger>
-          <Tabs.Trigger value="export">{t['Export']()}</Tabs.Trigger>
-        </Tabs.List>
-        <Tabs.Content value="share">
-          <SharePage {...props} />
-        </Tabs.Content>
-        <Tabs.Content value="export">
-          <ShareExport />
-        </Tabs.Content>
-      </Tabs.Root>
+      <div className={styles.headerStyle}>
+        <div className={styles.shareIconStyle}>
+          <WebIcon />
+        </div>
+        {t['com.arms.share-menu.SharePage']()}
+      </div>
+      <SharePage {...props} />
+      <div className={styles.columnContainerStyle}>
+        <Divider size="thinner" />
+      </div>
+      <ShareExport {...props} />
     </div>
   );
 };
@@ -47,28 +48,19 @@ const DefaultShareButton = forwardRef(function DefaultShareButton(
   ref: Ref<HTMLButtonElement>
 ) {
   const t = useI18n();
-  const shareInfoService = useService(ShareInfoService);
-  const shared = useLiveData(shareInfoService.shareInfo.isShared$);
+  const shareService = useService(ShareService);
+  const shared = useLiveData(shareService.share.isShared$);
 
   useEffect(() => {
-    shareInfoService.shareInfo.revalidate();
-  }, [shareInfoService]);
+    shareService.share.revalidate();
+  }, [shareService]);
 
   return (
-    <Tooltip
-      content={
-        shared
-          ? t['com.affine.share-menu.option.link.readonly.description']()
-          : t['com.affine.share-menu.option.link.no-access.description']()
-      }
-    >
-      <Button ref={ref} className={styles.button}>
-        <div className={styles.buttonContainer}>
-          {shared ? <PublishIcon fontSize={16} /> : <LockIcon fontSize={16} />}
-          {t['com.affine.share-menu.shareButton']()}
-        </div>
-      </Button>
-    </Tooltip>
+    <Button ref={ref} className={styles.shareButton} variant="primary">
+      {shared
+        ? t['com.arms.share-menu.sharedButton']()
+        : t['com.arms.share-menu.shareButton']()}
+    </Button>
   );
 });
 
@@ -79,7 +71,6 @@ const LocalShareMenu = (props: ShareMenuProps) => {
       contentOptions={{
         className: styles.menuStyle,
         ['data-testid' as string]: 'local-share-menu',
-        align: 'end',
       }}
       rootOptions={{
         modal: false,
@@ -100,7 +91,6 @@ const CloudShareMenu = (props: ShareMenuProps) => {
       contentOptions={{
         className: styles.menuStyle,
         ['data-testid' as string]: 'cloud-share-menu',
-        align: 'end',
       }}
       rootOptions={{
         modal: false,
@@ -117,7 +107,7 @@ const CloudShareMenu = (props: ShareMenuProps) => {
 export const ShareMenu = (props: ShareMenuProps) => {
   const { workspaceMetadata } = props;
 
-  if (workspaceMetadata.flavour === 'local') {
+  if (workspaceMetadata.flavour === WorkspaceFlavour.LOCAL) {
     return <LocalShareMenu {...props} />;
   }
   return <CloudShareMenu {...props} />;

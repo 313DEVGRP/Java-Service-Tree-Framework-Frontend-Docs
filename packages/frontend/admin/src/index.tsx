@@ -1,5 +1,4 @@
 import './global.css';
-import './setup';
 
 import { createRoot } from 'react-dom/client';
 

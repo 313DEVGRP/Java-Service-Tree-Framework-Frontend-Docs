@@ -2,7 +2,7 @@ import { Button, notify } from '@affine/component';
 import {
   RouteLogic,
   useNavigateHelper,
-} from '@affine/core/components/hooks/use-navigate-helper';
+} from '@affine/core/hooks/use-navigate-helper';
 import { AuthService } from '@affine/core/modules/cloud';
 import { useI18n } from '@affine/i18n';
 import { AiIcon } from '@blocksuite/icons/rc';
@@ -44,7 +44,7 @@ const FooterActions = ({ onDismiss }: { onDismiss: () => void }) => {
           variant="plain"
           onClick={onDismiss}
         >
-          {t['com.affine.ai-onboarding.local.action-learn-more']()}
+          {t['com.arms.ai-onboarding.local.action-learn-more']()}
         </Button>
       </a>
       {loggedIn ? null : (
@@ -56,7 +56,7 @@ const FooterActions = ({ onDismiss }: { onDismiss: () => void }) => {
             jumpToSignIn('', RouteLogic.REPLACE, {}, { initCloud: 'true' });
           }}
         >
-          {t['com.affine.ai-onboarding.local.action-get-started']()}
+          {t['com.arms.ai-onboarding.local.action-get-started']()}
         </Button>
       )}
     </div>
@@ -67,7 +67,7 @@ export const AIOnboardingLocal = () => {
   const t = useI18n();
   const authService = useService(AuthService);
   const notifyId = useLiveData(localNotifyId$);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
   const loginStatus = useLiveData(authService.session.status$);
   const notSignedIn = loginStatus !== 'authenticated';
@@ -75,9 +75,7 @@ export const AIOnboardingLocal = () => {
   useEffect(() => {
     if (!notSignedIn) return;
     if (notifyId) return;
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
+    clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
       // try to close edgeless onboarding
       notify.dismiss(edgelessNotifyId$.value);
@@ -86,10 +84,10 @@ export const AIOnboardingLocal = () => {
         {
           title: (
             <div className={styles.title}>
-              {t['com.affine.ai-onboarding.local.title']()}
+              {t['com.arms.ai-onboarding.local.title']()}
             </div>
           ),
-          message: t['com.affine.ai-onboarding.local.message'](),
+          message: t['com.arms.ai-onboarding.local.message'](),
           icon: <AiIcon />,
           iconColor: cssVar('brandColor'),
           thumb: <LocalOnboardingAnimation />,

@@ -1,9 +1,9 @@
+import { notify } from '@affine/component';
+import { useAsyncCallback } from '@affine/core/hooks/affine-async-hooks';
 import {
   useMutateQueryResource,
   useMutation,
-} from '@affine/admin/use-mutation';
-import { notify } from '@affine/component';
-import { useAsyncCallback } from '@affine/core/components/hooks/affine-async-hooks';
+} from '@affine/core/hooks/use-mutation';
 import {
   getServerRuntimeConfigQuery,
   updateServerRuntimeConfigsMutation,

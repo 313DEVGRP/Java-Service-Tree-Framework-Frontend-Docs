@@ -1,6 +1,6 @@
+import type { WorkspaceService, WorkspacesService } from '@toeverything/infra';
 import { Service } from '@toeverything/infra';
 
-import type { WorkspaceService, WorkspacesService } from '../../workspace';
 import { WorkspacePermission } from '../entities/permission';
 import type { WorkspacePermissionStore } from '../stores/permission';
 
@@ -15,12 +15,11 @@ export class WorkspacePermissionService extends Service {
     super();
   }
 
-  override dispose(): void {
-    this.permission?.dispose();
-  }
-
   async leaveWorkspace() {
-    await this.store.leaveWorkspace(this.workspaceService.workspace.id);
+    await this.store.leaveWorkspace(
+      this.workspaceService.workspace.id,
+      this.workspaceService.workspace.name$.value ?? ''
+    );
     this.workspacesService.list.revalidate();
   }
 }

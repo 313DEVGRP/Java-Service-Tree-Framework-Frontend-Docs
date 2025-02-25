@@ -1,3 +1,6 @@
+@import './fonts.css';
+@import '@toeverything/theme/style.css';
+
 * {
   -webkit-overflow-scrolling: touch;
   -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
@@ -273,8 +276,7 @@ affine-block-hub {
 }
 
 html,
-body,
-#app {
+body {
   height: 100%;
   position: relative;
   overflow: clip;
@@ -283,13 +285,6 @@ body,
 /**
  * A hack to make the anchor wrapper not affect the layout of the page.
  */
-[data-lit-react-wrapper],
-affine-lit-template-wrapper {
+[data-lit-react-wrapper] {
   display: contents;
-}
-
-/* Avoid color overriden by user-agent */
-button,
-input {
-  color: inherit;
 }

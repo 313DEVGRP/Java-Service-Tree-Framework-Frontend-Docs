@@ -36,14 +36,6 @@ export const itemRoot = style({
     },
   },
 });
-export const itemMain = style({
-  display: 'flex',
-  alignItems: 'center',
-  width: 0,
-  flex: 1,
-  position: 'relative',
-  gap: 12,
-});
 export const itemRenameAnchor = style({
   pointerEvents: 'none',
   position: 'absolute',
@@ -59,31 +51,26 @@ export const itemContent = style({
   alignItems: 'center',
   flex: 1,
   color: cssVarV2('text/primary'),
-  lineHeight: cssVar('lineHeight'),
 });
 export const postfix = style({
   display: 'flex',
   alignItems: 'center',
-  right: 0,
+  right: '4px',
   position: 'absolute',
   opacity: 0,
   pointerEvents: 'none',
   selectors: {
     [`${itemRoot}:hover &`]: {
-      opacity: 1,
-      pointerEvents: 'initial',
+      justifySelf: 'flex-end',
       position: 'initial',
+      opacity: 1,
+      pointerEvents: 'all',
     },
   },
 });
-export const iconContainer = style({
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  width: 20,
-  height: 20,
+export const icon = style({
   color: cssVarV2('icon/primary'),
-  fontSize: 20,
+  fontSize: '20px',
 });
 export const collapsedIconContainer = style({
   width: '16px',
@@ -106,6 +93,13 @@ export const collapsedIconContainer = style({
       background: cssVar('hoverColor'),
     },
   },
+});
+export const iconsContainer = style({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'flex-start',
+  width: '44px',
+  flexShrink: 0,
 });
 export const collapsedIcon = style({
   transition: 'transform 0.2s ease-in-out',

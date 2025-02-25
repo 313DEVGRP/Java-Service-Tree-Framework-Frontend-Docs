@@ -1,4 +1,3 @@
-import type { WebSocketService } from '@affine/core/modules/cloud';
 import { DebugLogger } from '@affine/debug';
 import {
   ErrorNames,
@@ -21,23 +20,15 @@ export class CloudDocEngineServer implements DocServer {
   interruptCb: ((reason: string) => void) | null = null;
   SEND_TIMEOUT = 30000;
 
-  socket: Socket;
-  disposeSocket: () => void;
-
   constructor(
     private readonly workspaceId: string,
-    webSocketService: WebSocketService
-  ) {
-    const { socket, dispose } = webSocketService.connect();
-    this.socket = socket;
-    this.disposeSocket = dispose;
-  }
+    private readonly socket: Socket
+  ) {}
 
   private async clientHandShake() {
-    await this.socket.emitWithAck('space:join', {
-      spaceType: 'workspace',
-      spaceId: this.workspaceId,
-      clientVersion: BUILD_CONFIG.appVersion,
+    await this.socket.emitWithAck('client-handshake-sync', {
+      workspaceId: this.workspaceId,
+      version: runtimeConfig.appVersion,
     });
   }
 
@@ -53,10 +44,9 @@ export class CloudDocEngineServer implements DocServer {
       timestamp: number;
     }> = await this.socket
       .timeout(this.SEND_TIMEOUT)
-      .emitWithAck('space:load-doc', {
-        spaceType: 'workspace',
-        spaceId: this.workspaceId,
-        docId: docId,
+      .emitWithAck('doc-load-v2', {
+        workspaceId: this.workspaceId,
+        guid: docId,
         stateVector,
       });
 
@@ -82,10 +72,9 @@ export class CloudDocEngineServer implements DocServer {
 
     const response: WebsocketResponse<{ timestamp: number }> = await this.socket
       .timeout(this.SEND_TIMEOUT)
-      .emitWithAck('space:push-doc-updates', {
-        spaceType: 'workspace',
-        spaceId: this.workspaceId,
-        docId: docId,
+      .emitWithAck('client-update-v2', {
+        workspaceId: this.workspaceId,
+        guid: docId,
         updates: [payload],
       });
 
@@ -105,9 +94,8 @@ export class CloudDocEngineServer implements DocServer {
     const response: WebsocketResponse<Record<string, number>> =
       await this.socket
         .timeout(this.SEND_TIMEOUT)
-        .emitWithAck('space:load-doc-timestamps', {
-          spaceType: 'workspace',
-          spaceId: this.workspaceId,
+        .emitWithAck('client-pre-sync', {
+          workspaceId: this.workspaceId,
           timestamp: after,
         });
 
@@ -130,29 +118,25 @@ export class CloudDocEngineServer implements DocServer {
     }) => void
   ): Promise<() => void> {
     const handleUpdate = async (message: {
-      spaceType: string;
-      spaceId: string;
-      docId: string;
+      workspaceId: string;
+      guid: string;
       updates: string[];
       timestamp: number;
     }) => {
-      if (
-        message.spaceType === 'workspace' &&
-        message.spaceId === this.workspaceId
-      ) {
+      if (message.workspaceId === this.workspaceId) {
         message.updates.forEach(update => {
           cb({
-            docId: message.docId,
+            docId: message.guid,
             data: base64ToUint8Array(update),
             serverClock: message.timestamp,
           });
         });
       }
     };
-    this.socket.on('space:broadcast-doc-updates', handleUpdate);
+    this.socket.on('server-updates', handleUpdate);
 
     return () => {
-      this.socket.off('space:broadcast-doc-updates', handleUpdate);
+      this.socket.off('server-updates', handleUpdate);
     };
   }
   async waitForConnectingServer(signal: AbortSignal): Promise<void> {
@@ -177,12 +161,14 @@ export class CloudDocEngineServer implements DocServer {
     }
   }
   disconnectServer(): void {
-    this.socket.emit('space:leave', {
-      spaceType: 'workspace',
-      spaceId: this.workspaceId,
-    });
+    if (!this.socket) {
+      return;
+    }
+
+    this.socket.emit('client-leave-sync', this.workspaceId);
     this.socket.off('server-version-rejected', this.handleVersionRejected);
     this.socket.off('disconnect', this.handleDisconnect);
+    this.socket.disconnect();
   }
   onInterrupted = (cb: (reason: string) => void) => {
     this.interruptCb = cb;
@@ -196,9 +182,4 @@ export class CloudDocEngineServer implements DocServer {
   handleVersionRejected = () => {
     this.interruptCb?.('Client version rejected');
   };
-
-  dispose(): void {
-    this.disconnectServer();
-    this.disposeSocket();
-  }
 }

@@ -2,4 +2,4 @@ export {
   type ElementOrFactory,
   useLitPortal,
   useLitPortalFactory,
-} from './lit-portal';
+} from './lite-portal';

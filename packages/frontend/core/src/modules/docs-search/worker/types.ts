@@ -30,14 +30,11 @@ export type WorkerInput =
   | {
       type: 'rootDoc';
       rootDocBuffer: Uint8Array;
-      rootDocId: string;
       allIndexedDocs: string[];
-      reindexAll?: boolean;
     }
   | {
       type: 'doc';
       storageDocId: string;
-      rootDocId: string;
       rootDocBuffer: Uint8Array;
       docBuffer: Uint8Array;
     };

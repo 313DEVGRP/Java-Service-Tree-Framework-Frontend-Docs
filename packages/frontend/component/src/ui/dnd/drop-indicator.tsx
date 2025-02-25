@@ -10,17 +10,14 @@ import * as styles from './drop-indicator.css';
 export type DropIndicatorProps = {
   instruction?: Instruction | null;
   edge?: Edge | null;
-  noTerminal?: boolean;
 };
 
 function getTreeElement({
   instruction,
   isBlocked,
-  noTerminal,
 }: {
   instruction: Exclude<Instruction, { type: 'instruction-blocked' }>;
   isBlocked: boolean;
-  noTerminal?: boolean;
 }): ReactElement | null {
   const style = {
     [styles.horizontalIndent]: `${instruction.currentLevel * instruction.indentPerLevel}px`,
@@ -34,7 +31,6 @@ function getTreeElement({
       <div
         className={clsx(styles.treeLine, styles.lineAboveStyles)}
         style={assignInlineVars(style)}
-        data-no-terminal={noTerminal}
       />
     );
   }
@@ -43,7 +39,6 @@ function getTreeElement({
       <div
         className={clsx(styles.treeLine, styles.lineBelowStyles)}
         style={assignInlineVars(style)}
-        data-no-terminal={noTerminal}
       />
     );
   }
@@ -53,7 +48,6 @@ function getTreeElement({
       <div
         className={clsx(styles.outlineStyles)}
         style={assignInlineVars(style)}
-        data-no-terminal={noTerminal}
       />
     );
   }
@@ -67,7 +61,6 @@ function getTreeElement({
       <div
         className={clsx(styles.treeLine, styles.lineBelowStyles)}
         style={assignInlineVars(style)}
-        data-no-terminal={noTerminal}
       />
     );
   }
@@ -95,14 +88,13 @@ const edgeStyles: Record<Edge, string> = {
   right: styles.right,
 };
 
-function getEdgeElement(edge: Edge, gap: number = 0, noTerminal?: boolean) {
+function getEdgeElement(edge: Edge, gap: number = 0) {
   const lineOffset = `calc(-0.5 * (${gap}px + 2px))`;
 
   const orientation = edgeToOrientationMap[edge];
 
   return (
     <div
-      data-no-terminal={noTerminal}
       className={clsx([
         styles.edgeLine,
         orientationStyles[orientation],
@@ -113,13 +105,9 @@ function getEdgeElement(edge: Edge, gap: number = 0, noTerminal?: boolean) {
   );
 }
 
-export function DropIndicator({
-  instruction,
-  edge,
-  noTerminal,
-}: DropIndicatorProps) {
+export function DropIndicator({ instruction, edge }: DropIndicatorProps) {
   if (edge) {
-    return getEdgeElement(edge, 0, noTerminal);
+    return getEdgeElement(edge, 0);
   }
   if (instruction) {
     if (instruction.type === 'instruction-blocked') {

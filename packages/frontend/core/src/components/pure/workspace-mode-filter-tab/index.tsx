@@ -1,9 +1,10 @@
 import { RadioGroup, type RadioItem } from '@affine/component';
-import type { AllPageFilterOption } from '@affine/core/components/atoms';
-import { allPageFilterSelectAtom } from '@affine/core/components/atoms';
-import { WorkbenchService } from '@affine/core/modules/workbench';
+import type { AllPageFilterOption } from '@affine/core/atoms';
+import { allPageFilterSelectAtom } from '@affine/core/atoms';
+import { useNavigateHelper } from '@affine/core/hooks/use-navigate-helper';
+import { WorkspaceSubPath } from '@affine/core/shared';
 import { useI18n } from '@affine/i18n';
-import { useService } from '@toeverything/infra';
+import { useService, WorkspaceService } from '@toeverything/infra';
 import { useAtom } from 'jotai';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -14,25 +15,26 @@ export const WorkspaceModeFilterTab = ({
 }: {
   activeFilter: AllPageFilterOption;
 }) => {
+  const workspace = useService(WorkspaceService).workspace;
   const t = useI18n();
   const [value, setValue] = useState(activeFilter);
   const [filterMode, setFilterMode] = useAtom(allPageFilterSelectAtom);
-  const workbenchService = useService(WorkbenchService);
+  const { jumpToCollections, jumpToTags, jumpToSubPath } = useNavigateHelper();
   const handleValueChange = useCallback(
     (value: AllPageFilterOption) => {
       switch (value) {
         case 'collections':
-          workbenchService.workbench.openCollections();
+          jumpToCollections(workspace.id);
           break;
         case 'tags':
-          workbenchService.workbench.openTags();
+          jumpToTags(workspace.id);
           break;
         case 'docs':
-          workbenchService.workbench.openAll();
+          jumpToSubPath(workspace.id, WorkspaceSubPath.ALL);
           break;
       }
     },
-    [workbenchService.workbench]
+    [jumpToCollections, jumpToSubPath, jumpToTags, workspace]
   );
 
   useEffect(() => {
@@ -51,13 +53,13 @@ export const WorkspaceModeFilterTab = ({
         () => [
           {
             value: 'docs',
-            label: t['com.affine.docs.header'](),
+            label: t['com.arms.docs.header'](),
             testId: 'workspace-docs-button',
             className: styles.filterTab,
           },
           {
             value: 'collections',
-            label: t['com.affine.collections.header'](),
+            label: t['com.arms.collections.header'](),
             testId: 'workspace-collections-button',
             className: styles.filterTab,
           },

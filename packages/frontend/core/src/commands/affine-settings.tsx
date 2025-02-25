@@ -1,36 +1,35 @@
 import type { useI18n } from '@affine/i18n';
-import { track } from '@affine/track';
 import { SettingsIcon } from '@blocksuite/icons/rc';
+import type { AffineEditorContainer } from '@blocksuite/presets';
 import { appSettingAtom } from '@toeverything/infra';
 import type { createStore } from 'jotai';
 import type { useTheme } from 'next-themes';
 
-import type { EditorSettingService } from '../modules/editor-setting';
+import type { useLanguageHelper } from '../hooks/affine/use-language-helper';
+import { track } from '../mixpanel';
 import { registerAffineCommand } from './registry';
 
 export function registerAffineSettingsCommands({
   t,
   store,
   theme,
-  editorSettingService,
+  languageHelper,
 }: {
   t: ReturnType<typeof useI18n>;
   store: ReturnType<typeof createStore>;
   theme: ReturnType<typeof useTheme>;
-  editorSettingService: EditorSettingService;
+  languageHelper: ReturnType<typeof useLanguageHelper>;
+  editor: AffineEditorContainer | null;
 }) {
   const unsubs: Array<() => void> = [];
-  const updateSettings = editorSettingService.editorSetting.set.bind(
-    editorSettingService.editorSetting
-  );
-  const settings$ = editorSettingService.editorSetting.settings$;
+  const { onLanguageChange, languagesList, currentLanguage } = languageHelper;
 
   // color modes
   unsubs.push(
     registerAffineCommand({
       id: 'affine:change-color-mode-to-auto',
-      label: `${t['com.affine.cmdk.affine.color-mode.to']()} ${t[
-        'com.affine.themeSettings.system'
+      label: `${t['com.arms.cmdk.affine.color-mode.to']()} ${t[
+        'com.arms.themeSettings.system'
       ]()}`,
       category: 'affine:settings',
       icon: <SettingsIcon />,
@@ -47,8 +46,8 @@ export function registerAffineSettingsCommands({
   unsubs.push(
     registerAffineCommand({
       id: 'affine:change-color-mode-to-dark',
-      label: `${t['com.affine.cmdk.affine.color-mode.to']()} ${t[
-        'com.affine.themeSettings.dark'
+      label: `${t['com.arms.cmdk.affine.color-mode.to']()} ${t[
+        'com.arms.themeSettings.dark'
       ]()}`,
       category: 'affine:settings',
       icon: <SettingsIcon />,
@@ -66,8 +65,8 @@ export function registerAffineSettingsCommands({
   unsubs.push(
     registerAffineCommand({
       id: 'affine:change-color-mode-to-light',
-      label: `${t['com.affine.cmdk.affine.color-mode.to']()} ${t[
-        'com.affine.themeSettings.light'
+      label: `${t['com.arms.cmdk.affine.color-mode.to']()} ${t[
+        'com.arms.themeSettings.light'
       ]()}`,
       category: 'affine:settings',
       icon: <SettingsIcon />,
@@ -87,19 +86,23 @@ export function registerAffineSettingsCommands({
   unsubs.push(
     registerAffineCommand({
       id: 'affine:change-font-style-to-sans',
-      label: `${t['com.affine.cmdk.affine.font-style.to']()} ${t[
-        'com.affine.appearanceSettings.fontStyle.sans'
+      label: `${t['com.arms.cmdk.affine.font-style.to']()} ${t[
+        'com.arms.appearanceSettings.fontStyle.sans'
       ]()}`,
       category: 'affine:settings',
       icon: <SettingsIcon />,
-      preconditionStrategy: () => settings$.value.fontFamily !== 'Sans',
+      preconditionStrategy: () =>
+        store.get(appSettingAtom).fontStyle !== 'Sans',
       run() {
         track.$.cmdk.settings.changeAppSetting({
           key: 'fontStyle',
           value: 'Sans',
         });
 
-        updateSettings('fontFamily', 'Sans');
+        store.set(appSettingAtom, prev => ({
+          ...prev,
+          fontStyle: 'Sans',
+        }));
       },
     })
   );
@@ -107,19 +110,23 @@ export function registerAffineSettingsCommands({
   unsubs.push(
     registerAffineCommand({
       id: 'affine:change-font-style-to-serif',
-      label: `${t['com.affine.cmdk.affine.font-style.to']()} ${t[
-        'com.affine.appearanceSettings.fontStyle.serif'
+      label: `${t['com.arms.cmdk.affine.font-style.to']()} ${t[
+        'com.arms.appearanceSettings.fontStyle.serif'
       ]()}`,
       category: 'affine:settings',
       icon: <SettingsIcon />,
-      preconditionStrategy: () => settings$.value.fontFamily !== 'Serif',
+      preconditionStrategy: () =>
+        store.get(appSettingAtom).fontStyle !== 'Serif',
       run() {
         track.$.cmdk.settings.changeAppSetting({
           key: 'fontStyle',
           value: 'Serif',
         });
 
-        updateSettings('fontFamily', 'Serif');
+        store.set(appSettingAtom, prev => ({
+          ...prev,
+          fontStyle: 'Serif',
+        }));
       },
     })
   );
@@ -127,36 +134,63 @@ export function registerAffineSettingsCommands({
   unsubs.push(
     registerAffineCommand({
       id: 'affine:change-font-style-to-mono',
-      label: `${t['com.affine.cmdk.affine.font-style.to']()} ${t[
-        'com.affine.appearanceSettings.fontStyle.mono'
+      label: `${t['com.arms.cmdk.affine.font-style.to']()} ${t[
+        'com.arms.appearanceSettings.fontStyle.mono'
       ]()}`,
       category: 'affine:settings',
       icon: <SettingsIcon />,
-      preconditionStrategy: () => settings$.value.fontFamily !== 'Mono',
+      preconditionStrategy: () =>
+        store.get(appSettingAtom).fontStyle !== 'Mono',
       run() {
         track.$.cmdk.settings.changeAppSetting({
           key: 'fontStyle',
           value: 'Mono',
         });
 
-        updateSettings('fontFamily', 'Mono');
+        store.set(appSettingAtom, prev => ({
+          ...prev,
+          fontStyle: 'Mono',
+        }));
       },
     })
   );
+
+  // Display Language
+  languagesList.forEach(language => {
+    unsubs.push(
+      registerAffineCommand({
+        id: `affine:change-display-language-to-${language.name}`,
+        label: `${t['com.arms.cmdk.affine.display-language.to']()} ${
+          language.originalName
+        }`,
+        category: 'affine:settings',
+        icon: <SettingsIcon />,
+        preconditionStrategy: () => currentLanguage?.tag !== language.tag,
+        run() {
+          track.$.cmdk.settings.changeAppSetting({
+            key: 'language',
+            value: language.name,
+          });
+
+          onLanguageChange(language.tag);
+        },
+      })
+    );
+  });
 
   // Layout Style
   unsubs.push(
     registerAffineCommand({
       id: `affine:change-client-border-style`,
-      label: () => `${t['com.affine.cmdk.affine.client-border-style.to']()} ${t[
+      label: () => `${t['com.arms.cmdk.affine.client-border-style.to']()} ${t[
         store.get(appSettingAtom).clientBorder
-          ? 'com.affine.cmdk.affine.switch-state.off'
-          : 'com.affine.cmdk.affine.switch-state.on'
+          ? 'com.arms.cmdk.affine.switch-state.off'
+          : 'com.arms.cmdk.affine.switch-state.on'
       ]()}
         `,
       category: 'affine:settings',
       icon: <SettingsIcon />,
-      preconditionStrategy: () => BUILD_CONFIG.isElectron,
+      preconditionStrategy: () => environment.isDesktop,
       run() {
         track.$.cmdk.settings.changeAppSetting({
           key: 'clientBorder',
@@ -174,19 +208,23 @@ export function registerAffineSettingsCommands({
     registerAffineCommand({
       id: `affine:change-full-width-layout`,
       label: () =>
-        `${t[
-          settings$.value.fullWidthLayout
-            ? 'com.affine.cmdk.affine.default-page-width-layout.standard'
-            : 'com.affine.cmdk.affine.default-page-width-layout.full-width'
+        `${t['com.arms.cmdk.affine.full-width-layout.to']()} ${t[
+          store.get(appSettingAtom).fullWidthLayout
+            ? 'com.arms.cmdk.affine.switch-state.off'
+            : 'com.arms.cmdk.affine.switch-state.on'
         ]()}`,
       category: 'affine:settings',
       icon: <SettingsIcon />,
       run() {
         track.$.cmdk.settings.changeAppSetting({
           key: 'fullWidthLayout',
-          value: settings$.value.fullWidthLayout ? 'off' : 'on',
+          value: store.get(appSettingAtom).fullWidthLayout ? 'off' : 'on',
         });
-        updateSettings('fullWidthLayout', !settings$.value.fullWidthLayout);
+
+        store.set(appSettingAtom, prev => ({
+          ...prev,
+          fullWidthLayout: !prev.fullWidthLayout,
+        }));
       },
     })
   );
@@ -195,16 +233,14 @@ export function registerAffineSettingsCommands({
     registerAffineCommand({
       id: `affine:change-noise-background-on-the-sidebar`,
       label: () =>
-        `${t[
-          'com.affine.cmdk.affine.noise-background-on-the-sidebar.to'
-        ]()} ${t[
+        `${t['com.arms.cmdk.affine.noise-background-on-the-sidebar.to']()} ${t[
           store.get(appSettingAtom).enableNoisyBackground
-            ? 'com.affine.cmdk.affine.switch-state.off'
-            : 'com.affine.cmdk.affine.switch-state.on'
+            ? 'com.arms.cmdk.affine.switch-state.off'
+            : 'com.arms.cmdk.affine.switch-state.on'
         ]()}`,
       category: 'affine:settings',
       icon: <SettingsIcon />,
-      preconditionStrategy: () => BUILD_CONFIG.isElectron,
+      preconditionStrategy: () => environment.isDesktop,
       run() {
         track.$.cmdk.settings.changeAppSetting({
           key: 'enableNoisyBackground',
@@ -223,15 +259,14 @@ export function registerAffineSettingsCommands({
     registerAffineCommand({
       id: `affine:change-translucent-ui-on-the-sidebar`,
       label: () =>
-        `${t['com.affine.cmdk.affine.translucent-ui-on-the-sidebar.to']()} ${t[
+        `${t['com.arms.cmdk.affine.translucent-ui-on-the-sidebar.to']()} ${t[
           store.get(appSettingAtom).enableBlurBackground
-            ? 'com.affine.cmdk.affine.switch-state.off'
-            : 'com.affine.cmdk.affine.switch-state.on'
+            ? 'com.arms.cmdk.affine.switch-state.off'
+            : 'com.arms.cmdk.affine.switch-state.on'
         ]()}`,
       category: 'affine:settings',
       icon: <SettingsIcon />,
-      preconditionStrategy: () =>
-        BUILD_CONFIG.isElectron && environment.isMacOs,
+      preconditionStrategy: () => environment.isDesktop && environment.isMacOs,
       run() {
         track.$.cmdk.settings.changeAppSetting({
           key: 'enableBlurBackground',

@@ -1,56 +1,47 @@
 import {
-  AICodeBlockSpec,
+  //AICodeBlockSpec,
   AIImageBlockSpec,
   AIParagraphBlockSpec,
 } from '@affine/core/blocksuite/presets/ai';
-import { AIChatBlockSpec } from '@affine/core/blocksuite/presets/blocks/ai-chat-block';
-import type { ExtensionType } from '@blocksuite/affine/block-std';
+import type { BlockSpec } from '@blocksuite/block-std';
 import {
-  AdapterFactoryExtensions,
-  AttachmentBlockSpec,
   BookmarkBlockSpec,
-  CodeBlockSpec,
   DatabaseBlockSpec,
   DataViewBlockSpec,
   DividerBlockSpec,
-  EditPropsStore,
-  EmbedExtensions,
-  FontLoaderService,
-  ImageBlockSpec,
-  LatexBlockSpec,
+  EmbedFigmaBlockSpec,
+  EmbedGithubBlockSpec,
+  EmbedHtmlBlockSpec,
+  EmbedLinkedDocBlockSpec,
+  EmbedLoomBlockSpec,
+  EmbedSyncedDocBlockSpec,
+  EmbedYoutubeBlockSpec,
   ListBlockSpec,
-  ParagraphBlockSpec,
-  RefNodeSlotsExtension,
-  RichTextExtensions,
-} from '@blocksuite/affine/blocks';
+  NoteBlockSpec,
+} from '@blocksuite/blocks';
+import { AIChatBlockSpec, EdgelessAIChatBlockSpec } from '@blocksuite/presets';
 
-const CommonBlockSpecs: ExtensionType[] = [
-  RefNodeSlotsExtension,
-  EditPropsStore,
-  RichTextExtensions,
-  LatexBlockSpec,
+import { CustomAttachmentBlockSpec } from './custom/attachment-block';
+
+export const CommonBlockSpecs: BlockSpec[] = [
   ListBlockSpec,
+  NoteBlockSpec,
   DatabaseBlockSpec,
   DataViewBlockSpec,
   DividerBlockSpec,
-  EmbedExtensions,
   BookmarkBlockSpec,
-  AttachmentBlockSpec,
-  AdapterFactoryExtensions,
-  FontLoaderService,
-].flat();
-
-export const DefaultBlockSpecs: ExtensionType[] = [
-  CodeBlockSpec,
-  ImageBlockSpec,
-  ParagraphBlockSpec,
-  ...CommonBlockSpecs,
-].flat();
-
-export const AIBlockSpecs: ExtensionType[] = [
-  AICodeBlockSpec,
+  EmbedFigmaBlockSpec,
+  EmbedGithubBlockSpec,
+  EmbedYoutubeBlockSpec,
+  EmbedLoomBlockSpec,
+  EmbedHtmlBlockSpec,
+  EmbedSyncedDocBlockSpec,
+  EmbedLinkedDocBlockSpec,
+  // special
+  CustomAttachmentBlockSpec,
+  //AICodeBlockSpec,
   AIImageBlockSpec,
   AIParagraphBlockSpec,
   AIChatBlockSpec,
-  ...CommonBlockSpecs,
-].flat();
+  EdgelessAIChatBlockSpec,
+];

@@ -69,7 +69,6 @@ export const RadioGroup = memo(function RadioGroup({
   items,
   value,
   width,
-  className,
   style,
   padding = 2,
   gap = 4,
@@ -79,8 +78,6 @@ export const RadioGroup = memo(function RadioGroup({
   animationEasing = 'cubic-bezier(.18,.22,0,1)',
   activeItemClassName,
   activeItemStyle,
-  indicatorClassName,
-  indicatorStyle,
   iconMode,
   onChange,
 }: RadioProps) {
@@ -155,7 +152,7 @@ export const RadioGroup = memo(function RadioGroup({
     <RadixRadioGroup.Root
       value={value}
       onValueChange={onChange}
-      className={clsx(styles.radioButtonGroup, className)}
+      className={styles.radioButtonGroup}
       style={finalStyle}
       data-icon-mode={iconMode}
     >
@@ -182,9 +179,8 @@ export const RadioGroup = memo(function RadioGroup({
           >
             <RadixRadioGroup.Indicator
               forceMount
-              className={clsx(styles.indicator, indicatorClassName)}
+              className={styles.indicator}
               ref={item.indicatorRef}
-              style={indicatorStyle}
             />
             <span className={styles.radioButtonContent}>
               {customRender?.(item, index) ?? item.label ?? item.value}

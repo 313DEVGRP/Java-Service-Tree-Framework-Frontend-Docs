@@ -4,31 +4,35 @@ import {
   ErrorMessage,
   IconButton,
   Menu,
+  MenuIcon,
   MenuItem,
   type MenuProps,
   Skeleton,
 } from '@affine/component';
-import { GlobalDialogService } from '@affine/core/modules/dialogs';
+import {
+  authAtom,
+  openSettingModalAtom,
+  openSignOutModalAtom,
+} from '@affine/core/atoms';
+import { track } from '@affine/core/mixpanel';
 import { useI18n } from '@affine/i18n';
-import { track } from '@affine/track';
 import { AccountIcon, SignOutIcon } from '@blocksuite/icons/rc';
 import { useLiveData, useService } from '@toeverything/infra';
 import { cssVar } from '@toeverything/theme';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
 import clsx from 'clsx';
+import { useSetAtom } from 'jotai';
 import { useCallback, useEffect } from 'react';
 
 import {
   type AuthAccountInfo,
   AuthService,
-  ServerService,
+  ServerConfigService,
   SubscriptionService,
   UserCopilotQuotaService,
   UserQuotaService,
 } from '../../modules/cloud';
 import { UserPlanButton } from '../affine/auth/user-plan-button';
-import { useSignOut } from '../hooks/affine/use-sign-out';
-import { useCatchEventCallback } from '../hooks/use-catch-event-hook';
 import * as styles from './index.css';
 import { UnknownUserIcon } from './unknow-user';
 
@@ -56,11 +60,11 @@ const AuthorizedUserInfo = ({ account }: { account: AuthAccountInfo }) => {
 };
 
 const UnauthorizedUserInfo = () => {
-  const globalDialogService = useService(GlobalDialogService);
+  const setOpen = useSetAtom(authAtom);
 
   const openSignInModal = useCallback(() => {
-    globalDialogService.open('sign-in', {});
-  }, [globalDialogService]);
+    setOpen(state => ({ ...state, openModal: true }));
+  }, [setOpen]);
 
   return (
     <IconButton
@@ -75,33 +79,47 @@ const UnauthorizedUserInfo = () => {
 };
 
 const AccountMenu = () => {
-  const globalDialogService = useService(GlobalDialogService);
-  const openSignOutModal = useSignOut();
+  const setSettingModalAtom = useSetAtom(openSettingModalAtom);
+  const setOpenSignOutModalAtom = useSetAtom(openSignOutModalAtom);
 
   const onOpenAccountSetting = useCallback(() => {
     track.$.navigationPanel.profileAndBadge.openSettings({ to: 'account' });
-    globalDialogService.open('setting', {
+    setSettingModalAtom(prev => ({
+      ...prev,
+      open: true,
       activeTab: 'account',
-    });
-  }, [globalDialogService]);
+    }));
+  }, [setSettingModalAtom]);
+
+  const onOpenSignOutModal = useCallback(() => {
+    setOpenSignOutModalAtom(true);
+  }, [setOpenSignOutModalAtom]);
 
   const t = useI18n();
 
   return (
     <>
       <MenuItem
-        prefixIcon={<AccountIcon />}
+        preFix={
+          <MenuIcon>
+            <AccountIcon />
+          </MenuIcon>
+        }
         data-testid="workspace-modal-account-settings-option"
         onClick={onOpenAccountSetting}
       >
-        {t['com.affine.workspace.cloud.account.settings']()}
+        {t['com.arms.workspace.cloud.account.settings']()}
       </MenuItem>
       <MenuItem
-        prefixIcon={<SignOutIcon />}
+        preFix={
+          <MenuIcon>
+            <SignOutIcon />
+          </MenuIcon>
+        }
         data-testid="workspace-modal-sign-out-option"
-        onClick={openSignOutModal}
+        onClick={onOpenSignOutModal}
       >
-        {t['com.affine.workspace.cloud.account.logout']()}
+        {t['com.arms.workspace.cloud.account.logout']()}
       </MenuItem>
     </>
   );
@@ -111,14 +129,6 @@ const CloudUsage = () => {
   const t = useI18n();
   const quota = useService(UserQuotaService).quota;
   const quotaError = useLiveData(quota.error$);
-
-  const globalDialogService = useService(GlobalDialogService);
-  const handleClick = useCatchEventCallback(() => {
-    globalDialogService.open('setting', {
-      activeTab: 'plans',
-      scrollAnchor: 'cloudPricingPlan',
-    });
-  }, [globalDialogService]);
 
   useEffect(() => {
     // revalidate quota to get the latest status
@@ -151,13 +161,13 @@ const CloudUsage = () => {
       <div className={styles.usageLabel}>
         <div>
           <span className={styles.usageLabelTitle}>
-            {t['com.affine.user-info.usage.cloud']()}
+            {t['com.arms.user-info.usage.cloud']()}
           </span>
           <span>{usedFormatted}</span>
           <span>&nbsp;/&nbsp;</span>
           <span>{maxFormatted}</span>
         </div>
-        <UserPlanButton onClick={handleClick} />
+        <UserPlanButton />
       </div>
 
       <div className={styles.cloudUsageBar}>
@@ -192,20 +202,22 @@ const AIUsage = () => {
   const loading = copilotActionLimit === null || copilotActionUsed === null;
   const loadError = useLiveData(copilotQuotaService.copilotQuota.error$);
 
-  const globalDialogService = useService(GlobalDialogService);
+  const setSettingModalAtom = useSetAtom(openSettingModalAtom);
 
   const goToAIPlanPage = useCallback(() => {
-    globalDialogService.open('setting', {
+    setSettingModalAtom({
+      open: true,
       activeTab: 'plans',
       scrollAnchor: 'aiPricingPlan',
     });
-  }, [globalDialogService]);
+  }, [setSettingModalAtom]);
 
   const goToAccountSetting = useCallback(() => {
-    globalDialogService.open('setting', {
+    setSettingModalAtom({
+      open: true,
       activeTab: 'account',
     });
-  }, [globalDialogService]);
+  }, [setSettingModalAtom]);
 
   if (loading) {
     if (loadError) console.error(loadError);
@@ -222,11 +234,11 @@ const AIUsage = () => {
       >
         <div className={styles.usageLabel}>
           <div className={styles.usageLabelTitle}>
-            {t['com.affine.user-info.usage.ai']()}
+            {t['com.arms.user-info.usage.ai']()}
           </div>
         </div>
         <div className={styles.usageLabel}>
-          {t['com.affine.payment.ai.usage-description-purchased']()}
+          {t['com.arms.payment.ai.usage-description-purchased']()}
         </div>
       </div>
     );
@@ -253,7 +265,7 @@ const AIUsage = () => {
       <div className={styles.usageLabel}>
         <div>
           <span className={styles.usageLabelTitle}>
-            {t['com.affine.user-info.usage.ai']()}
+            {t['com.arms.user-info.usage.ai']()}
           </span>
           <span>{copilotActionUsed}</span>
           <span>&nbsp;/&nbsp;</span>
@@ -274,8 +286,10 @@ const AIUsage = () => {
 };
 
 const OperationMenu = () => {
-  const serverService = useService(ServerService);
-  const serverFeatures = useLiveData(serverService.server.features$);
+  const serverConfigService = useService(ServerConfigService);
+  const serverFeatures = useLiveData(
+    serverConfigService.serverConfig.features$
+  );
 
   return (
     <>

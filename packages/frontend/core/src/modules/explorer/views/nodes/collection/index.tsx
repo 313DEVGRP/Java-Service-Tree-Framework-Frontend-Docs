@@ -2,24 +2,27 @@ import {
   AnimatedCollectionsIcon,
   type DropTargetDropEvent,
   type DropTargetOptions,
+  MenuIcon,
   MenuItem,
   toast,
 } from '@affine/component';
-import { filterPage } from '@affine/core/components/page-list';
+import {
+  filterPage,
+  useEditCollection,
+} from '@affine/core/components/page-list';
+import { track } from '@affine/core/mixpanel';
 import { CollectionService } from '@affine/core/modules/collection';
-import { WorkspaceDialogService } from '@affine/core/modules/dialogs';
-import { DocsService } from '@affine/core/modules/doc';
-import { CompatibleFavoriteItemsAdapter } from '@affine/core/modules/favorite';
-import { GlobalContextService } from '@affine/core/modules/global-context';
-import { ShareDocsListService } from '@affine/core/modules/share-doc';
+import { CompatibleFavoriteItemsAdapter } from '@affine/core/modules/properties';
+import { ShareDocsService } from '@affine/core/modules/share-doc';
 import type { AffineDNDData } from '@affine/core/types/dnd';
 import type { Collection } from '@affine/env/filter';
 import { PublicPageMode } from '@affine/graphql';
 import { useI18n } from '@affine/i18n';
-import { track } from '@affine/track';
-import type { DocMeta } from '@blocksuite/affine/store';
 import { FilterMinusIcon } from '@blocksuite/icons/rc';
+import type { DocMeta } from '@blocksuite/store';
 import {
+  DocsService,
+  GlobalContextService,
   LiveData,
   useLiveData,
   useService,
@@ -57,10 +60,11 @@ export const ExplorerCollectionNode = ({
   collectionId: string;
 } & GenericExplorerNode) => {
   const t = useI18n();
-  const { globalContextService, workspaceDialogService } = useServices({
+  const { globalContextService } = useServices({
     GlobalContextService,
-    WorkspaceDialogService,
   });
+  const { open: openEditCollectionModal, node: editModal } =
+    useEditCollection();
   const active =
     useLiveData(globalContextService.globalContext.collectionId.$) ===
     collectionId;
@@ -95,7 +99,7 @@ export const ExplorerCollectionNode = ({
         track.$.navigationPanel.organize.renameOrganizeItem({
           type: 'collection',
         });
-        toast(t['com.affine.toastMessage.rename']());
+        toast(t['com.arms.toastMessage.rename']());
       }
     },
     [collection, collectionId, collectionService, t]
@@ -107,7 +111,7 @@ export const ExplorerCollectionNode = ({
         return;
       }
       if (collection.allowList.includes(docId)) {
-        toast(t['com.affine.collection.addPage.alreadyExists']());
+        toast(t['com.arms.collection.addPage.alreadyExists']());
       } else {
         collectionService.addPageToCollection(collection.id, docId);
       }
@@ -124,9 +128,6 @@ export const ExplorerCollectionNode = ({
             type: 'link',
             target: 'doc',
             control: 'drag',
-          });
-          track.$.navigationPanel.collections.drop({
-            type: data.source.data.entity.type,
           });
         }
       } else {
@@ -171,10 +172,17 @@ export const ExplorerCollectionNode = ({
     if (!collection) {
       return;
     }
-    workspaceDialogService.open('collection-editor', {
-      collectionId: collection.id,
-    });
-  }, [collection, workspaceDialogService]);
+    openEditCollectionModal(collection)
+      .then(collection => {
+        return collectionService.updateCollection(
+          collection.id,
+          () => collection
+        );
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  }, [collection, collectionService, openEditCollectionModal]);
 
   const collectionOperations = useExplorerCollectionNodeOperations(
     collectionId,
@@ -193,7 +201,7 @@ export const ExplorerCollectionNode = ({
     () => args => {
       const entityType = args.source.data.entity?.type;
       return args.treeInstruction?.type !== 'make-child'
-        ? ((typeof canDrop === 'function' ? canDrop(args) : canDrop) ?? true)
+        ? (typeof canDrop === 'function' ? canDrop(args) : canDrop) ?? true
         : entityType === 'doc';
     },
     [canDrop]
@@ -204,26 +212,29 @@ export const ExplorerCollectionNode = ({
   }
 
   return (
-    <ExplorerTreeNode
-      icon={CollectionIcon}
-      name={collection.name || t['Untitled']()}
-      dndData={dndData}
-      onDrop={handleDropOnCollection}
-      renameable
-      collapsed={collapsed}
-      setCollapsed={setCollapsed}
-      to={`/collection/${collection.id}`}
-      active={active}
-      canDrop={handleCanDrop}
-      reorderable={reorderable}
-      onRename={handleRename}
-      childrenPlaceholder={<Empty onDrop={handleDropOnPlaceholder} />}
-      operations={finalOperations}
-      dropEffect={handleDropEffectOnCollection}
-      data-testid={`explorer-collection-${collectionId}`}
-    >
-      <ExplorerCollectionNodeChildren collection={collection} />
-    </ExplorerTreeNode>
+    <>
+      <ExplorerTreeNode
+        icon={CollectionIcon}
+        name={collection.name || t['Untitled']()}
+        dndData={dndData}
+        onDrop={handleDropOnCollection}
+        renameable
+        collapsed={collapsed}
+        setCollapsed={setCollapsed}
+        to={`/collection/${collection.id}`}
+        active={active}
+        canDrop={handleCanDrop}
+        reorderable={reorderable}
+        onRename={handleRename}
+        childrenPlaceholder={<Empty onDrop={handleDropOnPlaceholder} />}
+        operations={finalOperations}
+        dropEffect={handleDropEffectOnCollection}
+        data-testid={`explorer-collection-${collectionId}`}
+      >
+        <ExplorerCollectionNodeChildren collection={collection} />
+      </ExplorerTreeNode>
+      {editModal}
+    </>
   );
 };
 
@@ -236,19 +247,19 @@ const ExplorerCollectionNodeChildren = ({
   const {
     docsService,
     compatibleFavoriteItemsAdapter,
-    shareDocsListService,
+    shareDocsService,
     collectionService,
   } = useServices({
     DocsService,
     CompatibleFavoriteItemsAdapter,
-    ShareDocsListService,
+    ShareDocsService,
     CollectionService,
   });
 
   useEffect(() => {
     // TODO(@eyhn): loading & error UI
-    shareDocsListService.shareDocs?.revalidate();
-  }, [shareDocsListService]);
+    shareDocsService.shareDocs?.revalidate();
+  }, [shareDocsService]);
 
   const docMetas = useLiveData(
     useMemo(
@@ -266,13 +277,13 @@ const ExplorerCollectionNodeChildren = ({
     () => new Set(collection.allowList),
     [collection.allowList]
   );
-  const shareDocs = useLiveData(shareDocsListService.shareDocs?.list$);
+  const shareDocs = useLiveData(shareDocsService.shareDocs?.list$);
 
   const handleRemoveFromAllowList = useCallback(
     (id: string) => {
       track.$.navigationPanel.collections.removeOrganizeItem({ type: 'doc' });
       collectionService.deletePageFromCollection(collection.id, id);
-      toast(t['com.affine.collection.removePage.success']());
+      toast(t['com.arms.collection.removePage.success']());
     },
     [collection.id, collectionService, t]
   );
@@ -309,7 +320,11 @@ const ExplorerCollectionNodeChildren = ({
                 index: 99,
                 view: (
                   <MenuItem
-                    prefixIcon={<FilterMinusIcon />}
+                    preFix={
+                      <MenuIcon>
+                        <FilterMinusIcon />
+                      </MenuIcon>
+                    }
                     onClick={() => handleRemoveFromAllowList(doc.id)}
                   >
                     {t['Remove special filter']()}

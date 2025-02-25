@@ -1,2 +1,2 @@
-export * from './notify';
+export * from './notification-center';
 export type { Notification } from './types';

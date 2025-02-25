@@ -50,7 +50,6 @@ export const FilterList = ({
         );
       })}
       <Menu
-        key={value.length} // hack to force menu to rerender (disable unmount animation)
         items={
           <CreateFilterMenu
             value={value}
@@ -61,7 +60,7 @@ export const FilterList = ({
       >
         {value.length === 0 ? (
           <Button suffix={<PlusIcon />}>
-            {t['com.affine.filterList.button.add']()}
+            {t['com.arms.filterList.button.add']()}
           </Button>
         ) : (
           <IconButton size="16">

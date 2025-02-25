@@ -1,9 +1,9 @@
+import { useAsyncCallback } from '@affine/core/hooks/affine-async-hooks';
 import {
   useMutateQueryResource,
   useMutation,
-} from '@affine/admin/use-mutation';
-import { useQuery } from '@affine/admin/use-query';
-import { useAsyncCallback } from '@affine/core/components/hooks/affine-async-hooks';
+} from '@affine/core/hooks/use-mutation';
+import { useQuery } from '@affine/core/hooks/use-query';
 import { getPromptsQuery, updatePromptMutation } from '@affine/graphql';
 import { toast } from 'sonner';
 

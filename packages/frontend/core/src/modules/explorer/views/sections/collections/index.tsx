@@ -1,10 +1,11 @@
-import { IconButton, usePromptModal } from '@affine/component';
+import { IconButton } from '@affine/component';
+import { useEditCollectionName } from '@affine/core/components/page-list';
 import { createEmptyCollection } from '@affine/core/components/page-list/use-collection-manager';
+import { track } from '@affine/core/mixpanel';
 import { CollectionService } from '@affine/core/modules/collection';
 import { ExplorerTreeRoot } from '@affine/core/modules/explorer/views/tree';
 import { WorkbenchService } from '@affine/core/modules/workbench';
 import { useI18n } from '@affine/i18n';
-import { track } from '@affine/track';
 import { PlusIcon } from '@blocksuite/icons/rc';
 import { useLiveData, useServices } from '@toeverything/infra';
 import { nanoid } from 'nanoid';
@@ -14,7 +15,6 @@ import { ExplorerService } from '../../../services/explorer';
 import { CollapsibleSection } from '../../layouts/collapsible-section';
 import { ExplorerCollectionNode } from '../../nodes/collection';
 import { RootEmpty } from './empty';
-import * as styles from './index.css';
 
 export const ExplorerCollections = () => {
   const t = useI18n();
@@ -25,26 +25,14 @@ export const ExplorerCollections = () => {
   });
   const explorerSection = explorerService.sections.collections;
   const collections = useLiveData(collectionService.collections$);
-  const { openPromptModal } = usePromptModal();
+  const { node, open: openCreateCollectionModel } = useEditCollectionName({
+    title: t['com.arms.editCollection.createCollection'](),
+    showTips: true,
+  });
 
   const handleCreateCollection = useCallback(() => {
-    openPromptModal({
-      title: t['com.affine.editCollection.saveCollection'](),
-      label: t['com.affine.editCollectionName.name'](),
-      inputOptions: {
-        placeholder: t['com.affine.editCollectionName.name.placeholder'](),
-      },
-      children: (
-        <div className={styles.createTips}>
-          {t['com.affine.editCollectionName.createTips']()}
-        </div>
-      ),
-      confirmText: t['com.affine.editCollection.save'](),
-      cancelText: t['com.affine.editCollection.button.cancel'](),
-      confirmButtonOptions: {
-        variant: 'primary',
-      },
-      onConfirm(name) {
+    openCreateCollectionModel('')
+      .then(name => {
         const id = nanoid();
         collectionService.addCollection(createEmptyCollection(id, { name }));
         track.$.navigationPanel.organize.createOrganizeItem({
@@ -52,48 +40,52 @@ export const ExplorerCollections = () => {
         });
         workbenchService.workbench.openCollection(id);
         explorerSection.setCollapsed(false);
-      },
-    });
+      })
+      .catch(err => {
+        console.error(err);
+      });
   }, [
     collectionService,
     explorerSection,
-    openPromptModal,
-    t,
+    openCreateCollectionModel,
     workbenchService.workbench,
   ]);
 
   return (
-    <CollapsibleSection
-      name="collections"
-      testId="explorer-collections"
-      title={t['com.affine.rootAppSidebar.collections']()}
-      actions={
-        <IconButton
-          data-testid="explorer-bar-add-collection-button"
-          onClick={handleCreateCollection}
-          size="16"
-          tooltip={t[
-            'com.affine.rootAppSidebar.explorer.collection-section-add-tooltip'
-          ]()}
-        >
-          <PlusIcon />
-        </IconButton>
-      }
-    >
-      <ExplorerTreeRoot
-        placeholder={<RootEmpty onClickCreate={handleCreateCollection} />}
+    <>
+      <CollapsibleSection
+        name="collections"
+        testId="explorer-collections"
+        title={t['com.arms.rootAppSidebar.collections']()}
+        actions={
+          <IconButton
+            data-testid="explorer-bar-add-collection-button"
+            onClick={handleCreateCollection}
+            size="16"
+            tooltip={t[
+              'com.arms.rootAppSidebar.explorer.collection-section-add-tooltip'
+            ]()}
+          >
+            <PlusIcon />
+          </IconButton>
+        }
       >
-        {collections.map(collection => (
-          <ExplorerCollectionNode
-            key={collection.id}
-            collectionId={collection.id}
-            reorderable={false}
-            location={{
-              at: 'explorer:collection:list',
-            }}
-          />
-        ))}
-      </ExplorerTreeRoot>
-    </CollapsibleSection>
+        <ExplorerTreeRoot
+          placeholder={<RootEmpty onClickCreate={handleCreateCollection} />}
+        >
+          {collections.map(collection => (
+            <ExplorerCollectionNode
+              key={collection.id}
+              collectionId={collection.id}
+              reorderable={false}
+              location={{
+                at: 'explorer:collection:list',
+              }}
+            />
+          ))}
+        </ExplorerTreeRoot>
+      </CollapsibleSection>
+      {node}
+    </>
   );
 };

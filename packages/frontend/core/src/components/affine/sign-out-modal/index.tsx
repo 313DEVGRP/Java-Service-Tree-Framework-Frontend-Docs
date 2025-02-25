@@ -9,16 +9,13 @@ type SignOutConfirmModalI18NKeys =
   | 'cancel'
   | 'confirm';
 
-/**
- * @deprecated use `useSignOut` instead
- */
 export const SignOutModal = ({ ...props }: ConfirmModalProps) => {
   const { title, description, cancelText, confirmText } = props;
   const t = useI18n();
 
   const defaultTexts = useMemo(() => {
     const getDefaultText = (key: SignOutConfirmModalI18NKeys) => {
-      return t[`com.affine.auth.sign-out.confirm-modal.${key}`]();
+      return t[`com.arms.auth.sign-out.confirm-modal.${key}`]();
     };
     return {
       title: getDefaultText('title'),

@@ -50,9 +50,7 @@ export class IndexedDBJobQueue<J> implements JobQueue<J> {
   async accept(): Promise<Job[] | null> {
     await this.ensureInitialized();
     const jobs = [];
-    const trx = this.database.transaction(['jobs'], 'readwrite', {
-      durability: 'relaxed',
-    });
+    const trx = this.database.transaction(['jobs'], 'readwrite');
 
     // if no priority jobs
 
@@ -150,9 +148,7 @@ export class IndexedDBJobQueue<J> implements JobQueue<J> {
 
   async complete(jobs: Job[]): Promise<void> {
     await this.ensureInitialized();
-    const trx = this.database.transaction(['jobs'], 'readwrite', {
-      durability: 'relaxed',
-    });
+    const trx = this.database.transaction(['jobs'], 'readwrite');
 
     for (const { id } of jobs) {
       await trx
@@ -166,9 +162,7 @@ export class IndexedDBJobQueue<J> implements JobQueue<J> {
 
   async return(jobs: Job[], retry: boolean = false): Promise<void> {
     await this.ensureInitialized();
-    const trx = this.database.transaction(['jobs'], 'readwrite', {
-      durability: 'relaxed',
-    });
+    const trx = this.database.transaction(['jobs'], 'readwrite');
 
     for (const { id } of jobs) {
       if (retry) {
@@ -191,9 +185,7 @@ export class IndexedDBJobQueue<J> implements JobQueue<J> {
 
   async clear(): Promise<void> {
     await this.ensureInitialized();
-    const trx = this.database.transaction(['jobs'], 'readwrite', {
-      durability: 'relaxed',
-    });
+    const trx = this.database.transaction(['jobs'], 'readwrite');
     await trx.objectStore('jobs').clear();
   }
 

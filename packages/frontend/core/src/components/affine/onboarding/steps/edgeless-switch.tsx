@@ -43,9 +43,7 @@ export const EdgelessSwitch = ({
   const prevStateRef = useRef<EdgelessSwitchState | null>(
     article.initState ?? null
   );
-  const enableScrollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
-    null
-  );
+  const enableScrollTimerRef = useRef<ReturnType<typeof setTimeout>>();
   const turnOffScalingRef = useRef<() => void>(() => {});
 
   const [scrollable, setScrollable] = useState(false);
@@ -115,6 +113,7 @@ export const EdgelessSwitch = ({
       turnOffScalingRef.current?.();
     };
 
+    // TODO(@catsjuice): mobile support
     const onMouseDown = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       if (target.closest('[data-no-drag]')) return;
@@ -212,7 +211,6 @@ export const EdgelessSwitch = ({
               {
                 /* render blocks */
                 article.blocks.map((block, key) => {
-                  // eslint-disable-next-line react/no-array-index-key
                   return <OnboardingBlock key={key} mode={mode} {...block} />;
                 })
               }

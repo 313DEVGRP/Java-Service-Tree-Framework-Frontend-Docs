@@ -1,3 +1,5 @@
+import { useMutateQueryResource } from '@affine/core/hooks/use-mutation';
+import { useQueryImmutable } from '@affine/core/hooks/use-query';
 import type { GetCurrentUserFeaturesQuery } from '@affine/graphql';
 import {
   adminServerConfigQuery,
@@ -5,34 +7,23 @@ import {
   getCurrentUserFeaturesQuery,
 } from '@affine/graphql';
 
-import { useMutateQueryResource } from '../use-mutation';
-import { useQuery } from '../use-query';
-
 export const useServerConfig = () => {
-  const { data } = useQuery({
+  const { data } = useQueryImmutable({
     query: adminServerConfigQuery,
   });
 
   return data.serverConfig;
 };
 
-export const useRevalidateServerConfig = () => {
-  const revalidate = useMutateQueryResource();
-
-  return () => {
-    return revalidate(adminServerConfigQuery);
-  };
-};
-
 export const useRevalidateCurrentUser = () => {
   const revalidate = useMutateQueryResource();
 
   return () => {
-    return revalidate(getCurrentUserFeaturesQuery);
+    revalidate(getCurrentUserFeaturesQuery);
   };
 };
 export const useCurrentUser = () => {
-  const { data } = useQuery({
+  const { data } = useQueryImmutable({
     query: getCurrentUserFeaturesQuery,
   });
   return data.currentUser;

@@ -1,18 +1,14 @@
 import { ConfirmModal } from '@affine/component/ui/modal';
-import { openQuotaModalAtom } from '@affine/core/components/atoms';
+import { openQuotaModalAtom, openSettingModalAtom } from '@affine/core/atoms';
+import { track } from '@affine/core/mixpanel';
 import { UserQuotaService } from '@affine/core/modules/cloud';
-import { GlobalDialogService } from '@affine/core/modules/dialogs';
 import { WorkspacePermissionService } from '@affine/core/modules/permissions';
 import { WorkspaceQuotaService } from '@affine/core/modules/quota';
-import { WorkspaceService } from '@affine/core/modules/workspace';
-import { type I18nString, useI18n } from '@affine/i18n';
-import { track } from '@affine/track';
-import { useLiveData, useService } from '@toeverything/infra';
-import { useAtom } from 'jotai';
+import { useI18n } from '@affine/i18n';
+import { useLiveData, useService, WorkspaceService } from '@toeverything/infra';
+import bytes from 'bytes';
+import { useAtom, useSetAtom } from 'jotai';
 import { useCallback, useEffect, useMemo } from 'react';
-
-import { useAsyncCallback } from '../../hooks/affine-async-hooks';
-import * as styles from './cloud-quota-modal.css';
 
 export const CloudQuotaModal = () => {
   const t = useI18n();
@@ -42,94 +38,78 @@ export const CloudQuotaModal = () => {
     )
   );
 
-  const globalDialogService = useService(GlobalDialogService);
+  const isFreePlanOwner = useMemo(() => {
+    return isOwner && userQuota?.name === 'free';
+  }, [isOwner, userQuota]);
+
+  const setSettingModalAtom = useSetAtom(openSettingModalAtom);
   const handleUpgradeConfirm = useCallback(() => {
-    globalDialogService.open('setting', {
+    setSettingModalAtom({
+      open: true,
       activeTab: 'plans',
       scrollAnchor: 'cloudPricingPlan',
     });
 
     track.$.paywall.storage.viewPlans();
     setOpen(false);
-  }, [globalDialogService, setOpen]);
+  }, [setOpen, setSettingModalAtom]);
 
   const description = useMemo(() => {
-    if (userQuota && isOwner) {
-      return <OwnerDescription quota={userQuota.blobLimit} />;
+    if (userQuota && isFreePlanOwner) {
+      return t['com.arms.payment.blob-limit.description.owner.free']({
+        planName: userQuota.name,
+        currentQuota: userQuota.blobLimit,
+        upgradeQuota: '100MB',
+      });
+    }
+    if (isOwner && userQuota && userQuota.name.toLowerCase() === 'pro') {
+      return t['com.arms.payment.blob-limit.description.owner.pro']({
+        planName: userQuota.name,
+        quota: userQuota.blobLimit,
+      });
     }
     if (workspaceQuota) {
-      return t['com.affine.payment.blob-limit.description.member']({
+      return t['com.arms.payment.blob-limit.description.member']({
         quota: workspaceQuota.humanReadable.blobLimit,
       });
     } else {
       // loading
       return null;
     }
-  }, [userQuota, isOwner, workspaceQuota, t]);
-
-  const onAbortLargeBlob = useAsyncCallback(
-    async (blob: Blob) => {
-      // wait for quota revalidation
-      await workspaceQuotaService.quota.waitForRevalidation();
-      if (
-        blob.size > (workspaceQuotaService.quota.quota$.value?.blobLimit ?? 0)
-      ) {
-        setOpen(true);
-      }
-    },
-    [setOpen, workspaceQuotaService]
-  );
+  }, [userQuota, isFreePlanOwner, isOwner, workspaceQuota, t]);
 
   useEffect(() => {
     if (!workspaceQuota) {
       return;
     }
+    currentWorkspace.engine.blob.singleBlobSizeLimit = bytes.parse(
+      workspaceQuota.blobLimit.toString()
+    );
 
-    currentWorkspace.engine.blob.singleBlobSizeLimit = workspaceQuota.blobLimit;
-
-    const disposable =
-      currentWorkspace.engine.blob.onAbortLargeBlob(onAbortLargeBlob);
+    const disposable = currentWorkspace.engine.blob.onAbortLargeBlob.on(() => {
+      setOpen(true);
+    });
     return () => {
-      disposable();
+      disposable?.dispose();
     };
-  }, [currentWorkspace.engine.blob, onAbortLargeBlob, workspaceQuota]);
+  }, [currentWorkspace.engine.blob, setOpen, workspaceQuota]);
 
   return (
     <ConfirmModal
       open={open}
-      title={t['com.affine.payment.blob-limit.title']()}
+      title={t['com.arms.payment.blob-limit.title']()}
       onOpenChange={setOpen}
       description={description}
+      cancelButtonOptions={{
+        hidden: !isFreePlanOwner,
+      }}
       onConfirm={handleUpgradeConfirm}
-      confirmText={t['com.affine.payment.upgrade']()}
+      confirmText={
+        isFreePlanOwner ? t['com.arms.payment.upgrade']() : t['Got it']()
+      }
       confirmButtonOptions={{
         variant: 'primary',
       }}
     />
-  );
-};
-
-const tips: I18nString[] = [
-  'com.affine.payment.blob-limit.description.owner.tips-1',
-  'com.affine.payment.blob-limit.description.owner.tips-2',
-  'com.affine.payment.blob-limit.description.owner.tips-3',
-];
-
-const OwnerDescription = ({ quota }: { quota: string }) => {
-  const t = useI18n();
-  return (
-    <div>
-      {t['com.affine.payment.blob-limit.description.owner']({
-        quota: quota,
-      })}
-      <ul className={styles.ulStyle}>
-        {tips.map((tip, index) => (
-          <li className={styles.liStyle} key={index}>
-            <div className={styles.prefixDot} />
-            {t.t(tip)}
-          </li>
-        ))}
-      </ul>
-    </div>
   );
 };

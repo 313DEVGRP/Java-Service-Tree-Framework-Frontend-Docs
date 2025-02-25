@@ -11,7 +11,7 @@ import { highlighter } from '../utils/highlighter';
 const group = {
   id: 'collections',
   label: {
-    i18nKey: 'com.affine.cmdk.affine.category.affine.collections',
+    key: 'com.arms.cmdk.affine.category.affine.collections',
   },
   score: 10,
 } as QuickSearchGroup;
@@ -60,7 +60,7 @@ export class CollectionsQuickSearchSession
           label: {
             title: (highlighter(item.name, '<b>', '</b>', titleMatches ?? []) ??
               item.name) || {
-              i18nKey: 'Untitled',
+              key: 'Untitled',
             },
           },
           group,

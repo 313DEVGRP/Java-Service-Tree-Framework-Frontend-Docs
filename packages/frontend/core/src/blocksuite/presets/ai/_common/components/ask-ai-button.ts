@@ -1,31 +1,44 @@
 import './ask-ai-panel';
 
-import { type EditorHost } from '@blocksuite/affine/block-std';
+import { type EditorHost, WithDisposable } from '@blocksuite/block-std';
 import {
   type AIItemGroupConfig,
-  createLitPortal,
+  AIStarIcon,
   EdgelessRootService,
-  HoverController,
-} from '@blocksuite/affine/blocks';
-import { WithDisposable } from '@blocksuite/affine/global/utils';
+} from '@blocksuite/blocks';
+import { createLitPortal, HoverController } from '@blocksuite/blocks';
+import { assertExists } from '@blocksuite/global/utils';
 import { flip, offset } from '@floating-ui/dom';
 import { css, html, LitElement, nothing } from 'lit';
-import { property, query } from 'lit/decorators.js';
+import { customElement, property, query } from 'lit/decorators.js';
 import { ref } from 'lit/directives/ref.js';
 import { styleMap } from 'lit/directives/style-map.js';
 
 import { getRootService } from '../../utils/selection-utils';
-import type { ButtonSize } from './ask-ai-icon';
 
+type buttonSize = 'small' | 'middle' | 'large';
 type toggleType = 'hover' | 'click';
 
+const buttonWidthMap: Record<buttonSize, string> = {
+  small: '72px',
+  middle: '76px',
+  large: '82px',
+};
+
+const buttonHeightMap: Record<buttonSize, string> = {
+  small: '24px',
+  middle: '32px',
+  large: '32px',
+};
+
 export type AskAIButtonOptions = {
-  size: ButtonSize;
+  size: buttonSize;
   backgroundColor?: string;
   boxShadow?: string;
   panelWidth?: number;
 };
 
+@customElement('ask-ai-button')
 export class AskAIButton extends WithDisposable(LitElement) {
   get _edgeless() {
     const rootService = getRootService(this.host);
@@ -39,7 +52,39 @@ export class AskAIButton extends WithDisposable(LitElement) {
     .ask-ai-button {
       border-radius: 4px;
       position: relative;
-      user-select: none;
+    }
+
+    .ask-ai-icon-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--affine-brand-color);
+      font-size: var(--affine-font-sm);
+      font-weight: 500;
+    }
+
+    .ask-ai-icon-button.small {
+      font-size: var(--affine-font-xs);
+      svg {
+        scale: 0.8;
+        margin-right: 2px;
+      }
+    }
+
+    .ask-ai-icon-button.large {
+      font-size: var(--affine-font-md);
+      svg {
+        scale: 1.2;
+      }
+    }
+
+    .ask-ai-icon-button span {
+      line-height: 22px;
+    }
+
+    .ask-ai-icon-button svg {
+      margin-right: 4px;
+      color: var(--affine-brand-color);
     }
   `;
 
@@ -65,10 +110,7 @@ export class AskAIButton extends WithDisposable(LitElement) {
         },
       };
     },
-    {
-      allowMultiple: true,
-      enterDelay: 100,
-    }
+    { allowMultiple: true }
   );
 
   @property({ attribute: false })
@@ -82,7 +124,7 @@ export class AskAIButton extends WithDisposable(LitElement) {
 
   @property({ attribute: false })
   accessor options: AskAIButtonOptions = {
-    size: 'small',
+    size: 'middle',
     backgroundColor: undefined,
     boxShadow: undefined,
     panelWidth: 330,
@@ -100,16 +142,13 @@ export class AskAIButton extends WithDisposable(LitElement) {
       return;
     }
 
-    if (!this._askAIButton) {
-      return;
-    }
-
     if (this._abortController) {
       this._clearAbortController();
       return;
     }
 
     this._abortController = new AbortController();
+    assertExists(this._askAIButton);
     const panelMinWidth = this.options.panelWidth || 330;
     createLitPortal({
       template: html`<ask-ai-panel
@@ -135,7 +174,7 @@ export class AskAIButton extends WithDisposable(LitElement) {
   }
 
   override render() {
-    const { size, backgroundColor, boxShadow } = this.options;
+    const { size = 'small', backgroundColor, boxShadow } = this.options;
     const { toggleType } = this;
     const buttonStyles = styleMap({
       backgroundColor: backgroundColor || 'transparent',
@@ -147,7 +186,13 @@ export class AskAIButton extends WithDisposable(LitElement) {
       ${toggleType === 'hover' ? ref(this._whenHover.setReference) : nothing}
       @click=${this._toggleAIPanel}
     >
-      <ask-ai-icon .size=${size}></ask-ai-icon>
+      <icon-button
+        class="ask-ai-icon-button ${size}"
+        width=${buttonWidthMap[size]}
+        height=${buttonHeightMap[size]}
+      >
+        ${AIStarIcon} <span>Ask AI</span></icon-button
+      >
     </div>`;
   }
 }

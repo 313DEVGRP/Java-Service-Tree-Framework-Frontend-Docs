@@ -8,10 +8,6 @@ query listHistory(
     histories(guid: $pageDocId, take: $take, before: $before) {
       id
       timestamp
-      editor {
-        name
-        avatarUrl
-      }
     }
   }
 }

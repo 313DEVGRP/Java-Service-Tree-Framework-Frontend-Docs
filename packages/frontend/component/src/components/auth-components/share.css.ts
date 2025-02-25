@@ -42,7 +42,6 @@ export const formHint = style({
   fontSize: cssVar('fontSm'),
   position: 'absolute',
   bottom: '4px',
-  height: '22px',
   left: 0,
   lineHeight: '22px',
   selectors: {
@@ -159,33 +158,14 @@ export const authPageContainer = style({
 globalStyle(`${authPageContainer} .wrapper`, {
   display: 'flex',
   alignItems: 'center',
-  width: '100%',
-  justifyContent: 'center',
-  overflow: 'hidden',
   '@media': {
     'screen and (max-width: 1024px)': {
       flexDirection: 'column',
-      justifyContent: 'flex-start',
     },
   },
 });
 globalStyle(`${authPageContainer} .content`, {
-  maxWidth: '810px',
-  '@media': {
-    'screen and (min-width: 1024px)': {
-      marginLeft: '200px',
-      minWidth: '500px',
-      marginRight: '60px',
-      flexGrow: 1,
-      flexShrink: 0,
-      flexBasis: 0,
-    },
-    'screen and (max-width: 1024px)': {
-      maxWidth: '600px',
-      width: '100%',
-      margin: 'auto',
-    },
-  },
+  maxWidth: '700px',
 });
 globalStyle(`${authPageContainer} .title`, {
   fontSize: cssVar('fontTitle'),
@@ -221,9 +201,4 @@ export const hideInSmallScreen = style({
       display: 'none',
     },
   },
-});
-
-export const illustration = style({
-  flexShrink: 0,
-  width: '670px',
 });

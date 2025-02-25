@@ -1,27 +1,22 @@
 import type {
   AIItemGroupConfig,
-  DocMode,
   EdgelessCopilotWidget,
   EdgelessElementToolbarWidget,
   EdgelessRootBlockComponent,
-} from '@blocksuite/affine/blocks';
-import { EdgelessCopilotToolbarEntry } from '@blocksuite/affine/blocks';
-import { noop } from '@blocksuite/affine/global/utils';
+} from '@blocksuite/blocks';
+import { EdgelessCopilotToolbarEntry } from '@blocksuite/blocks';
+import { noop } from '@blocksuite/global/utils';
 import { html } from 'lit';
 
-import { AIProvider } from '../../provider';
-import { getAIPanelWidget } from '../../utils/ai-widgets';
-import { getEdgelessCopilotWidget } from '../../utils/edgeless';
-import { extractContext } from '../../utils/extract';
-import { edgelessAIGroups } from './actions-config';
+import { edgelessActionGroups } from './actions-config';
 
 noop(EdgelessCopilotToolbarEntry);
 
 export function setupEdgelessCopilot(widget: EdgelessCopilotWidget) {
-  widget.groups = edgelessAIGroups;
+  widget.groups = edgelessActionGroups;
 }
 
-export function setupEdgelessElementToolbarAIEntry(
+export function setupEdgelessElementToolbarEntry(
   widget: EdgelessElementToolbarWidget
 ) {
   widget.registerEntry({
@@ -30,9 +25,9 @@ export function setupEdgelessElementToolbarAIEntry(
     },
     render: (edgeless: EdgelessRootBlockComponent) => {
       const chain = edgeless.service.std.command.chain();
-      const filteredGroups = edgelessAIGroups.reduce((pre, group) => {
+      const filteredGroups = edgelessActionGroups.reduce((pre, group) => {
         const filtered = group.items.filter(item =>
-          item.showWhen?.(chain, 'edgeless' as DocMode, edgeless.host)
+          item.showWhen?.(chain, 'edgeless', edgeless.host)
         );
 
         if (filtered.length > 0) pre.push({ ...group, items: filtered });
@@ -42,40 +37,10 @@ export function setupEdgelessElementToolbarAIEntry(
 
       if (filteredGroups.every(group => group.items.length === 0)) return null;
 
-      const handler = () => {
-        const aiPanel = getAIPanelWidget(edgeless.host);
-        if (aiPanel.config) {
-          aiPanel.config.generateAnswer = ({ finish, input }) => {
-            finish('success');
-            aiPanel.discard();
-            AIProvider.slots.requestOpenWithChat.emit({ host: edgeless.host });
-            extractContext(edgeless.host)
-              .then(context => {
-                AIProvider.slots.requestSendWithChat.emit({
-                  input,
-                  context,
-                  host: edgeless.host,
-                });
-              })
-              .catch(console.error);
-          };
-          aiPanel.config.inputCallback = text => {
-            const copilotWidget = getEdgelessCopilotWidget(edgeless.host);
-            const panel = copilotWidget.shadowRoot?.querySelector(
-              'edgeless-copilot-panel'
-            );
-            if (panel instanceof HTMLElement) {
-              panel.style.visibility = text ? 'hidden' : 'visible';
-            }
-          };
-        }
-      };
-
       return html`<edgeless-copilot-toolbar-entry
         .edgeless=${edgeless}
         .host=${edgeless.host}
-        .groups=${edgelessAIGroups}
-        .onClick=${handler}
+        .groups=${edgelessActionGroups}
       ></edgeless-copilot-toolbar-entry>`;
     },
   });

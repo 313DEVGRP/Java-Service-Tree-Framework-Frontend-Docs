@@ -20,8 +20,3 @@ export const wrapper = style({
 export const largeButtonEffect = style({
   boxShadow: `${cssVar('largeButtonEffect')} !important`,
 });
-
-export const illustration = style({
-  maxWidth: '100%',
-  width: '670px',
-});

@@ -1,8 +1,5 @@
-import {
-  Entity,
-  generateFractionalIndexingKeyBetween,
-  LiveData,
-} from '@toeverything/infra';
+import { generateFractionalIndexingKeyBetween } from '@affine/core/utils';
+import { Entity, LiveData } from '@toeverything/infra';
 import { map, of, switchMap } from 'rxjs';
 
 import type { FolderStore } from '../stores/folder';
@@ -14,6 +11,7 @@ export class FolderNode extends Entity<{
 
   info$ = LiveData.from<{
     data: string;
+    // eslint-disable-next-line @typescript-eslint/ban-types
     type: (string & {}) | 'folder' | 'doc' | 'tag' | 'collection';
     index: string;
     id: string;

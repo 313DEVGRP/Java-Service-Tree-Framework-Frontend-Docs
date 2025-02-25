@@ -55,7 +55,7 @@ export abstract class FrameworkProvider {
   getOptional = <T>(
     identifier: GeneralIdentifier<T>,
     options?: ResolveOptions
-  ): T | undefined => {
+  ): T | null => {
     return this.getRaw(parseIdentifier(identifier), {
       ...options,
       optional: true,
@@ -122,15 +122,13 @@ export class ComponentCachePool {
           try {
             i[Symbol.dispose]();
           } catch (err) {
-            // make a uncaught exception
-            setTimeout(() => {
+            setImmediate(() => {
               throw err;
-            }, 0);
+            });
           }
         }
       }
     }
-    this.cache.clear();
   }
 
   [Symbol.dispose]() {
@@ -319,6 +317,5 @@ export class BasicFrameworkProvider extends FrameworkProvider {
     }
     this.disposed = true;
     this.cache.dispose();
-    this.eventBus.dispose();
   }
 }

@@ -4,6 +4,7 @@ import {
   IconButton,
   toast,
 } from '@affine/component';
+import { track } from '@affine/core/mixpanel';
 import { ExplorerTreeRoot } from '@affine/core/modules/explorer/views/tree';
 import {
   type FolderNode,
@@ -11,7 +12,6 @@ import {
 } from '@affine/core/modules/organize';
 import type { AffineDNDData } from '@affine/core/types/dnd';
 import { useI18n } from '@affine/i18n';
-import { track } from '@affine/track';
 import { PlusIcon } from '@blocksuite/icons/rc';
 import { useLiveData, useServices } from '@toeverything/infra';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -68,7 +68,7 @@ export const ExplorerOrganize = () => {
           );
           track.$.navigationPanel.organize.moveOrganizeItem({ type: 'folder' });
         } else {
-          toast(t['com.affine.rootAppSidebar.organize.root-folder-only']());
+          toast(t['com.arms.rootAppSidebar.organize.root-folder-only']());
         }
       } else {
         return; // not supported
@@ -86,7 +86,7 @@ export const ExplorerOrganize = () => {
       const entity = data.source.data.entity;
       if (!entity) return;
       const { type, id } = entity;
-      if (type !== 'doc' && type !== 'tag' && type !== 'collection') return;
+      if (type === 'folder') return;
 
       const folder = newFolder$.value;
       if (!folder) return;
@@ -106,14 +106,14 @@ export const ExplorerOrganize = () => {
   return (
     <CollapsibleSection
       name="organize"
-      title={t['com.affine.rootAppSidebar.organize']()}
+      title={t['com.arms.rootAppSidebar.organize']()}
       actions={
         <IconButton
           data-testid="explorer-bar-add-organize-button"
           onClick={handleCreateFolder}
           size="16"
           tooltip={t[
-            'com.affine.rootAppSidebar.explorer.organize-section-add-tooltip'
+            'com.arms.rootAppSidebar.explorer.organize-section-add-tooltip'
           ]()}
         >
           <PlusIcon />

@@ -1,14 +1,12 @@
-import { useDocMetaHelper } from '@affine/core/components/hooks/use-block-suite-page-meta';
-import { useDocCollectionPage } from '@affine/core/components/hooks/use-block-suite-workspace-page';
-import { FetchService, GraphQLService } from '@affine/core/modules/cloud';
-import { getAFFiNEWorkspaceSchema } from '@affine/core/modules/workspace';
+import { useDocMetaHelper } from '@affine/core/hooks/use-block-suite-page-meta';
+import { useDocCollectionPage } from '@affine/core/hooks/use-block-suite-workspace-page';
 import { DebugLogger } from '@affine/debug';
 import type { ListHistoryQuery } from '@affine/graphql';
 import { listHistoryQuery, recoverDocMutation } from '@affine/graphql';
 import { i18nTime } from '@affine/i18n';
-import { assertEquals } from '@blocksuite/affine/global/utils';
-import { DocCollection } from '@blocksuite/affine/store';
-import { useService } from '@toeverything/infra';
+import { assertEquals } from '@blocksuite/global/utils';
+import { DocCollection } from '@blocksuite/store';
+import { globalBlockSuiteSchema } from '@toeverything/infra';
 import { useEffect, useMemo } from 'react';
 import useSWRImmutable from 'swr/immutable';
 import {
@@ -22,8 +20,8 @@ import {
 import {
   useMutateQueryResource,
   useMutation,
-} from '../../../components/hooks/use-mutation';
-import { useQueryInfinite } from '../../../components/hooks/use-query';
+} from '../../../hooks/use-mutation';
+import { useQueryInfinite } from '../../../hooks/use-query';
 import { CloudBlobStorage } from '../../../modules/workspace-engine/impls/engine/blob-cloud';
 
 const logger = new DebugLogger('page-history');
@@ -70,8 +68,7 @@ export const useDocSnapshotList = (workspaceId: string, pageDocId: string) => {
 };
 
 const snapshotFetcher = async (
-  [fetchService, workspaceId, pageDocId, ts]: [
-    FetchService,
+  [workspaceId, pageDocId, ts]: [
     workspaceId: string,
     pageDocId: string,
     ts: string,
@@ -80,7 +77,7 @@ const snapshotFetcher = async (
   if (!ts) {
     return null;
   }
-  const res = await fetchService.fetch(
+  const res = await fetch(
     `/api/workspaces/${workspaceId}/docs/${pageDocId}/histories/${ts}`
   );
 
@@ -102,24 +99,18 @@ const snapshotFetcher = async (
 const docCollectionMap = new Map<string, DocCollection>();
 
 // assume the workspace is a cloud workspace since the history feature is only enabled for cloud workspace
-const getOrCreateShellWorkspace = (
-  workspaceId: string,
-  fetchService: FetchService,
-  graphQLService: GraphQLService
-) => {
+const getOrCreateShellWorkspace = (workspaceId: string) => {
   let docCollection = docCollectionMap.get(workspaceId);
   if (!docCollection) {
-    const blobStorage = new CloudBlobStorage(
-      workspaceId,
-      fetchService,
-      graphQLService
-    );
+    const blobStorage = new CloudBlobStorage(workspaceId);
     docCollection = new DocCollection({
       id: workspaceId,
       blobSources: {
         main: blobStorage,
       },
-      schema: getAFFiNEWorkspaceSchema(),
+      schema: globalBlockSuiteSchema,
+      disableBacklinkIndex: true,
+      disableSearchIndex: true,
     });
     docCollectionMap.set(workspaceId, docCollection);
     docCollection.doc.emit('sync', [true, docCollection.doc]);
@@ -133,10 +124,9 @@ export const usePageHistory = (
   pageDocId: string,
   ts?: string
 ) => {
-  const fetchService = useService(FetchService);
   // snapshot should be immutable. so we use swr immutable to disable revalidation
   const { data } = useSWRImmutable<ArrayBuffer | null>(
-    [fetchService, workspaceId, pageDocId, ts],
+    [workspaceId, pageDocId, ts],
     {
       fetcher: snapshotFetcher,
       suspense: false,
@@ -151,19 +141,13 @@ export const useSnapshotPage = (
   pageDocId: string,
   ts?: string
 ) => {
-  const fetchService = useService(FetchService);
-  const graphQLService = useService(GraphQLService);
   const snapshot = usePageHistory(docCollection.id, pageDocId, ts);
   const page = useMemo(() => {
     if (!ts) {
       return;
     }
     const pageId = pageDocId + '-' + ts;
-    const historyShellWorkspace = getOrCreateShellWorkspace(
-      docCollection.id,
-      fetchService,
-      graphQLService
-    );
+    const historyShellWorkspace = getOrCreateShellWorkspace(docCollection.id);
     let page = historyShellWorkspace.getDoc(pageId);
     if (!page && snapshot) {
       page = historyShellWorkspace.createDoc({
@@ -173,22 +157,19 @@ export const useSnapshotPage = (
       const spaceDoc = page.spaceDoc;
       page.load(() => {
         applyUpdate(spaceDoc, new Uint8Array(snapshot));
+        historyShellWorkspace.schema.upgradeDoc(0, {}, spaceDoc);
       }); // must load before applyUpdate
     }
     return page ?? undefined;
-  }, [ts, pageDocId, docCollection.id, fetchService, graphQLService, snapshot]);
+  }, [pageDocId, snapshot, ts, docCollection]);
 
   useEffect(() => {
-    const historyShellWorkspace = getOrCreateShellWorkspace(
-      docCollection.id,
-      fetchService,
-      graphQLService
-    );
+    const historyShellWorkspace = getOrCreateShellWorkspace(docCollection.id);
     // apply the rootdoc's update to the current workspace
     // this makes sure the page reference links are not deleted ones in the preview
     const update = encodeStateAsUpdate(docCollection.doc);
     applyUpdate(historyShellWorkspace.doc, update);
-  }, [docCollection, fetchService, graphQLService]);
+  }, [docCollection]);
 
   return page;
 };
@@ -230,7 +211,6 @@ export function revertUpdate(
     snapshotStateVector
   );
   const undoManager = new UndoManager(
-    // oxlint-disable array-callback-return
     [...snapshotDoc.share.keys()].map(key => {
       const type = getMetadata(key);
       if (type === 'Text') {
@@ -240,7 +220,6 @@ export function revertUpdate(
       } else if (type === 'Array') {
         return snapshotDoc.getArray(key);
       }
-
       throw new Error('Unknown type');
     })
   );
@@ -262,7 +241,7 @@ export const useRestorePage = (
   const { trigger: recover, isMutating } = useMutation({
     mutation: recoverDocMutation,
   });
-  const { getDocMeta, setDocTitle } = useDocMetaHelper();
+  const { getDocMeta, setDocTitle } = useDocMetaHelper(docCollection);
 
   const onRestore = useMemo(() => {
     return async (version: string, update: Uint8Array) => {

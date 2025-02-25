@@ -31,15 +31,13 @@ export class DataStruct {
 
   constructor(schema: Schema) {
     for (const [key, type] of Object.entries(schema)) {
-      const typeInfo = typeof type === 'string' ? { type } : type;
-
-      if (typeInfo.type === 'String') {
+      if (type === 'String') {
         this.invertedIndex.set(key, new StringInvertedIndex(key));
-      } else if (typeInfo.type === 'Integer') {
+      } else if (type === 'Integer') {
         this.invertedIndex.set(key, new IntegerInvertedIndex(key));
-      } else if (typeInfo.type === 'FullText') {
+      } else if (type === 'FullText') {
         this.invertedIndex.set(key, new FullTextInvertedIndex(key));
-      } else if (typeInfo.type === 'Boolean') {
+      } else if (type === 'Boolean') {
         this.invertedIndex.set(key, new BooleanInvertedIndex(key));
       } else {
         throw new Error(`Field type '${type}' not supported`);
@@ -47,22 +45,16 @@ export class DataStruct {
     }
   }
 
-  getAll(ids?: string[]): Document[] {
-    if (ids) {
-      return ids
-        .map(id => {
-          const nid = this.idMap.get(id);
-          if (nid === undefined) {
-            return undefined;
-          }
-          return Document.from(id, this.records[nid].data);
-        })
-        .filter((v): v is Document => v !== undefined);
-    } else {
-      return this.records
-        .filter(record => !record.deleted)
-        .map(record => Document.from(record.id, record.data));
-    }
+  getAll(ids: string[]): Document[] {
+    return ids
+      .map(id => {
+        const nid = this.idMap.get(id);
+        if (nid === undefined) {
+          return undefined;
+        }
+        return Document.from(id, this.records[nid].data);
+      })
+      .filter((v): v is Document => v !== undefined);
   }
 
   insert(document: Document) {

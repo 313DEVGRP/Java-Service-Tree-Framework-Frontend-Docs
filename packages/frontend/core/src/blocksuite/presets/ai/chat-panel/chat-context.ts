@@ -1,4 +1,4 @@
-import type { AIError } from '@blocksuite/affine/blocks';
+import type { AIError } from '@blocksuite/blocks';
 
 export type ChatMessage = {
   id: string;

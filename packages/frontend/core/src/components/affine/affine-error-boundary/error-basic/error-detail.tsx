@@ -1,15 +1,13 @@
-import { Scrollable, ThemedImg } from '@affine/component';
-import { useAsyncCallback } from '@affine/core/components/hooks/affine-async-hooks';
+import { Button } from '@affine/component/ui/button';
+import { useAsyncCallback } from '@affine/core/hooks/affine-async-hooks';
 import { Trans, useI18n } from '@affine/i18n';
-import { ArrowDownSmallIcon } from '@blocksuite/icons/rc';
+import { useTheme } from 'next-themes';
 import type { FC, PropsWithChildren, ReactNode } from 'react';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 
-import { ActionButton } from '../../empty/action-button';
-import imageUrlForDark404 from '../error-assets/404.dark.png';
-import imageUrlForLight404 from '../error-assets/404.light.png';
-import imageUrlForDark500 from '../error-assets/500.dark.png';
-import imageUrlForLight500 from '../error-assets/500.light.png';
+import imageUrlFor404 from '../error-assets/404-status.assets.svg';
+import imageUrlForDark500 from '../error-assets/dark-500-status.assets.svg';
+import imageUrlForLight500 from '../error-assets/light-500-status.assets.svg';
 import * as styles from './error-detail.css';
 
 export enum ErrorStatus {
@@ -19,20 +17,21 @@ export enum ErrorStatus {
 
 export interface ErrorDetailProps extends PropsWithChildren {
   status?: ErrorStatus;
+  direction?: 'column' | 'row';
   title: string;
   description: ReactNode | Array<ReactNode>;
   buttonText?: string;
   onButtonClick?: () => void | Promise<void>;
   resetError?: () => void;
-  error?: Error;
+  withoutImage?: boolean;
 }
 
 const imageMap = new Map([
   [
     ErrorStatus.NotFound,
     {
-      light: imageUrlForLight404,
-      dark: imageUrlForDark404,
+      light: imageUrlFor404, // TODO(@catsjuice): Ask designer for dark/light mode image.
+      dark: imageUrlFor404,
     },
   ],
   [
@@ -50,19 +49,16 @@ const imageMap = new Map([
 export const ErrorDetail: FC<ErrorDetailProps> = props => {
   const {
     status = ErrorStatus.Unexpected,
+    direction = 'row',
     description,
     onButtonClick,
     resetError,
-    error,
+    withoutImage,
   } = props;
   const descriptions = Array.isArray(description) ? description : [description];
   const [isBtnLoading, setBtnLoading] = useState(false);
-  const [showStack, setShowStack] = useState(false);
   const t = useI18n();
-
-  const onToggleStack = useCallback(() => {
-    setShowStack(!showStack);
-  }, [showStack]);
+  const { resolvedTheme } = useTheme();
 
   const onBtnClick = useAsyncCallback(async () => {
     try {
@@ -74,63 +70,36 @@ export const ErrorDetail: FC<ErrorDetailProps> = props => {
     }
   }, [onButtonClick, resetError]);
 
-  const desc = descriptions.map((item, i) => (
-    // eslint-disable-next-line react/no-array-index-key
-    <p key={i} className={styles.text}>
-      {item}
-    </p>
-  ));
-
   return (
-    <div className={styles.errorLayout}>
-      <div className={styles.errorContainer} data-show-stack={showStack}>
-        <ThemedImg
-          style={{ width: '300px' }}
-          draggable={false}
-          className={styles.illustration}
-          lightSrc={imageMap.get(status)?.light || imageUrlForLight404}
-          darkSrc={imageMap.get(status)?.dark || imageUrlForDark404}
-        />
-
-        <div className={styles.label}>
-          <div className={styles.text}>{props.title}</div>
-          <div className={styles.text}>{desc}</div>
-        </div>
-        <Scrollable.Root
-          className={styles.scrollArea}
-          data-show-stack={showStack}
-        >
-          <Scrollable.Viewport>
-            {error?.stack || 'No detailed error stack is provided.'}
-          </Scrollable.Viewport>
-          <Scrollable.Scrollbar />
-        </Scrollable.Root>
-
-        <div className={styles.actionContainer}>
-          {error?.stack ? (
-            <ActionButton
-              onClick={onToggleStack}
-              className={styles.actionButton}
-            >
-              <div className={styles.actionContent}>
-                <span>{t['com.affine.error.hide-error']()}</span>
-                <ArrowDownSmallIcon
-                  data-show-stack={showStack}
-                  className={styles.arrowIcon}
-                />
-              </div>
-            </ActionButton>
-          ) : null}
-          <ActionButton
-            onClick={onBtnClick}
-            className={styles.actionButton}
-            loading={isBtnLoading}
+    <div className={styles.errorLayout} style={{ flexDirection: direction }}>
+      <div className={styles.errorDetailStyle}>
+        <h1 className={styles.errorTitle}>{props.title}</h1>
+        {descriptions.map((item, i) => (
+          <p key={i} className={styles.errorDescription}>
+            {item}
+          </p>
+        ))}
+        <div className={styles.errorFooter}>
+          <Button
             variant="primary"
+            onClick={onBtnClick}
+            loading={isBtnLoading}
+            size="extraLarge"
           >
-            {props.buttonText ?? t['com.affine.error.reload']()}
-          </ActionButton>
+            {props.buttonText ?? t['com.arms.error.retry']()}
+          </Button>
         </div>
       </div>
+      {withoutImage ? null : (
+        <div
+          className={styles.errorImage}
+          style={{
+            backgroundImage: `url(${
+              imageMap.get(status)?.[resolvedTheme as 'light' | 'dark']
+            })`,
+          }}
+        />
+      )}
     </div>
   );
 };

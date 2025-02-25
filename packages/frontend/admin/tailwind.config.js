@@ -1,8 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ['class'],
-  // TODO(@forehalo): we are not running webpack in admin dir
-  content: ['./packages/frontend/admin/src/**/*.{ts,tsx}'],
+  content: ['./src/**/*.{ts,tsx}'],
   prefix: '',
   theme: {
     container: {

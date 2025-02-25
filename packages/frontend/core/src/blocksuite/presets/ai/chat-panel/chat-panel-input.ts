@@ -1,8 +1,9 @@
-import type { EditorHost } from '@blocksuite/affine/block-std';
-import { type AIError, openFileOrFiles } from '@blocksuite/affine/blocks';
-import { assertExists, WithDisposable } from '@blocksuite/affine/global/utils';
+import type { EditorHost } from '@blocksuite/block-std';
+import { WithDisposable } from '@blocksuite/block-std';
+import { type AIError, openFileOrFiles } from '@blocksuite/blocks';
+import { assertExists } from '@blocksuite/global/utils';
 import { css, html, LitElement, nothing } from 'lit';
-import { property, query, state } from 'lit/decorators.js';
+import { customElement, property, query, state } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
 
 import {
@@ -24,6 +25,7 @@ function getFirstTwoLines(text: string) {
   return lines.slice(0, 2);
 }
 
+@customElement('chat-panel-input')
 export class ChatPanelInput extends WithDisposable(LitElement) {
   static override styles = css`
     .chat-panel-input {
@@ -296,22 +298,6 @@ export class ChatPanelInput extends WithDisposable(LitElement) {
     `;
   }
 
-  override connectedCallback() {
-    super.connectedCallback();
-
-    this._disposables.add(
-      AIProvider.slots.requestSendWithChat.on(
-        async ({ input, context, host }) => {
-          if (this.host === host) {
-            context && this.updateContext(context);
-            await this.updateComplete;
-            await this.send(input);
-          }
-        }
-      )
-    );
-  }
-
   protected override render() {
     const { images, status } = this.chatContextValue;
     const hasImages = images.length > 0;
@@ -364,7 +350,8 @@ export class ChatPanelInput extends WithDisposable(LitElement) {
           }}
           @keydown=${async (evt: KeyboardEvent) => {
             if (evt.key === 'Enter' && !evt.shiftKey && !evt.isComposing) {
-              this._onTextareaSend(evt);
+              evt.preventDefault();
+              await this.send();
             }
           }}
           @focus=${() => {
@@ -386,7 +373,6 @@ export class ChatPanelInput extends WithDisposable(LitElement) {
               }
             }
           }}
-          data-testid="chat-panel-input"
         ></textarea>
         <div class="chat-panel-input-actions">
           <div
@@ -394,7 +380,6 @@ export class ChatPanelInput extends WithDisposable(LitElement) {
             @click=${async () => {
               await this.cleanupHistories();
             }}
-            data-testid="chat-panel-clear"
           >
             ${ChatClearIcon}
           </div>
@@ -424,10 +409,9 @@ export class ChatPanelInput extends WithDisposable(LitElement) {
                 ${ChatAbortIcon}
               </div>`
             : html`<div
-                @click="${this._onTextareaSend}"
+                @click="${this.send}"
                 class="chat-panel-send"
                 aria-disabled=${this.isInputEmpty}
-                data-testid="chat-panel-send"
               >
                 ${ChatSendIcon}
               </div>`}
@@ -435,30 +419,19 @@ export class ChatPanelInput extends WithDisposable(LitElement) {
       </div>`;
   }
 
-  private readonly _onTextareaSend = (e: MouseEvent | KeyboardEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    const value = this.textarea.value.trim();
-    if (value.length === 0) return;
-
-    this.textarea.value = '';
-    this.isInputEmpty = true;
-    this.textarea.style.height = 'unset';
-
-    this.send(value).catch(console.error);
-  };
-
-  send = async (text: string) => {
+  send = async () => {
     const { status, markdown } = this.chatContextValue;
     if (status === 'loading' || status === 'transmitting') return;
 
+    const text = this.textarea.value;
     const { images } = this.chatContextValue;
     if (!text && images.length === 0) {
       return;
     }
     const { doc } = this.host;
-
+    this.textarea.value = '';
+    this.isInputEmpty = true;
+    this.textarea.style.height = 'unset';
     this.updateContext({
       images: [],
       status: 'loading',

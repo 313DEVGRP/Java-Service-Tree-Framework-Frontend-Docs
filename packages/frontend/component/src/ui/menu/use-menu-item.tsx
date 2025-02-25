@@ -1,63 +1,73 @@
 import { DoneIcon } from '@blocksuite/icons/rc';
 import clsx from 'clsx';
+import { useMemo } from 'react';
 
 import type { MenuItemProps } from './menu.types';
-import { mobileMenuItem } from './mobile/styles.css';
+import { MenuIcon } from './menu-icon';
 import * as styles from './styles.css';
 
-export const useMenuItem = <T extends MenuItemProps>({
+interface useMenuItemProps {
+  children: MenuItemProps['children'];
+  type: MenuItemProps['type'];
+  className: MenuItemProps['className'];
+  preFix: MenuItemProps['preFix'];
+  endFix: MenuItemProps['endFix'];
+  checked?: MenuItemProps['checked'];
+  selected?: MenuItemProps['selected'];
+  block?: MenuItemProps['block'];
+}
+
+export const useMenuItem = ({
   children: propsChildren,
   type = 'default',
   className: propsClassName,
-  prefix,
-  prefixIcon,
-  suffix,
-  suffixIcon,
+  preFix,
+  endFix,
   checked,
   selected,
   block,
-  ...otherProps
-}: T) => {
-  const className = clsx(
-    styles.menuItem,
-    {
-      danger: type === 'danger',
-      warning: type === 'warning',
-      checked,
-      selected,
-      block,
-      [mobileMenuItem]: BUILD_CONFIG.isMobileEdition,
-    },
-    propsClassName
+}: useMenuItemProps) => {
+  const className = useMemo(
+    () =>
+      clsx(
+        styles.menuItem,
+        {
+          danger: type === 'danger',
+          warning: type === 'warning',
+          checked,
+          selected,
+          block,
+        },
+        propsClassName
+      ),
+    [block, checked, propsClassName, selected, type]
   );
 
-  const children = (
-    <>
-      {prefix}
+  const children = useMemo(
+    () => (
+      <>
+        {preFix}
+        <span className={styles.menuSpan}>{propsChildren}</span>
+        {endFix}
 
-      {prefixIcon ? (
-        <div className={styles.menuItemIcon}>{prefixIcon}</div>
-      ) : null}
-
-      <span className={styles.menuSpan}>{propsChildren}</span>
-
-      {suffixIcon ? (
-        <div className={styles.menuItemIcon}>{suffixIcon}</div>
-      ) : null}
-
-      {suffix}
-
-      {checked || selected ? (
-        <div className={clsx(styles.menuItemIcon, 'selected')}>
-          <DoneIcon />
-        </div>
-      ) : null}
-    </>
+        {checked || selected ? (
+          <MenuIcon
+            position="end"
+            className={clsx({
+              selected,
+              checked,
+            })}
+          >
+            <DoneIcon />
+          </MenuIcon>
+        ) : null}
+      </>
+    ),
+    [checked, endFix, preFix, propsChildren, selected]
   );
 
   return {
     children,
     className,
-    otherProps,
   };
 };

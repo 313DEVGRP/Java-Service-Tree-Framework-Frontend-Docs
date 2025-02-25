@@ -2,19 +2,17 @@ import type {
   BlockSelection,
   EditorHost,
   TextSelection,
-} from '@blocksuite/affine/block-std';
-import {
-  type ImageSelection,
-  NotificationProvider,
-} from '@blocksuite/affine/blocks';
+} from '@blocksuite/block-std';
+import type { ImageSelection } from '@blocksuite/blocks';
 import { css, html, LitElement, nothing } from 'lit';
-import { property } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { repeat } from 'lit/directives/repeat.js';
 
 import { insertBelow } from '../../utils/editor-actions';
 import type { ChatAction } from '../chat-actions-handle';
 
+@customElement('chat-action-list')
 export class ChatActionList extends LitElement {
   static override styles = css`
     .actions-container {
@@ -59,6 +57,10 @@ export class ChatActionList extends LitElement {
 
   private get _selectionValue() {
     return this.host.selection.value;
+  }
+
+  private get _rootService() {
+    return this.host.spec.getService('affine:page');
   }
 
   private get _currentTextSelection(): TextSelection | undefined {
@@ -146,16 +148,13 @@ export class ChatActionList extends LitElement {
                     messageId
                   );
                   if (success) {
-                    this.host.std.getOptional(NotificationProvider)?.notify({
+                    this._rootService.notificationService?.notify({
                       title: action.toast,
                       accent: 'success',
                       onClose: function (): void {},
                     });
                   }
                 }}
-                data-testid="action-${action.title
-                  .toLowerCase()
-                  .replaceAll(' ', '-')}"
               >
                 ${action.title}
               </div>

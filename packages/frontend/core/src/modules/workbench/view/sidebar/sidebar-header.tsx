@@ -4,6 +4,7 @@ import { RightSidebarIcon } from '@blocksuite/icons/rc';
 import * as styles from './sidebar-header.css';
 
 export type HeaderProps = {
+  floating: boolean;
   onToggle?: () => void;
   children?: React.ReactNode;
 };
@@ -12,13 +13,20 @@ function Container({
   children,
   style,
   className,
+  floating,
 }: {
   children: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
+  floating?: boolean;
 }) {
   return (
-    <div data-testid="header" style={style} className={className}>
+    <div
+      data-testid="header"
+      style={style}
+      className={className}
+      data-sidebar-floating={floating}
+    >
       {children}
     </div>
   );
@@ -32,11 +40,11 @@ const ToggleButton = ({ onToggle }: { onToggle?: () => void }) => {
   );
 };
 
-export const Header = ({ children, onToggle }: HeaderProps) => {
+export const Header = ({ floating, children, onToggle }: HeaderProps) => {
   return (
-    <Container className={styles.header}>
+    <Container className={styles.header} floating={floating}>
       {children}
-      {!BUILD_CONFIG.isElectron && (
+      {!environment.isDesktop && (
         <>
           <div className={styles.spacer} />
           <ToggleButton onToggle={onToggle} />

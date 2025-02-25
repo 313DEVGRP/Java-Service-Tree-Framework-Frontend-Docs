@@ -1,24 +1,22 @@
 import { Button } from '@affine/component/ui/button';
-import { EditorService } from '@affine/core/modules/editor';
 import { useI18n } from '@affine/i18n';
 import { PresentationIcon } from '@blocksuite/icons/rc';
-import { useLiveData, useService } from '@toeverything/infra';
 
+import { usePresent } from '../../blocksuite/block-suite-header/present/use-present';
 import * as styles from './styles.css';
 
 export const PresentButton = () => {
   const t = useI18n();
-  const editorService = useService(EditorService);
-  const isPresent = useLiveData(editorService.editor.isPresenting$);
+  const { isPresent, handlePresent } = usePresent();
 
   return (
     <Button
       prefix={<PresentationIcon />}
       className={styles.presentButton}
-      onClick={() => editorService.editor.togglePresentation()}
+      onClick={() => handlePresent()}
       disabled={isPresent}
     >
-      {t['com.affine.share-page.header.present']()}
+      {t['com.arms.share-page.header.present']()}
     </Button>
   );
 };

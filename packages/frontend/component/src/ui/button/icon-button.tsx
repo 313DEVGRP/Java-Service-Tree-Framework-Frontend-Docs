@@ -1,11 +1,6 @@
 import { assignInlineVars } from '@vanilla-extract/dynamic';
 import clsx from 'clsx';
-import {
-  type CSSProperties,
-  forwardRef,
-  type ReactElement,
-  type SVGAttributes,
-} from 'react';
+import { type CSSProperties, forwardRef, type ReactElement } from 'react';
 
 import { Button, type ButtonProps } from './button';
 import { iconButton, iconSizeVar } from './button.css';
@@ -25,9 +20,9 @@ export interface IconButtonProps
     | 'suffixStyle'
   > {
   /**  Icon element */
-  children?: ReactElement<SVGAttributes<SVGElement>>;
+  children?: ReactElement;
   /** Same as `children`, compatibility of the old API */
-  icon?: ReactElement<SVGAttributes<SVGElement>>;
+  icon?: ReactElement;
   variant?: 'plain' | 'solid' | 'danger' | 'custom';
   /**
    * Use preset size,

@@ -4,7 +4,6 @@ import { ExplorerSection } from '../entities/explore-section';
 import type { CollapsibleSectionName } from '../types';
 
 const allSectionName: Array<CollapsibleSectionName> = [
-  'recent', // mobile only
   'favorites',
   'organize',
   'collections',

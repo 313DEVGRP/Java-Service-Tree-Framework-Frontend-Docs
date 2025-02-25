@@ -35,9 +35,9 @@ export const DateSelect = ({
       contentOptions={datePickerPopperContentOptions}
       content={
         <DatePicker
-          weekDays={t['com.affine.calendar-date-picker.week-days']()}
-          monthNames={t['com.affine.calendar-date-picker.month-names']()}
-          todayLabel={t['com.affine.calendar-date-picker.today']()}
+          weekDays={t['com.arms.calendar-date-picker.week-days']()}
+          monthNames={t['com.arms.calendar-date-picker.month-names']()}
+          todayLabel={t['com.arms.calendar-date-picker.today']()}
           value={dayjs(value as number).format('YYYY-MM-DD')}
           onChange={onDateChange}
         />

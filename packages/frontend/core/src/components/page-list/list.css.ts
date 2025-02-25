@@ -73,7 +73,6 @@ export const editTagWrapper = style({
   width: '100%',
   height: '60px',
   display: 'none',
-  zIndex: 1,
   selectors: {
     '&[data-show=true]': {
       background: cssVar('backgroundPrimaryColor'),

@@ -163,7 +163,7 @@ export const renderArgs = (
     const value = filter.args[i];
     return (
       <Arg
-        key={`${argType.type}-${i}`}
+        key={i}
         type={argType}
         value={value}
         onChange={value => {

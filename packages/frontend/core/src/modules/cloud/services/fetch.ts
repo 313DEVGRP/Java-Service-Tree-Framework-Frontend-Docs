@@ -3,20 +3,20 @@ import { UserFriendlyError } from '@affine/graphql';
 import { fromPromise, Service } from '@toeverything/infra';
 
 import { BackendError, NetworkError } from '../error';
-import type { RawFetchProvider } from '../provider/fetch';
-import type { ServerService } from './server';
+
+export function getAffineCloudBaseUrl(): string {
+  if (environment.isDesktop) {
+    return runtimeConfig.serverUrlPrefix;
+  }
+  const { protocol, hostname, port } = window.location;
+  return `${protocol}//${hostname}${port ? `:${port}` : ''}`;
+}
 
 const logger = new DebugLogger('affine:fetch');
 
 export type FetchInit = RequestInit & { timeout?: number };
 
 export class FetchService extends Service {
-  constructor(
-    private readonly fetchProvider: RawFetchProvider,
-    private readonly serverService: ServerService
-  ) {
-    super();
-  }
   rxFetch = (
     input: string,
     init?: RequestInit & {
@@ -50,24 +50,18 @@ export class FetchService extends Service {
       abortController.abort('timeout');
     }, timeout);
 
-    const res = await this.fetchProvider
-      .fetch(new URL(input, this.serverService.server.serverMetadata.baseUrl), {
-        ...init,
-        signal: abortController.signal,
-        headers: {
-          ...init?.headers,
-          'x-affine-version': BUILD_CONFIG.appVersion,
-        },
-      })
-      .catch(err => {
-        logger.debug('network error', err);
-        throw new NetworkError(err);
-      });
+    const res = await fetch(new URL(input, getAffineCloudBaseUrl()), {
+      ...init,
+      signal: abortController.signal,
+    }).catch(err => {
+      logger.debug('network error', err);
+      throw new NetworkError(err);
+    });
     clearTimeout(timeoutId);
     if (res.status === 504) {
       const error = new Error('Gateway Timeout');
       logger.debug('network error', error);
-      throw new NetworkError(error, res.status);
+      throw new NetworkError(error);
     }
     if (!res.ok) {
       logger.warn(
@@ -78,14 +72,11 @@ export class FetchService extends Service {
       if (res.headers.get('Content-Type')?.includes('application/json')) {
         try {
           reason = await res.json();
-        } catch {
+        } catch (err) {
           // ignore
         }
       }
-      throw new BackendError(
-        UserFriendlyError.fromAnyError(reason),
-        res.status
-      );
+      throw new BackendError(UserFriendlyError.fromAnyError(reason));
     }
     return res;
   };

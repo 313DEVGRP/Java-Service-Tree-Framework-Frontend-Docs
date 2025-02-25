@@ -1,46 +1,53 @@
+/// <reference types="@blocksuite/global" />
+import { assertEquals } from '@blocksuite/global/utils';
+import { z } from 'zod';
+
+import { isDesktop, isServer } from './constant.js';
 import { UaHelper } from './ua-helper.js';
 
-export type BUILD_CONFIG_TYPE = {
-  debug: boolean;
-  distribution: 'web' | 'desktop' | 'admin' | 'mobile' | 'ios' | 'android';
-  /**
-   * 'web' | 'desktop' | 'admin'
-   */
-  isDesktopEdition: boolean;
-  /**
-   * 'mobile'
-   */
-  isMobileEdition: boolean;
-
-  isElectron: boolean;
-  isWeb: boolean;
-  isMobileWeb: boolean;
-  isIOS: boolean;
-  isAndroid: boolean;
-  isAdmin: boolean;
-
+export const runtimeFlagsSchema = z.object({
   // this is for the electron app
-  /**
-   * @deprecated need to be refactored
-   */
-  serverUrlPrefix: string;
-  appVersion: string;
-  editorVersion: string;
-  appBuildType: 'stable' | 'beta' | 'internal' | 'canary';
-
-  githubUrl: string;
-  changelogUrl: string;
-  downloadUrl: string;
+  serverUrlPrefix: z.string(),
+  appVersion: z.string(),
+  editorVersion: z.string(),
+  appBuildType: z.union([
+    z.literal('stable'),
+    z.literal('beta'),
+    z.literal('internal'),
+    z.literal('canary'),
+  ]),
+  isSelfHosted: z.boolean().optional(),
+  githubUrl: z.string(),
+  changelogUrl: z.string(),
+  downloadUrl: z.string(),
   // see: tools/workers
-  imageProxyUrl: string;
-  linkPreviewUrl: string;
-};
+  imageProxyUrl: z.string(),
+  linkPreviewUrl: z.string(),
+  allowLocalWorkspace: z.boolean(),
+  enablePreloading: z.boolean(),
+  enableNewSettingUnstableApi: z.boolean(),
+  enableCaptcha: z.boolean(),
+  enableEnhanceShareMode: z.boolean(),
+  enableExperimentalFeature: z.boolean(),
+  enableInfoModal: z.boolean(),
+  enableOrganize: z.boolean(),
+  enableThemeEditor: z.boolean(),
+});
 
-export type Environment = {
-  // Variant
-  isSelfHosted: boolean;
+export type RuntimeConfig = z.infer<typeof runtimeFlagsSchema>;
 
-  // Device
+type BrowserBase = {
+  /**
+   * @example https://app.affine.pro
+   * @example http://localhost:3000
+   */
+  origin: string;
+  isDesktop: boolean;
+  isBrowser: true;
+  isServer: false;
+  isDebug: boolean;
+
+  // browser special properties
   isLinux: boolean;
   isMacOs: boolean;
   isIOS: boolean;
@@ -49,88 +56,84 @@ export type Environment = {
   isFireFox: boolean;
   isMobile: boolean;
   isChrome: boolean;
-  isPwa: boolean;
-  chromeVersion?: number;
-
-  // runtime configs
-  publicPath: string;
 };
+
+type NonChromeBrowser = BrowserBase & {
+  isChrome: false;
+};
+
+type ChromeBrowser = BrowserBase & {
+  isSafari: false;
+  isFireFox: false;
+  isChrome: true;
+  chromeVersion: number;
+};
+
+type Browser = NonChromeBrowser | ChromeBrowser;
+
+type Server = {
+  isDesktop: false;
+  isBrowser: false;
+  isServer: true;
+  isDebug: boolean;
+};
+
+interface Desktop extends ChromeBrowser {
+  isDesktop: true;
+  isBrowser: true;
+  isServer: false;
+  isDebug: boolean;
+}
+
+export type Environment = Browser | Server | Desktop;
 
 export function setupGlobal() {
   if (globalThis.$AFFINE_SETUP) {
     return;
   }
+  runtimeFlagsSchema.parse(runtimeConfig);
 
-  let environment: Environment = {
-    isLinux: false,
-    isMacOs: false,
-    isSafari: false,
-    isWindows: false,
-    isFireFox: false,
-    isChrome: false,
-    isIOS: false,
-    isPwa: false,
-    isMobile: false,
-    isSelfHosted: false,
-    publicPath: '/',
-  };
-
-  if (globalThis.navigator) {
-    const uaHelper = new UaHelper(globalThis.navigator);
+  let environment: Environment;
+  const isDebug = process.env.NODE_ENV === 'development';
+  if (isServer) {
+    environment = {
+      isDesktop: false,
+      isBrowser: false,
+      isServer: true,
+      isDebug,
+    } satisfies Server;
+  } else {
+    const uaHelper = new UaHelper(navigator);
 
     environment = {
-      ...environment,
-      isMobile: uaHelper.isMobile,
+      origin: window.location.origin,
+      isDesktop,
+      isBrowser: true,
+      isServer: false,
+      isDebug,
       isLinux: uaHelper.isLinux,
       isMacOs: uaHelper.isMacOs,
       isSafari: uaHelper.isSafari,
       isWindows: uaHelper.isWindows,
       isFireFox: uaHelper.isFireFox,
+      isMobile: uaHelper.isMobile,
       isChrome: uaHelper.isChrome,
       isIOS: uaHelper.isIOS,
-      isPwa: uaHelper.isStandalone,
-    };
+    } as Browser;
     // Chrome on iOS is still Safari
     if (environment.isChrome && !environment.isIOS) {
+      assertEquals(environment.isSafari, false);
+      assertEquals(environment.isFireFox, false);
       environment = {
         ...environment,
         isSafari: false,
         isFireFox: false,
         isChrome: true,
         chromeVersion: uaHelper.getChromeVersion(),
-      };
+      } satisfies ChromeBrowser;
     }
   }
-
-  applyEnvironmentOverrides(environment);
-
   globalThis.environment = environment;
+
   globalThis.$AFFINE_SETUP = true;
-}
-
-function applyEnvironmentOverrides(environment: Environment) {
-  if (typeof document === 'undefined') {
-    return;
-  }
-
-  const metaTags = document.querySelectorAll('meta');
-
-  metaTags.forEach(meta => {
-    if (!meta.name.startsWith('env:')) {
-      return;
-    }
-
-    const name = meta.name.substring(4);
-
-    // all environments should have default value
-    // so ignore non-defined overrides
-    if (name in environment) {
-      // @ts-expect-error safe
-      environment[name] =
-        // @ts-expect-error safe
-        typeof environment[name] === 'string'
-          ? meta.content
-          : JSON.parse(meta.content);
-    }
-  });
 }

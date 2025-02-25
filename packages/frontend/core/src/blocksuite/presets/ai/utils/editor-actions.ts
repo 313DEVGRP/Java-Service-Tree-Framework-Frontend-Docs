@@ -2,24 +2,21 @@ import type {
   BlockComponent,
   EditorHost,
   TextSelection,
-} from '@blocksuite/affine/block-std';
-import type { AffineAIPanelWidget } from '@blocksuite/affine/blocks';
-import { isInsideEdgelessEditor } from '@blocksuite/affine/blocks';
-import { type BlockModel, Slice } from '@blocksuite/affine/store';
+} from '@blocksuite/block-std';
+import type { AffineAIPanelWidget } from '@blocksuite/blocks';
+import { isInsideEdgelessEditor } from '@blocksuite/blocks';
+import { type BlockModel, Slice } from '@blocksuite/store';
 
 import {
   insertFromMarkdown,
   markDownToDoc,
   markdownToSnapshot,
-} from '../../_common';
+} from './markdown-utils';
 
 const getNoteId = (blockElement: BlockComponent) => {
   let element = blockElement;
   while (element.flavour !== 'affine:note') {
-    if (!element.parentComponent) {
-      break;
-    }
-    element = element.parentComponent;
+    element = element.parentBlock;
   }
 
   return element.model.id;
@@ -56,8 +53,7 @@ export const insert = async (
   selectBlock: BlockComponent,
   below: boolean = true
 ) => {
-  const blockParent = selectBlock.parentComponent;
-  if (!blockParent) return;
+  const blockParent = selectBlock.parentBlock;
   const index = blockParent.model.children.findIndex(
     model => model.id === selectBlock.model.id
   );
@@ -98,14 +94,12 @@ export const replace = async (
   selectedModels: BlockModel[],
   textSelection?: TextSelection
 ) => {
-  const firstBlockParent = firstBlock.parentComponent;
-  if (!firstBlockParent) return;
+  const firstBlockParent = firstBlock.parentBlock;
   const firstIndex = firstBlockParent.model.children.findIndex(
     model => model.id === firstBlock.model.id
   );
 
   if (textSelection) {
-    host.std.command.exec('deleteText', { textSelection });
     const { snapshot, job } = await markdownToSnapshot(content, host);
     await job.snapshotToSlice(
       snapshot,
@@ -143,18 +137,12 @@ export const copyTextAnswer = async (panel: AffineAIPanelWidget) => {
 };
 
 export const copyText = async (host: EditorHost, text: string) => {
-  const previewDoc = await markDownToDoc(
-    host.std.provider,
-    host.std.doc.schema,
-    text
-  );
+  const previewDoc = await markDownToDoc(host, text);
   const models = previewDoc
     .getBlocksByFlavour('affine:note')
     .map(b => b.model)
     .flatMap(model => model.children);
   const slice = Slice.fromModels(previewDoc, models);
   await host.std.clipboard.copySlice(slice);
-  previewDoc.dispose();
-  previewDoc.collection.dispose();
   return true;
 };

@@ -1,20 +1,11 @@
 import type { FC, PropsWithChildren, ReactNode } from 'react';
 
-import { ThemedImg } from '../../ui/themed-img';
+import { Empty } from '../../ui/empty';
 import { AffineOtherPageLayout } from '../affine-other-page-layout';
-import illustrationDark from '../affine-other-page-layout/assets/other-page.dark.png';
-import illustrationLight from '../affine-other-page-layout/assets/other-page.light.png';
-import {
-  authPageContainer,
-  hideInSmallScreen,
-  illustration,
-} from './share.css';
+import { authPageContainer, hideInSmallScreen } from './share.css';
 
 export const AuthPageContainer: FC<
-  PropsWithChildren<{
-    title?: ReactNode;
-    subtitle?: ReactNode;
-  }>
+  PropsWithChildren<{ title?: ReactNode; subtitle?: ReactNode }>
 > = ({ children, title, subtitle }) => {
   return (
     <AffineOtherPageLayout>
@@ -26,12 +17,7 @@ export const AuthPageContainer: FC<
             {children}
           </div>
           <div className={hideInSmallScreen}>
-            <ThemedImg
-              draggable={false}
-              className={illustration}
-              lightSrc={illustrationLight}
-              darkSrc={illustrationDark}
-            />
+            <Empty />
           </div>
         </div>
       </div>

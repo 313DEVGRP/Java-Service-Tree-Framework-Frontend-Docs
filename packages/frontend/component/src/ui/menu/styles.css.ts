@@ -1,92 +1,57 @@
 import { cssVar } from '@toeverything/theme';
-import { cssVarV2 } from '@toeverything/theme/v2';
 import { createVar, style } from '@vanilla-extract/css';
-
-export const iconColor = createVar('iconColor');
-export const labelColor = createVar('labelColor');
-export const bgColor = createVar('bgColor');
-
+export const triggerWidthVar = createVar('triggerWidthVar');
 export const menuContent = style({
   minWidth: '180px',
+  color: cssVar('textPrimaryColor'),
   borderRadius: '8px',
   padding: '8px',
   fontSize: cssVar('fontSm'),
   fontWeight: '400',
-  backgroundColor: cssVarV2('layer/background/overlayPanel'),
+  backgroundColor: cssVar('backgroundOverlayPanelColor'),
   boxShadow: cssVar('menuShadow'),
   userSelect: 'none',
   ['WebkitAppRegion' as string]: 'no-drag',
-  display: 'flex',
-  flexDirection: 'column',
-  gap: 4,
-  selectors: {
-    '&.mobile': {
-      padding: 0,
-      boxShadow: 'none',
-    },
-  },
 });
-
 export const menuItem = style({
-  vars: {
-    [iconColor]: cssVarV2('icon/primary'),
-    [labelColor]: cssVarV2('text/primary'),
-    [bgColor]: 'transparent',
-  },
-  color: labelColor,
-  backgroundColor: bgColor,
-
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
-  gap: 8,
-  padding: '4px',
-  borderRadius: 4,
+  padding: '4px 12px',
+  borderRadius: '4px',
   lineHeight: '22px',
   border: 'none',
   outline: 'none',
   cursor: 'pointer',
   boxSizing: 'border-box',
   selectors: {
+    '&:not(:last-of-type)': {
+      marginBottom: '4px',
+    },
     '&.block': {
       maxWidth: '100%',
     },
     '&[data-disabled]': {
-      vars: {
-        [iconColor]: cssVarV2('icon/disable'),
-        [labelColor]: cssVarV2('text/secondary'),
-      },
+      color: cssVar('textDisableColor'),
       pointerEvents: 'none',
-      cursor: 'default',
+      cursor: 'not-allowed',
+    },
+    '&[data-highlighted]': {
+      backgroundColor: cssVar('hoverColor'),
     },
     '&:hover': {
-      vars: {
-        [bgColor]: cssVar('hoverColor'),
-      },
-      outline: 'none !important',
-    },
-    '&:focus-visible': {
-      outline: '1px solid ' + cssVarV2('layer/insideBorder/primaryBorder'),
+      backgroundColor: cssVar('hoverColor'),
     },
     '&.danger:hover': {
-      vars: {
-        [iconColor]: cssVar('errorColor'),
-        [labelColor]: cssVar('errorColor'),
-        [bgColor]: cssVar('backgroundErrorColor'),
-      },
+      color: cssVar('errorColor'),
+      backgroundColor: cssVar('backgroundErrorColor'),
     },
     '&.warning:hover': {
-      vars: {
-        [iconColor]: cssVar('warningColor'),
-        [labelColor]: cssVar('warningColor'),
-        [bgColor]: cssVar('backgroundWarningColor'),
-      },
+      color: cssVar('warningColor'),
+      backgroundColor: cssVar('backgroundWarningColor'),
     },
-    '&.checked, &.selected': {
-      vars: {
-        [iconColor]: cssVar('primaryColor'),
-        [labelColor]: cssVar('primaryColor'),
-      },
+    '&.checked': {
+      color: cssVar('primaryColor'),
     },
   },
 });
@@ -101,24 +66,84 @@ export const menuItemIcon = style({
   display: 'flex',
   flexShrink: 0,
   fontSize: cssVar('fontH5'),
-  color: iconColor,
-  width: 20,
-  height: 20,
+  color: cssVar('iconColor'),
+  selectors: {
+    '&.start': { marginRight: '4px' },
+    '&.end': { marginLeft: '4px' },
+    '&.selected, &.checked': {
+      color: cssVar('primaryColor'),
+    },
+    [`${menuItem}.danger:hover &`]: {
+      color: cssVar('errorColor'),
+    },
+    [`${menuItem}.warning:hover &`]: {
+      color: cssVar('warningColor'),
+    },
+  },
 });
-
 export const menuSeparator = style({
-  width: '100%',
-  height: '8px',
-  position: 'relative',
-  ':after': {
-    content: '""',
-    display: 'block',
-    height: '1px',
-    width: '100%',
-    backgroundColor: cssVarV2('layer/insideBorder/border'),
-    position: 'absolute',
-    top: '50%',
-    left: 0,
-    transform: 'translateY(-50%) scaleY(0.5)',
+  height: '1px',
+  backgroundColor: cssVar('borderColor'),
+  marginTop: '12px',
+  marginBottom: '8px',
+});
+export const menuTrigger = style({
+  vars: {
+    [triggerWidthVar]: 'auto',
+  },
+  width: triggerWidthVar,
+  height: 28,
+  lineHeight: '22px',
+  padding: '0 10px',
+  color: cssVar('textPrimaryColor'),
+  border: '1px solid',
+  backgroundColor: cssVar('white'),
+  borderRadius: 8,
+  display: 'inline-flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  fontSize: cssVar('fontXs'),
+  cursor: 'pointer',
+  ['WebkitAppRegion' as string]: 'no-drag',
+  borderColor: cssVar('borderColor'),
+  outline: 'none',
+  selectors: {
+    '&:hover': {
+      background: cssVar('hoverColor'),
+    },
+    '&.no-border': {
+      border: 'unset',
+    },
+    '&.block': {
+      display: 'flex',
+      width: '100%',
+    },
+    // size
+    '&.large': {
+      height: 32,
+    },
+    '&.extra-large': {
+      height: 40,
+      fontWeight: 600,
+    },
+    // color
+    '&.disabled': {
+      cursor: 'default',
+      color: cssVar('textDisableColor'),
+      pointerEvents: 'none',
+    },
+    // TODO(@catsjuice): wait for design
+    '&.error': {
+      // borderColor: 'var(--affine-error-color)',
+    },
+    '&.success': {
+      // borderColor: 'var(--affine-success-color)',
+    },
+    '&.warning': {
+      // borderColor: 'var(--affine-warning-color)',
+    },
+    '&.default': {
+      // borderColor: 'var(--affine-border-color)',
+    },
   },
 });

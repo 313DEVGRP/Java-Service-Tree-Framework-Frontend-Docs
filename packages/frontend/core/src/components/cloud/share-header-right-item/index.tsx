@@ -1,51 +1,40 @@
 import { AuthService } from '@affine/core/modules/cloud';
-import type { DocMode } from '@blocksuite/affine/blocks';
-import { useLiveData, useService } from '@toeverything/infra';
+import { type DocMode, useLiveData, useService } from '@toeverything/infra';
+import { useState } from 'react';
 
-import { ImportTemplateButton } from './import-template';
+import { AuthenticatedItem } from './authenticated-item';
 import { PresentButton } from './present';
-import { SignIn } from './sign-in';
 import * as styles from './styles.css';
 import { PublishPageUserAvatar } from './user-avatar';
 
 export type ShareHeaderRightItemProps = {
+  workspaceId: string;
+  pageId: string;
   publishMode: DocMode;
-  isTemplate?: boolean;
-  templateName?: string;
-  snapshotUrl?: string;
 };
 
-const ShareHeaderRightItem = ({
-  publishMode,
-  isTemplate,
-  templateName,
-  snapshotUrl,
-}: ShareHeaderRightItemProps) => {
+const ShareHeaderRightItem = ({ ...props }: ShareHeaderRightItemProps) => {
   const loginStatus = useLiveData(useService(AuthService).session.status$);
-  const authenticated = loginStatus === 'authenticated';
+  const { publishMode } = props;
+  const [isMember, setIsMember] = useState(false);
+
+  // TODO(@JimmFly): Add TOC
   return (
     <div className={styles.rightItemContainer}>
-      {isTemplate ? (
-        <ImportTemplateButton
-          name={templateName ?? ''}
-          snapshotUrl={snapshotUrl ?? ''}
-        />
-      ) : (
+      {loginStatus === 'authenticated' ? (
+        <AuthenticatedItem setIsMember={setIsMember} {...props} />
+      ) : null}
+      {publishMode === 'edgeless' ? <PresentButton /> : null}
+      {loginStatus === 'authenticated' ? (
         <>
-          {authenticated ? null : <SignIn />}
-          {publishMode === 'edgeless' ? <PresentButton /> : null}
-          {authenticated ? (
-            <>
-              <div
-                className={styles.headerDivider}
-                data-authenticated={true}
-                data-is-edgeless={publishMode === 'edgeless'}
-              />
-              <PublishPageUserAvatar />
-            </>
-          ) : null}
+          <div
+            className={styles.headerDivider}
+            data-is-member={isMember}
+            data-is-edgeless={publishMode === 'edgeless'}
+          />
+          <PublishPageUserAvatar />
         </>
-      )}
+      ) : null}
     </div>
   );
 };

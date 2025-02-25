@@ -1,5 +1,5 @@
+import { useAppSettingHelper } from '@affine/core/hooks/affine/use-app-setting-helper';
 import * as Dialog from '@radix-ui/react-dialog';
-import { useLiveData, useService } from '@toeverything/infra';
 import anime, { type AnimeInstance, type AnimeParams } from 'animejs';
 import clsx from 'clsx';
 import {
@@ -9,13 +9,11 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useLayoutEffect,
   useRef,
   useState,
 } from 'react';
 
-import { EditorSettingService } from '../../editor-setting';
-import type { PeekViewAnimation, PeekViewMode } from '../entities/peek-view';
+import type { PeekViewAnimation } from '../entities/peek-view';
 import * as styles from './modal-container.css';
 
 const contentOptions: Dialog.DialogContentProps = {
@@ -56,7 +54,7 @@ export type PeekViewModalContainerProps = PropsWithChildren<{
   controls?: React.ReactNode;
   onAnimationStart?: () => void;
   onAnimateEnd?: () => void;
-  mode?: PeekViewMode;
+  padding?: boolean;
   animation?: PeekViewAnimation;
   testId?: string;
   /** Whether to apply shadow & bg */
@@ -78,7 +76,7 @@ export const PeekViewModalContainer = forwardRef<
     onAnimationStart,
     onAnimateEnd,
     animation = 'zoom',
-    mode = 'fit',
+    padding = true,
     dialogFrame = true,
   },
   ref
@@ -92,10 +90,7 @@ export const PeekViewModalContainer = forwardRef<
   const overlayRef = useRef<HTMLDivElement>(null);
   const controlsRef = useRef<HTMLDivElement>(null);
   const prevAnimeMap = useRef<Record<string, AnimeInstance | undefined>>({});
-  const editorSettings = useService(EditorSettingService).editorSetting;
-  const fullWidthLayout = useLiveData(
-    editorSettings.settings$.selector(s => s.fullWidthLayout)
-  );
+  const { appSettings } = useAppSettingHelper();
 
   const animateControls = useCallback((animateIn = false) => {
     const controls = controlsRef.current;
@@ -117,24 +112,6 @@ export const PeekViewModalContainer = forwardRef<
         contentWrapper?: AnimeParams;
       }
     ) => {
-      // if target has no bounding client rect,
-      // find its parent that has bounding client rect
-      let iteration = 0;
-      while (
-        target &&
-        !target.getBoundingClientRect().width &&
-        iteration < 10
-      ) {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        target = target.parentElement || undefined;
-        iteration++;
-      }
-
-      if (!target) {
-        // fallback to fade animation
-        return animateFade(!!zoomIn);
-      }
-
       return new Promise<void>(resolve => {
         const contentClip = contentClipRef.current;
         const content = contentRef.current;
@@ -142,7 +119,6 @@ export const PeekViewModalContainer = forwardRef<
 
         if (!contentClip || !content || !target || !overlay) {
           resolve();
-          setAnimeState('idle');
           return;
         }
         const targets = contentClip;
@@ -315,7 +291,7 @@ export const PeekViewModalContainer = forwardRef<
     };
   }, [onOpenChange]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (animation === 'zoom') {
       open ? animateZoomIn() : animateZoomOut();
     } else if (animation === 'fade') {
@@ -338,15 +314,13 @@ export const PeekViewModalContainer = forwardRef<
           />
           <div
             ref={ref}
-            data-mode={mode}
+            data-padding={padding}
             data-peek-view-wrapper
-            className={styles.modalContentWrapper}
-            data-mobile={BUILD_CONFIG.isMobileEdition ? '' : undefined}
+            className={clsx(styles.modalContentWrapper)}
           >
             <div
               data-anime-state={animeState}
-              data-full-width-layout={fullWidthLayout}
-              data-mobile={BUILD_CONFIG.isMobileEdition}
+              data-full-width-layout={appSettings.fullWidthLayout}
               ref={contentClipRef}
               className={styles.modalContentContainer}
             >

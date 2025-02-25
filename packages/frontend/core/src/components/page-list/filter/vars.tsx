@@ -1,4 +1,4 @@
-import { MenuItem, MenuSeparator } from '@affine/component';
+import { MenuIcon, MenuItem, MenuSeparator } from '@affine/component';
 import type {
   Filter,
   LiteralValue,
@@ -85,14 +85,14 @@ export const VariableSelect = ({
   return (
     <div data-testid="variable-select">
       <div className={styles.variableSelectTitleStyle}>
-        {t['com.affine.filter']()}
+        {t['com.arms.filter']()}
       </div>
       <MenuSeparator />
       {vars
         // .filter(v => !selected.find(filter => filter.left.name === v.name))
         .map(v => (
           <MenuItem
-            prefixIcon={variableDefineMap[v.name].icon}
+            preFix={<MenuIcon>{variableDefineMap[v.name].icon}</MenuIcon>}
             key={v.name}
             onClick={() => {
               onSelect(createDefaultFilter(v, propertiesMeta));

@@ -2,7 +2,7 @@ import {
   PreconditionStrategy,
   registerAffineCommand,
 } from '@affine/core/commands';
-import { track } from '@affine/track';
+import { track } from '@affine/core/mixpanel';
 import { useService } from '@toeverything/infra';
 import { useEffect } from 'react';
 

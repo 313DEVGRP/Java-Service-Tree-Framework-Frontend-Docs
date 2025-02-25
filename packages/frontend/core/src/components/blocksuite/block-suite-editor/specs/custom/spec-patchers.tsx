@@ -7,71 +7,46 @@ import {
   toReactNode,
   type useConfirmModal,
 } from '@affine/component';
-import { AIChatBlockSchema } from '@affine/core/blocksuite/blocks';
-import { WorkspaceServerService } from '@affine/core/modules/cloud';
-import { type DocService, DocsService } from '@affine/core/modules/doc';
-import type { EditorService } from '@affine/core/modules/editor';
-import { EditorSettingService } from '@affine/core/modules/editor-setting';
+import { track } from '@affine/core/mixpanel';
+import { DocsSearchService } from '@affine/core/modules/docs-search';
 import { resolveLinkToDoc } from '@affine/core/modules/navigation';
 import type { PeekViewService } from '@affine/core/modules/peek-view';
+import type { ActivePeekView } from '@affine/core/modules/peek-view/entities/peek-view';
 import {
   CreationQuickSearchSession,
   DocsQuickSearchSession,
-  LinksQuickSearchSession,
+  type QuickSearchItem,
   QuickSearchService,
   RecentDocsQuickSearchSession,
 } from '@affine/core/modules/quicksearch';
-import { ExternalLinksQuickSearchSession } from '@affine/core/modules/quicksearch/impls/external-links';
-import { JournalsQuickSearchSession } from '@affine/core/modules/quicksearch/impls/journals';
-import { WorkbenchService } from '@affine/core/modules/workbench';
-import { WorkspaceService } from '@affine/core/modules/workspace';
-import { isNewTabTrigger } from '@affine/core/utils';
 import { DebugLogger } from '@affine/debug';
-import { track } from '@affine/track';
+import type { BlockSpec, WidgetComponent } from '@blocksuite/block-std';
 import {
-  BlockServiceWatcher,
-  BlockViewIdentifier,
-  ConfigIdentifier,
-  type ExtensionType,
-  type WidgetComponent,
-} from '@blocksuite/affine/block-std';
-import type {
-  AffineReference,
-  DocMode,
-  DocModeProvider,
-  PeekOptions,
-  PeekViewService as BSPeekViewService,
-  QuickSearchResult,
-  RootBlockConfig,
-} from '@blocksuite/affine/blocks';
-import {
+  type AffineReference,
   AffineSlashMenuWidget,
-  AttachmentEmbedConfigIdentifier,
-  DocModeExtension,
   EdgelessRootBlockComponent,
   EmbedLinkedDocBlockComponent,
-  EmbedLinkedDocBlockConfigExtension,
-  GenerateDocUrlExtension,
-  MobileSpecsPatches,
-  NotificationExtension,
-  ParseDocUrlExtension,
-  PeekViewExtension,
-  QuickSearchExtension,
-  ReferenceNodeConfigExtension,
-} from '@blocksuite/affine/blocks';
-import { Bound } from '@blocksuite/affine/global/utils';
-import { type BlockSnapshot, Text } from '@blocksuite/affine/store';
-import type { ReferenceParams } from '@blocksuite/affine-model';
-import { type FrameworkProvider } from '@toeverything/infra';
+  type ParagraphBlockService,
+  type RootService,
+} from '@blocksuite/blocks';
+import { LinkIcon } from '@blocksuite/icons/rc';
+import { AIChatBlockSchema } from '@blocksuite/presets';
+import type { BlockSnapshot } from '@blocksuite/store';
+import {
+  type DocMode,
+  type DocService,
+  DocsService,
+  type FrameworkProvider,
+} from '@toeverything/infra';
 import { type TemplateResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { literal } from 'lit/static-html.js';
-import { pick } from 'lodash-es';
+import Multiselect from 'multiselect-react-dropdown'; // 241223 추가
+import axios from 'axios';
 
-import type { DocProps } from '../../../../../blocksuite/initialization';
-import { AttachmentEmbedPreview } from '../../../../attachment-viewer/pdf-viewer-embedded';
-import { generateUrl } from '../../../../hooks/affine/use-share-url';
-import { createKeyboardToolbarConfig } from './widgets/keyboard-toolbar';
+let selectedPdServiceID = "";
+let selectedVersionID = "";
+
 
 export type ReferenceReactRenderer = (
   reference: AffineReference
@@ -79,345 +54,543 @@ export type ReferenceReactRenderer = (
 
 const logger = new DebugLogger('affine::spec-patchers');
 
-function patchSpecService(
-  flavour: string,
+function patchSpecService<Spec extends BlockSpec>(
+  spec: Spec,
+  onMounted: (
+    service: Spec extends BlockSpec<any, infer BlockService>
+      ? BlockService
+      : never
+  ) => (() => void) | void,
   onWidgetConnected?: (component: WidgetComponent) => void
 ) {
-  class TempServiceWatcher extends BlockServiceWatcher {
-    static override readonly flavour = flavour;
-    override mounted() {
-      super.mounted();
-      const disposableGroup = this.blockService.disposables;
-      if (onWidgetConnected) {
-        disposableGroup.add(
-          this.blockService.specSlots.widgetConnected.on(({ component }) => {
-            onWidgetConnected(component);
-          })
-        );
-      }
-    }
-  }
-  return TempServiceWatcher;
+  const oldSetup = spec.setup;
+  spec.setup = (slots, disposableGroup) => {
+    oldSetup?.(slots, disposableGroup);
+    disposableGroup.add(
+      slots.mounted.on(({ service }) => {
+        const disposable = onMounted(service as any);
+        if (disposable) {
+          disposableGroup.add(disposable);
+        }
+      })
+    );
+
+    onWidgetConnected &&
+    disposableGroup.add(
+      slots.widgetConnected.on(({ component }) => {
+        onWidgetConnected(component);
+      })
+    );
+  };
+  return spec;
 }
 
 /**
  * Patch the block specs with custom renderers.
  */
 export function patchReferenceRenderer(
+  specs: BlockSpec[],
   reactToLit: (element: ElementOrFactory) => TemplateResult,
   reactRenderer: ReferenceReactRenderer
-): ExtensionType {
-  const customContent = (reference: AffineReference) => {
+) {
+  const litRenderer = (reference: AffineReference) => {
     const node = reactRenderer(reference);
     return reactToLit(node);
   };
 
-  return ReferenceNodeConfigExtension({
-    customContent,
+  return specs.map(spec => {
+    if (
+      ['affine:paragraph', 'affine:list', 'affine:database'].includes(
+        spec.schema.model.flavour
+      )
+    ) {
+      spec = patchSpecService(
+        spec as BlockSpec<string, ParagraphBlockService>,
+        service => {
+          service.referenceNodeConfig.setCustomContent(litRenderer);
+          return () => {
+            service.referenceNodeConfig.setCustomContent(null);
+          };
+        }
+      );
+    }
+
+    return spec;
   });
 }
 
-export function patchNotificationService({
-  closeConfirmModal,
-  openConfirmModal,
-}: ReturnType<typeof useConfirmModal>) {
-  return NotificationExtension({
-    confirm: async ({ title, message, confirmText, cancelText, abort }) => {
-      return new Promise<boolean>(resolve => {
-        openConfirmModal({
-          title: toReactNode(title),
-          description: toReactNode(message),
-          confirmText,
-          confirmButtonOptions: {
-            variant: 'primary',
-          },
-          cancelText,
-          onConfirm: () => {
-            resolve(true);
-          },
-          onCancel: () => {
+// 데이터 로드를 외부로 분리
+async function fetchProductOptions() {
+  try {
+    const productResponse = await axios.get('/api/auth/pdService');
+    // 응답 데이터에서 필요한 부분 추출
+    const productOptions =
+      productResponse.data?.result?.response?.map(
+        (item: { c_id: number; c_title: string }) => ({
+          key: item.c_title, // value는 c_title (멀티 셀렉트에서 보여질 값)
+          value: item.c_id, // key는 c_id
+        })
+      ) || [];
+
+    return {
+      productOptions
+    };
+  } catch (error) {
+    console.error('Failed to fetch options:', error);
+    return { productOptions: [], versionOptions: [] };
+  }
+}
+
+// 데이터 로드를 외부로 분리
+async function fetchVersionOptions(selectedProduct?:number) {
+  try {
+    const versionResponse = await axios.get('/api/auth/version?c_req_pdservice='+selectedProduct);
+    // 응답 데이터에서 필요한 부분 추출
+    const versionOptions =
+      versionResponse.data?.result?.response?.map(
+        (item: { c_id: number; c_title: string }) => ({
+          key: item.c_title, // value는 c_title (멀티 셀렉트에서 보여질 값)
+          value: item.c_id, // key는 c_id
+        })
+      ) || [];
+
+    return {
+      versionOptions
+    };
+  } catch (error) {
+    console.error('Failed to fetch options:', error);
+    return { productOptions: [], versionOptions: [] };
+  }
+}
+
+
+export function patchNotificationService(
+  specs: BlockSpec[],
+  { closeConfirmModal, openConfirmModal }: ReturnType<typeof useConfirmModal>
+) {
+  const rootSpec = specs.find(
+    spec => spec.schema.model.flavour === 'affine:page'
+  ) as BlockSpec<string, RootService>;
+
+  if (!rootSpec) {
+    return specs;
+  }
+
+  patchSpecService(rootSpec, service => {
+    service.notificationService = {
+      confirm: async ({ title, message, confirmText, cancelText, abort }) => {
+        return new Promise<boolean>(resolve => {
+          openConfirmModal({
+            title: toReactNode(title),
+            description: toReactNode(message),
+            confirmText,
+            confirmButtonOptions: {
+              variant: 'primary',
+            },
+            cancelText,
+            onConfirm: () => {
+              resolve(true);
+            },
+            onCancel: () => {
+              resolve(false);
+            },
+          });
+          abort?.addEventListener('abort', () => {
             resolve(false);
-          },
+            closeConfirmModal();
+          });
         });
-        abort?.addEventListener('abort', () => {
-          resolve(false);
-          closeConfirmModal();
-        });
-      });
-    },
-    prompt: async ({
-      title,
-      message,
-      confirmText,
-      placeholder,
-      cancelText,
-      autofill,
-      abort,
-    }) => {
-      return new Promise<string | null>(resolve => {
-        let value = autofill || '';
-        const description = (
-          <div>
-            <span style={{ marginBottom: 12 }}>{toReactNode(message)}</span>
-            <Input
-              autoSelect={true}
-              placeholder={placeholder}
-              defaultValue={value}
-              onChange={e => (value = e)}
-            />
-          </div>
-        );
-        openConfirmModal({
-          title: toReactNode(title),
-          description: description,
-          confirmText: confirmText ?? 'Confirm',
-          confirmButtonOptions: {
-            variant: 'primary',
-          },
-          cancelText: cancelText ?? 'Cancel',
-          onConfirm: () => {
-            resolve(value);
-          },
-          onCancel: () => {
+      },
+      prompt: async ({
+                       title,
+                       message,
+                       confirmText,
+                       placeholder,
+                       cancelText,
+                       autofill,
+                       abort,
+                       inputTitle, // 241223 추가
+                       versionSelect, // 241223 추가
+                     }) => {
+        // 제품 (서비스) 데이터 로드
+        const { productOptions } = await fetchProductOptions();
+        console.log(productOptions);
+
+        // 🔥 제품 선택 시 실행되는 함수 (기존 로직 유지)
+        async function handleProductSelect(selectedList, selectedItem) {
+          console.log('선택된 제품:', selectedItem);
+          const { versionOptions: newVersionOptions } = await fetchVersionOptions(selectedItem.value);
+          console.log('불러온 버전 목록:', newVersionOptions);
+
+          // 🔥 직접 DOM을 수정하여 버전 목록 업데이트
+          const versionDropdown = document.getElementById('version-multiselect');
+          if (versionDropdown) {
+            versionDropdown.innerHTML = ''; // 기존 옵션 제거
+            newVersionOptions.forEach(option => {
+              const optionElement = document.createElement('option');
+              optionElement.value = option.value;
+              optionElement.textContent = option.key;
+              versionDropdown.appendChild(optionElement);
+            });
+
+            //디폴트 셋팅
+            selectedPdServiceID = selectedItem.value;
+            selectedVersionID = newVersionOptions[0].value;
+          }
+
+
+          // 버전 선택 이벤트 리스너
+          const versionSelect = document.getElementById('version-multiselect');
+          if (versionSelect) {
+            versionSelect.addEventListener('input', (e) => {
+              const selectedVersion = (e.target as HTMLSelectElement).value;
+
+              selectedPdServiceID = selectedItem.value;
+              selectedVersionID = selectedVersion;
+              console.log("Selected pdService:" + selectedItem.value);
+              console.log('Selected version:', selectedVersion);
+            });
+          }
+
+        }
+
+
+        return new Promise<string | null>(resolve => {
+
+          let value = autofill || '';
+
+          // ✅ 기존 코드 유지하면서 versionSelect만 동적 업데이트
+          const description = (
+            <div>
+              {message && <p style={{ marginBottom: 12, display: 'block' }}>{toReactNode(message)}</p>}
+              {inputTitle && (
+                <strong style={{ fontSize: 14, marginBottom: 5, display: 'block' }}>
+                  ✔ {toReactNode(inputTitle)}
+                </strong>
+              )}
+              <Input
+                placeholder={placeholder}
+                defaultValue={value}
+                onChange={e => (value = e)}
+                ref={input => input?.select()}
+              />
+              {versionSelect && (
+                <div>
+                  <strong
+                    style={{
+                      marginTop: 20,
+                      marginBottom: 10,
+                      display: 'block',
+                      fontSize: 14,
+                    }}
+                  >
+                    ✔ 요구사항을 생성할 대상 제품(서비스) + 버전을 선택하세요.
+                  </strong>
+                  <ul>
+                    <li style={{ marginBottom: 5 }}>
+                      <strong style={{ fontSize: 13, marginBottom: 5, display: 'block' }}>
+                        제품(서비스)
+                      </strong>
+                      <Multiselect
+                        displayValue="key"
+                        options={productOptions}
+                        placeholder="제품(서비스) 선택"
+                        style={{ searchBox: { border: '1px solid #e6e6e6', borderRadius: '8px' } }}
+                        singleSelect
+                        onSelect={handleProductSelect}
+                      />
+                    </li>
+                    <li style={{ marginBottom: 5 }}>
+                      <strong style={{ fontSize: 13, marginBottom: 5, display: 'block' }}>
+                        버전
+                      </strong>
+                      <select
+                        id="version-multiselect"
+                        style={{ border: '1px solid #e6e6e6', borderRadius: '8px', width: '100%', minHeight: '22px', padding: '5px'}}>
+                        <option value="">버전 선택</option>
+                      </select>
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
+          );
+
+          openConfirmModal({
+            title: toReactNode(title),
+            description: description,
+            confirmText: confirmText ?? 'Confirm',
+            confirmButtonOptions: {
+              variant: 'primary',
+            },
+            cancelText: cancelText ?? 'Cancel',
+            onConfirm: () => {
+              console.log("onConfirm===========start");
+              console.log("-----------value check start");
+              console.log(value);
+              value = value + ":::"+selectedPdServiceID+","+selectedVersionID;
+              console.log(value);
+              console.log("-----------value check end");
+
+              resolve(value);
+              console.log("onConfirm===========end");
+            },
+            onCancel: () => {
+              resolve(null);
+            },
+          });
+          abort?.addEventListener('abort', () => {
             resolve(null);
-          },
-          autoFocusConfirm: false,
+            closeConfirmModal();
+          });
         });
-        abort?.addEventListener('abort', () => {
-          resolve(null);
-          closeConfirmModal();
-        });
-      });
-    },
-    toast: (message: string, options: ToastOptions) => {
-      return toast(message, options);
-    },
-    notify: notification => {
-      const accentToNotify = {
-        error: notify.error,
-        success: notify.success,
-        warning: notify.warning,
-        info: notify,
-      };
+      },
+      toast: (message: string, options: ToastOptions) => {
+        return toast(message, options);
+      },
+      notify: notification => {
+        const accentToNotify = {
+          error: notify.error,
+          success: notify.success,
+          warning: notify.warning,
+          info: notify,
+        };
 
-      const fn = accentToNotify[notification.accent || 'info'];
-      if (!fn) {
-        throw new Error('Invalid notification accent');
-      }
+        const fn = accentToNotify[notification.accent || 'info'];
+        if (!fn) {
+          throw new Error('Invalid notification accent');
+        }
 
-      const toastId = fn(
-        {
-          title: toReactNode(notification.title),
-          message: toReactNode(notification.message),
-          action: notification.action?.onClick
-            ? {
+        const toastId = fn(
+          {
+            title: toReactNode(notification.title),
+            message: toReactNode(notification.message),
+            action: notification.action?.onClick
+              ? {
                 label: toReactNode(notification.action?.label),
                 onClick: notification.action.onClick,
               }
-            : undefined,
-          onDismiss: notification.onClose,
-        },
-        {
-          duration: notification.duration || 0,
-          onDismiss: notification.onClose,
-          onAutoClose: notification.onClose,
-        }
-      );
+              : undefined,
+            onDismiss: notification.onClose,
+          },
+          {
+            duration: notification.duration || 0,
+            onDismiss: notification.onClose,
+            onAutoClose: notification.onClose,
+          }
+        );
 
-      notification.abort?.addEventListener('abort', () => {
-        notify.dismiss(toastId);
-      });
-    },
-  });
-}
-
-export function patchEmbedLinkedDocBlockConfig(framework: FrameworkProvider) {
-  const getWorkbench = () => framework.get(WorkbenchService).workbench;
-
-  return EmbedLinkedDocBlockConfigExtension({
-    handleClick(e, _, refInfo) {
-      if (isNewTabTrigger(e)) {
-        const workbench = getWorkbench();
-        workbench.openDoc(refInfo.pageId, { at: 'new-tab' });
-        e.preventDefault();
-      }
-    },
-  });
-}
-
-export function patchPeekViewService(service: PeekViewService) {
-  return PeekViewExtension({
-    peek: (
-      element: {
-        target: HTMLElement;
-        docId: string;
-        blockIds?: string[];
-        template?: TemplateResult;
+        notification.abort?.addEventListener('abort', () => {
+          notify.dismiss(toastId);
+        });
       },
-      options?: PeekOptions
-    ) => {
-      logger.debug('center peek', element);
-      const { template, target, ...props } = element;
+    };
+  });
 
-      return service.peekView.open(
-        {
-          element: target,
-          docRef: props,
-        },
-        template,
-        options?.abortSignal
-      );
-    },
-  } satisfies BSPeekViewService);
+  return specs;
+}
+
+export function patchPeekViewService(
+  specs: BlockSpec[],
+  service: PeekViewService
+) {
+  const rootSpec = specs.find(
+    spec => spec.schema.model.flavour === 'affine:page'
+  ) as BlockSpec<string, RootService>;
+
+  if (!rootSpec) {
+    return specs;
+  }
+
+  patchSpecService(rootSpec, pageService => {
+    pageService.peekViewService = {
+      peek: (target: ActivePeekView['target'], template?: TemplateResult) => {
+        logger.debug('center peek', target, template);
+        return service.peekView.open(target, template);
+      },
+    };
+  });
+
+  return specs;
 }
 
 export function patchDocModeService(
+  specs: BlockSpec[],
   docService: DocService,
-  docsService: DocsService,
-  editorService: EditorService
-): ExtensionType {
-  const DEFAULT_MODE = 'page';
-  class AffineDocModeService implements DocModeProvider {
-    setEditorMode = (mode: DocMode) => {
-      editorService.editor.setMode(mode);
-    };
-    getEditorMode = () => {
-      return editorService.editor.mode$.value;
-    };
-    setPrimaryMode = (mode: DocMode, id?: string) => {
-      if (id) {
-        docsService.list.setPrimaryMode(id, mode);
-      } else {
-        docService.doc.setPrimaryMode(mode);
-      }
-    };
-    getPrimaryMode = (id?: string) => {
-      const mode = id
-        ? docsService.list.getPrimaryMode(id)
-        : docService.doc.getPrimaryMode();
-      return (mode || DEFAULT_MODE) as DocMode;
-    };
-    togglePrimaryMode = (id?: string) => {
-      const mode = id
-        ? docsService.list.togglePrimaryMode(id)
-        : docService.doc.togglePrimaryMode();
-      return (mode || DEFAULT_MODE) as DocMode;
-    };
-    onPrimaryModeChange = (handler: (mode: DocMode) => void, id?: string) => {
-      const mode$ = id
-        ? docsService.list.primaryMode$(id)
-        : docService.doc.primaryMode$;
-      const sub = mode$.subscribe(m => handler((m || DEFAULT_MODE) as DocMode));
-      return {
-        dispose: sub.unsubscribe,
-      };
-    };
+  docsService: DocsService
+) {
+  const rootSpec = specs.find(
+    spec => spec.schema.model.flavour === 'affine:page'
+  ) as BlockSpec<string, RootService>;
+
+  if (!rootSpec) {
+    return specs;
   }
 
-  const docModeExtension = DocModeExtension(new AffineDocModeService());
-
-  return docModeExtension;
-}
-
-export function patchQuickSearchService(framework: FrameworkProvider) {
-  const QuickSearch = QuickSearchExtension({
-    async openQuickSearch() {
-      let searchResult: QuickSearchResult = null;
-      searchResult = await new Promise((resolve, reject) =>
-        framework.get(QuickSearchService).quickSearch.show(
-          [
-            framework.get(RecentDocsQuickSearchSession),
-            framework.get(CreationQuickSearchSession),
-            framework.get(DocsQuickSearchSession),
-            framework.get(LinksQuickSearchSession),
-            framework.get(ExternalLinksQuickSearchSession),
-            framework.get(JournalsQuickSearchSession),
-          ],
-          result => {
-            if (result === null) {
-              resolve(null);
-              return;
-            }
-
-            if (result.source === 'docs') {
-              resolve({
-                docId: result.payload.docId,
-              });
-              return;
-            }
-
-            if (result.source === 'recent-doc') {
-              resolve({
-                docId: result.payload.docId,
-              });
-              return;
-            }
-
-            if (result.source === 'link') {
-              resolve({
-                docId: result.payload.docId,
-                params: pick(result.payload, [
-                  'mode',
-                  'blockIds',
-                  'elementIds',
-                ]),
-              });
-              return;
-            }
-
-            if (result.source === 'date-picker') {
-              result.payload
-                .getDocId()
-                .then(docId => {
-                  if (docId) {
-                    resolve({ docId });
-                  }
-                })
-                .catch(reject);
-              return;
-            }
-
-            if (result.source === 'external-link') {
-              const externalUrl = result.payload.url;
-              resolve({ externalUrl });
-              return;
-            }
-
-            if (result.source === 'creation') {
-              const docsService = framework.get(DocsService);
-              const editorSettingService = framework.get(EditorSettingService);
-              const mode =
-                result.id === 'creation:create-edgeless' ? 'edgeless' : 'page';
-              const docProps: DocProps = {
-                page: { title: new Text(result.payload.title) },
-                note: editorSettingService.editorSetting.get('affine:note'),
-              };
-              const newDoc = docsService.createDoc({
-                primaryMode: mode,
-                docProps,
-              });
-
-              resolve({ docId: newDoc.id });
-              return;
-            }
-          },
-          {
-            label: {
-              i18nKey: 'com.affine.cmdk.insert-links',
-            },
-            placeholder: {
-              i18nKey: 'com.affine.cmdk.docs.placeholder',
-            },
-          }
-        )
-      );
-
-      return searchResult;
-    },
+  patchSpecService(rootSpec, pageService => {
+    const DEFAULT_MODE = 'page';
+    pageService.docModeService = {
+      setMode: (mode: DocMode, id?: string) => {
+        if (id) {
+          docsService.list.setMode(id, mode);
+        } else {
+          docService.doc.setMode(mode);
+        }
+      },
+      getMode: (id?: string) => {
+        const mode = id
+          ? docsService.list.getMode(id)
+          : docService.doc.getMode();
+        return mode || DEFAULT_MODE;
+      },
+      toggleMode: (id?: string) => {
+        const mode = id
+          ? docsService.list.toggleMode(id)
+          : docService.doc.toggleMode();
+        return mode || DEFAULT_MODE;
+      },
+      onModeChange: (handler: (mode: DocMode) => void, id?: string) => {
+        // eslint-disable-next-line rxjs/finnish
+        const mode$ = id
+          ? docsService.list.observeMode(id)
+          : docService.doc.observeMode();
+        const sub = mode$.subscribe(m => handler(m || DEFAULT_MODE));
+        return {
+          dispose: sub.unsubscribe,
+        };
+      },
+    };
   });
 
-  const SlashMenuQuickSearchExtension = patchSpecService(
-    'affine:page',
+  return specs;
+}
+
+export function patchQuickSearchService(
+  specs: BlockSpec[],
+  framework: FrameworkProvider
+) {
+  const rootSpec = specs.find(
+    spec => spec.schema.model.flavour === 'affine:page'
+  ) as BlockSpec<string, RootService>;
+
+  if (!rootSpec) {
+    return specs;
+  }
+
+  patchSpecService(
+    rootSpec,
+    pageService => {
+      pageService.quickSearchService = {
+        async searchDoc(options) {
+          let searchResult:
+            | { docId: string; isNewDoc?: boolean }
+            | { userInput: string }
+            | null = null;
+          if (options.skipSelection) {
+            const query = options.userInput;
+            if (!query) {
+              logger.error('No user input provided');
+            } else {
+              const resolvedDoc = resolveLinkToDoc(query);
+              if (resolvedDoc) {
+                searchResult = {
+                  docId: resolvedDoc.docId,
+                };
+              } else if (
+                query.startsWith('http://') ||
+                query.startsWith('https://')
+              ) {
+                searchResult = {
+                  userInput: query,
+                };
+              } else {
+                const searchedDoc = (
+                  await framework.get(DocsSearchService).search(query)
+                ).at(0);
+                if (searchedDoc) {
+                  searchResult = {
+                    docId: searchedDoc.docId,
+                  };
+                }
+              }
+            }
+          } else {
+            searchResult = await new Promise(resolve =>
+              framework.get(QuickSearchService).quickSearch.show(
+                [
+                  framework.get(RecentDocsQuickSearchSession),
+                  framework.get(DocsQuickSearchSession),
+                  framework.get(CreationQuickSearchSession),
+                  (query: string) => {
+                    if (
+                      (query.startsWith('http://') ||
+                        query.startsWith('https://')) &&
+                      resolveLinkToDoc(query) === null
+                    ) {
+                      return [
+                        {
+                          id: 'link',
+                          source: 'link',
+                          icon: LinkIcon,
+                          label: {
+                            key: 'com.arms.cmdk.affine.insert-link',
+                          },
+                          payload: { url: query },
+                        } as QuickSearchItem<'link', { url: string }>,
+                      ];
+                    }
+                    return [];
+                  },
+                ],
+                result => {
+                  if (result === null) {
+                    resolve(null);
+                    return;
+                  }
+                  if (
+                    result.source === 'docs' ||
+                    result.source === 'recent-doc'
+                  ) {
+                    resolve({
+                      docId: result.payload.docId,
+                    });
+                  } else if (result.source === 'link') {
+                    resolve({
+                      userInput: result.payload.url,
+                    });
+                  } else if (result.source === 'creation') {
+                    const docsService = framework.get(DocsService);
+                    const mode =
+                      result.id === 'creation:create-edgeless'
+                        ? 'edgeless'
+                        : 'page';
+                    const newDoc = docsService.createDoc({
+                      mode,
+                      title: result.payload.title,
+                    });
+                    resolve({
+                      docId: newDoc.id,
+                      isNewDoc: true,
+                    });
+                  }
+                },
+                {
+                  defaultQuery: options.userInput,
+                  label: {
+                    key: 'com.arms.cmdk.insert-links',
+                  },
+                  placeholder: {
+                    key: 'com.arms.cmdk.docs.placeholder',
+                  },
+                }
+              )
+            );
+          }
+
+          return searchResult;
+        },
+      };
+    },
     (component: WidgetComponent) => {
       if (component instanceof AffineSlashMenuWidget) {
         component.config.items.forEach(item => {
@@ -425,90 +598,74 @@ export function patchQuickSearchService(framework: FrameworkProvider) {
             'action' in item &&
             (item.name === 'Linked Doc' || item.name === 'Link')
           ) {
-            item.action = async ({ rootComponent }) => {
-              // @ts-expect-error fixme
-              const { success, insertedLinkType } =
-                // @ts-expect-error fixme
-                rootComponent.std.command.exec('insertLinkByQuickSearch');
+            const oldAction = item.action;
+            item.action = async ({ model, rootComponent }) => {
+              const { host, service, std } = rootComponent;
+              const { quickSearchService } = service;
 
-              if (!success) return;
+              if (!quickSearchService)
+                return oldAction({ model, rootComponent });
 
-              insertedLinkType
-                ?.then(
-                  (type: {
-                    flavour?: 'affine:embed-linked-doc' | 'affine:bookmark';
-                  }) => {
-                    const flavour = type?.flavour;
-                    if (!flavour) return;
+              const result = await quickSearchService.searchDoc({});
+              if (result === null) return;
 
-                    if (flavour === 'affine:bookmark') {
-                      track.doc.editor.slashMenu.bookmark();
-                      return;
-                    }
+              if ('docId' in result) {
+                const linkedDoc = std.collection.getDoc(result.docId);
+                if (!linkedDoc) return;
 
-                    if (flavour === 'affine:embed-linked-doc') {
-                      track.doc.editor.slashMenu.linkDoc({
-                        control: 'linkDoc',
-                      });
-                      return;
-                    }
-                  }
-                )
-                .catch(console.error);
+                host.doc.addSiblingBlocks(model, [
+                  {
+                    flavour: 'affine:embed-linked-doc',
+                    pageId: linkedDoc.id,
+                  },
+                ]);
+                if (result.isNewDoc) {
+                  track.doc.editor.slashMenu.createDoc({ control: 'linkDoc' });
+                  track.doc.editor.slashMenu.linkDoc({ control: 'createDoc' });
+                }
+                track.doc.editor.slashMenu.linkDoc({ control: 'linkDoc' });
+              } else if ('userInput' in result) {
+                const embedOptions = service.getEmbedBlockOptions(
+                  result.userInput
+                );
+                if (!embedOptions) return;
+
+                host.doc.addSiblingBlocks(model, [
+                  {
+                    flavour: embedOptions.flavour,
+                    url: result.userInput,
+                  },
+                ]);
+              }
             };
           }
         });
       }
     }
   );
-  return [QuickSearch, SlashMenuQuickSearchExtension];
+
+  return specs;
 }
 
-export function patchParseDocUrlExtension(framework: FrameworkProvider) {
-  const workspaceService = framework.get(WorkspaceService);
-  const ParseDocUrl = ParseDocUrlExtension({
-    parseDocUrl(url) {
-      const info = resolveLinkToDoc(url);
-      if (!info || info.workspaceId !== workspaceService.workspace.id) return;
+export function patchEdgelessClipboard(specs: BlockSpec[]) {
+  const rootSpec = specs.find(
+    spec => spec.schema.model.flavour === 'affine:page'
+  ) as BlockSpec<string, RootService>;
 
-      delete info.refreshKey;
+  if (!rootSpec) {
+    return specs;
+  }
 
-      return info;
-    },
-  });
-
-  return [ParseDocUrl];
-}
-
-export function patchGenerateDocUrlExtension(framework: FrameworkProvider) {
-  const workspaceService = framework.get(WorkspaceService);
-  const workspaceServerService = framework.get(WorkspaceServerService);
-  const GenerateDocUrl = GenerateDocUrlExtension({
-    generateDocUrl(pageId: string, params?: ReferenceParams) {
-      return generateUrl({
-        ...params,
-        pageId,
-        workspaceId: workspaceService.workspace.id,
-        baseUrl: workspaceServerService.server?.baseUrl ?? location.origin,
-      });
-    },
-  });
-
-  return [GenerateDocUrl];
-}
-
-export function patchEdgelessClipboard() {
-  class EdgelessClipboardWatcher extends BlockServiceWatcher {
-    static override readonly flavour = 'affine:page';
-
-    override mounted() {
-      super.mounted();
-      this.blockService.disposables.add(
-        this.blockService.specSlots.viewConnected.on(view => {
-          const { component } = view;
-          if (component instanceof EdgelessRootBlockComponent) {
-            const AIChatBlockFlavour = AIChatBlockSchema.model.flavour;
-            const createFunc = (block: BlockSnapshot) => {
+  const oldSetup = rootSpec.setup;
+  rootSpec.setup = (slots, disposableGroup) => {
+    oldSetup?.(slots, disposableGroup);
+    disposableGroup.add(
+      slots.viewConnected.on(view => {
+        const component = view.component;
+        if (component instanceof EdgelessRootBlockComponent) {
+          const AIChatBlockFlavour = AIChatBlockSchema.model.flavour;
+          const createFunc = (blocks: BlockSnapshot[]) => {
+            const blockIds = blocks.map(({ props }) => {
               const {
                 xywh,
                 scale,
@@ -516,8 +673,8 @@ export function patchEdgelessClipboard() {
                 sessionId,
                 rootDocId,
                 rootWorkspaceId,
-              } = block.props;
-              const blockId = component.service.crud.addBlock(
+              } = props;
+              const blockId = component.service.addBlock(
                 AIChatBlockFlavour,
                 {
                   xywh,
@@ -530,91 +687,45 @@ export function patchEdgelessClipboard() {
                 component.surface.model.id
               );
               return blockId;
-            };
-            component.clipboardController.registerBlock(
-              AIChatBlockFlavour,
-              createFunc
-            );
-          }
-        })
-      );
-    }
-  }
+            });
+            return blockIds;
+          };
+          component.clipboardController.registerBlock(
+            AIChatBlockFlavour,
+            createFunc
+          );
+        }
+      })
+    );
+  };
 
-  return EdgelessClipboardWatcher;
+  return specs;
 }
 
 @customElement('affine-linked-doc-ref-block')
+// @ts-expect-error ignore private warning for overriding _load
 export class LinkedDocBlockComponent extends EmbedLinkedDocBlockComponent {
-  override getInitialState() {
-    return {
-      loading: false,
-      isBannerEmpty: true,
-    };
+  override async _load() {
+    this.isBannerEmpty = true;
   }
 }
 
-export function patchForSharedPage() {
-  const extension: ExtensionType = {
-    setup: di => {
-      di.override(
-        BlockViewIdentifier('affine:embed-linked-doc'),
-        () => literal`affine-linked-doc-ref-block`
-      );
-      di.override(
-        BlockViewIdentifier('affine:embed-synced-doc'),
-        () => literal`affine-linked-doc-ref-block`
-      );
-    },
-  };
-  return extension;
-}
+export function patchForSharedPage(specs: BlockSpec[]) {
+  return specs.map(spec => {
+    const linkedDocNames = [
+      'affine:embed-linked-doc',
+      'affine:embed-synced-doc',
+    ];
 
-export function patchForMobile() {
-  const extensions: ExtensionType[] = [
-    {
-      setup: di => {
-        const pageConfigIdentifier = ConfigIdentifier('affine:page');
-        const prev = di.getFactory(pageConfigIdentifier);
-
-        di.override(pageConfigIdentifier, provider => {
-          return {
-            ...prev?.(provider),
-            keyboardToolbar: createKeyboardToolbarConfig(),
-          } satisfies RootBlockConfig;
-        });
-      },
-    },
-    MobileSpecsPatches,
-  ];
-  return extensions;
-}
-
-export function patchForAttachmentEmbedViews(
-  reactToLit: (
-    element: ElementOrFactory,
-    rerendering?: boolean
-  ) => TemplateResult
-): ExtensionType {
-  return {
-    setup: di => {
-      di.override(AttachmentEmbedConfigIdentifier('pdf'), () => ({
-        name: 'pdf',
-        check: (model, maxFileSize) =>
-          model.type === 'application/pdf' && model.size <= maxFileSize,
-        action: model => {
-          const bound = Bound.deserialize(model.xywh);
-          bound.w = 537 + 24 + 2;
-          bound.h = 759 + 46 + 24 + 2;
-          model.doc.updateBlock(model, {
-            embed: true,
-            style: 'pdf',
-            xywh: bound.serialize(),
-          });
+    if (linkedDocNames.includes(spec.schema.model.flavour)) {
+      spec = {
+        ...spec,
+        view: {
+          component: literal`affine-linked-doc-ref-block`,
+          widgets: {},
         },
-        template: (model, _blobUrl) =>
-          reactToLit(<AttachmentEmbedPreview model={model} />, false),
-      }));
-    },
-  };
+      };
+    }
+    return spec;
+  });
 }

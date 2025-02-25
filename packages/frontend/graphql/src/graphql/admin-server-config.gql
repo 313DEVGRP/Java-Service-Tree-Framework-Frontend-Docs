@@ -10,7 +10,7 @@ query adminServerConfig {
     type
     initialized
     credentialsRequirement {
-      ...CredentialsRequirements
+      ...CredentialsRequirement
     }
     availableUserFeatures
   }

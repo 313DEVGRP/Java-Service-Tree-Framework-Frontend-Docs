@@ -1,8 +1,8 @@
-import { useDeleteCollectionInfo } from '@affine/core/components/hooks/affine/use-delete-collection-info';
-import { WorkspaceService } from '@affine/core/modules/workspace';
+import { useDeleteCollectionInfo } from '@affine/core/hooks/affine/use-delete-collection-info';
 import type { Collection, DeleteCollectionInfo } from '@affine/env/filter';
 import { Trans } from '@affine/i18n';
-import { useService } from '@toeverything/infra';
+import { useService, WorkspaceService } from '@toeverything/infra';
+import type { ReactElement } from 'react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { CollectionService } from '../../../modules/collection';
@@ -42,10 +42,12 @@ export const VirtualizedCollectionList = ({
   collections,
   collectionMetas,
   setHideHeaderCreateNewCollection,
+  node,
   handleCreateCollection,
 }: {
   collections: Collection[];
   collectionMetas: CollectionMeta[];
+  node: ReactElement | null;
   handleCreateCollection: () => void;
   setHideHeaderCreateNewCollection: (hide: boolean) => void;
 }) => {
@@ -64,8 +66,8 @@ export const VirtualizedCollectionList = ({
   });
 
   const filteredSelectedCollectionIds = useMemo(() => {
-    const ids = new Set(collections.map(collection => collection.id));
-    return selectedCollectionIds.filter(id => ids.has(id));
+    const ids = collections.map(collection => collection.id);
+    return selectedCollectionIds.filter(id => ids.includes(id));
   }, [collections, selectedCollectionIds]);
 
   const hideFloatingToolbar = useCallback(() => {
@@ -105,7 +107,9 @@ export const VirtualizedCollectionList = ({
         atTopThreshold={80}
         atTopStateChange={setHideHeaderCreateNewCollection}
         onSelectionActiveChange={setShowFloatingToolbar}
-        heading={<CollectionListHeader onCreate={handleCreateCollection} />}
+        heading={
+          <CollectionListHeader node={node} onCreate={handleCreateCollection} />
+        }
         selectedIds={filteredSelectedCollectionIds}
         onSelectedIdsChange={setSelectedCollectionIds}
         items={collectionMetas}
@@ -119,7 +123,7 @@ export const VirtualizedCollectionList = ({
         open={showFloatingToolbar}
         content={
           <Trans
-            i18nKey="com.affine.collection.toolbar.selected"
+            i18nKey="com.arms.collection.toolbar.selected"
             count={selectedCollectionIds.length}
           >
             <div style={{ color: 'var(--affine-text-secondary-color)' }}>

@@ -1,19 +1,18 @@
 import type { useI18n } from '@affine/i18n';
-import { track } from '@affine/track';
 import { ContactWithUsIcon, NewIcon } from '@blocksuite/icons/rc';
+import type { createStore } from 'jotai';
 
-import type { GlobalDialogService } from '../modules/dialogs';
-import type { UrlService } from '../modules/url';
+import { openSettingModalAtom } from '../atoms';
+import { track } from '../mixpanel';
+import { popupWindow } from '../utils';
 import { registerAffineCommand } from './registry';
 
 export function registerAffineHelpCommands({
   t,
-  urlService,
-  globalDialogService,
+  store,
 }: {
   t: ReturnType<typeof useI18n>;
-  urlService: UrlService;
-  globalDialogService: GlobalDialogService;
+  store: ReturnType<typeof createStore>;
 }) {
   const unsubs: Array<() => void> = [];
   unsubs.push(
@@ -21,10 +20,10 @@ export function registerAffineHelpCommands({
       id: 'affine:help-whats-new',
       category: 'affine:help',
       icon: <NewIcon />,
-      label: t['com.affine.cmdk.affine.whats-new'](),
+      label: t['com.arms.cmdk.affine.whats-new'](),
       run() {
         track.$.cmdk.help.openChangelog();
-        urlService.openPopupWindow(BUILD_CONFIG.changelogUrl);
+        popupWindow(runtimeConfig.changelogUrl);
       },
     })
   );
@@ -33,10 +32,11 @@ export function registerAffineHelpCommands({
       id: 'affine:help-contact-us',
       category: 'affine:help',
       icon: <ContactWithUsIcon />,
-      label: t['com.affine.cmdk.affine.contact-us'](),
+      label: t['com.arms.cmdk.affine.contact-us'](),
       run() {
         track.$.cmdk.help.contactUs();
-        globalDialogService.open('setting', {
+        store.set(openSettingModalAtom, {
+          open: true,
           activeTab: 'about',
           workspaceMetadata: null,
         });

@@ -49,12 +49,6 @@ export const treeLine = style({
     height: 2,
     right: 0,
   },
-
-  selectors: {
-    ['&[data-no-terminal="true"]::before']: {
-      display: 'none',
-    },
-  },
 });
 
 export const lineAboveStyles = style({
@@ -149,7 +143,7 @@ export const left = style({
 
 export const edgeLine = style({
   vars: {
-    [terminalSize]: '6px',
+    [terminalSize]: '8px',
   },
   display: 'block',
   position: 'absolute',
@@ -162,17 +156,11 @@ export const edgeLine = style({
   // Terminal
   '::before': {
     content: '""',
-    width: 0,
-    height: 0,
+    width: terminalSize,
+    height: terminalSize,
     boxSizing: 'border-box',
     position: 'absolute',
     border: `${terminalSize} solid ${cssVar('--affine-primary-color')}`,
     borderRadius: '50%',
-  },
-
-  selectors: {
-    ['&[data-no-terminal="true"]::before']: {
-      display: 'none',
-    },
   },
 });

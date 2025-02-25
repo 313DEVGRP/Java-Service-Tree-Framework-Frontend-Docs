@@ -1,4 +1,4 @@
-import type { Doc } from '@blocksuite/affine/store';
+import type { Doc } from '@blocksuite/store';
 import type { Atom } from 'jotai';
 import { atom } from 'jotai';
 
@@ -19,10 +19,6 @@ export const getPagePreviewText = (page: Doc) => {
   let count = MAX_SEARCH_BLOCK_COUNT;
   while (queue.length && previewLenNeeded > 0 && count-- > 0) {
     const block = queue.shift();
-    // if preview length is enough, skip the rest of the blocks
-    if (preview.join(' ').trim().length >= MAX_PREVIEW_LENGTH) {
-      break;
-    }
     if (!block) {
       console.error('Unexpected empty block');
       break;
@@ -55,7 +51,7 @@ export const getPagePreviewText = (page: Doc) => {
       }
     }
   }
-  return preview.join(' ').trim().slice(0, MAX_PREVIEW_LENGTH);
+  return preview.join(' ').slice(0, MAX_PREVIEW_LENGTH);
 };
 
 const emptyAtom = atom<string>('');

@@ -1,5 +1,4 @@
 import clsx from 'clsx';
-import type { ReactNode } from 'react';
 
 import type { InputProps } from '../../ui/input';
 import { Input } from '../../ui/input';
@@ -7,7 +6,7 @@ import * as styles from './share.css';
 export type AuthInputProps = InputProps & {
   label?: string;
   error?: boolean;
-  errorHint?: ReactNode;
+  errorHint?: string;
   withoutHint?: boolean;
   onEnter?: () => void;
 };
@@ -31,7 +30,11 @@ export const AuthInput = ({
         className={clsx(className)}
         size="extraLarge"
         status={error ? 'error' : 'default'}
-        onEnter={onEnter}
+        onKeyDown={e => {
+          if (e.key === 'Enter') {
+            onEnter?.();
+          }
+        }}
         {...inputProps}
       />
       {error && errorHint && !withoutHint ? (

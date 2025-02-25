@@ -1,25 +1,30 @@
 import { BrowserWarning, LocalDemoTips } from '@affine/component/affine-banner';
+import { WorkspaceFlavour } from '@affine/env/workspace';
 import { Trans, useI18n } from '@affine/i18n';
-import { useLiveData, useService } from '@toeverything/infra';
+import { useLiveData, useService, type Workspace } from '@toeverything/infra';
+import { useSetAtom } from 'jotai';
 import { useCallback, useState } from 'react';
 
-import { useEnableCloud } from '../components/hooks/affine/use-enable-cloud';
+import { authAtom } from '../atoms';
+import { useEnableCloud } from '../hooks/affine/use-enable-cloud';
 import { AuthService } from '../modules/cloud';
-import { GlobalDialogService } from '../modules/dialogs';
-import type { Workspace } from '../modules/workspace';
 
 const minimumChromeVersion = 106;
 
 const shouldShowWarning = (() => {
-  if (BUILD_CONFIG.isElectron) {
+  if (environment.isDesktop) {
     // even though desktop has compatibility issues,
     //  we don't want to show the warning
     return false;
   }
-  if (BUILD_CONFIG.isMobileEdition) {
+  if (!environment.isBrowser) {
+    // disable in SSR
+    return false;
+  }
+  if (environment.isMobile) {
     return true;
   }
-  if (environment.isChrome && environment.chromeVersion) {
+  if (environment.isChrome) {
     return environment.chromeVersion < minimumChromeVersion;
   }
   return false;
@@ -27,15 +32,15 @@ const shouldShowWarning = (() => {
 
 const OSWarningMessage = () => {
   const t = useI18n();
-  const notChrome = !environment.isChrome;
+  const notChrome = environment.isBrowser && !environment.isChrome;
   const notGoodVersion =
+    environment.isBrowser &&
     environment.isChrome &&
-    environment.chromeVersion &&
     environment.chromeVersion < minimumChromeVersion;
 
   // TODO(@L-Sun): remove this message when mobile version is able to edit.
-  if (environment.isMobile) {
-    return <span>{t['com.affine.top-tip.mobile']()}</span>;
+  if ('isMobile' in environment && environment.isMobile) {
+    return <span>{t['com.arms.top-tip.mobile']()}</span>;
   }
 
   if (notChrome) {
@@ -68,15 +73,15 @@ export const TopTip = ({
   const [showLocalDemoTips, setShowLocalDemoTips] = useState(true);
   const confirmEnableCloud = useEnableCloud();
 
-  const globalDialogService = useService(GlobalDialogService);
+  const setAuthModal = useSetAtom(authAtom);
   const onLogin = useCallback(() => {
-    globalDialogService.open('sign-in', {});
-  }, [globalDialogService]);
+    setAuthModal({ openModal: true, state: 'signIn' });
+  }, [setAuthModal]);
 
   if (
-    !BUILD_CONFIG.isElectron &&
     showLocalDemoTips &&
-    workspace.flavour === 'local'
+    !environment.isDesktop &&
+    workspace.flavour === WorkspaceFlavour.LOCAL
   ) {
     return (
       <LocalDemoTips

@@ -1,17 +1,13 @@
-import type { EditorHost } from '@blocksuite/affine/block-std';
+import type { EditorHost } from '@blocksuite/block-std';
 import type {
   AffineAIPanelWidgetConfig,
   MindmapStyle,
-} from '@blocksuite/affine/blocks';
-import {
-  markdownToMindmap,
-  MiniMindmapPreview,
-} from '@blocksuite/affine/blocks';
-import { noop } from '@blocksuite/affine/global/utils';
+} from '@blocksuite/blocks';
+import { markdownToMindmap, MiniMindmapPreview } from '@blocksuite/blocks';
+import { noop } from '@blocksuite/global/utils';
 import { html, nothing } from 'lit';
 
-import { getAIPanelWidget } from '../utils/ai-widgets';
-import type { AIContext } from '../utils/context';
+import { getAIPanel } from '../ai-panel';
 
 noop(MiniMindmapPreview);
 
@@ -20,12 +16,15 @@ export const createMindmapRenderer: (
   /**
    * Used to store data for later use during rendering.
    */
-  ctx: AIContext,
+  ctx: {
+    get: () => Record<string, unknown>;
+    set: (data: Record<string, unknown>) => void;
+  },
   style?: MindmapStyle
 ) => AffineAIPanelWidgetConfig['answerRenderer'] = (host, ctx, style) => {
   return (answer, state) => {
     if (state === 'generating') {
-      const panel = getAIPanelWidget(host);
+      const panel = getAIPanel(host);
       panel.generatingElement?.updateLoadingProgress(2);
     }
 
@@ -53,21 +52,27 @@ export const createMindmapExecuteRenderer: (
   /**
    * Used to store data for later use during rendering.
    */
-  ctx: AIContext,
-  handler: (host: EditorHost, ctx: AIContext) => void
+  ctx: {
+    get: () => Record<string, unknown>;
+    set: (data: Record<string, unknown>) => void;
+  },
+  handler: (ctx: {
+    get: () => Record<string, unknown>;
+    set: (data: Record<string, unknown>) => void;
+  }) => void
 ) => AffineAIPanelWidgetConfig['answerRenderer'] = (host, ctx, handler) => {
   return (answer, state) => {
     if (state !== 'finished') {
-      const panel = getAIPanelWidget(host);
+      const panel = getAIPanel(host);
       panel.generatingElement?.updateLoadingProgress(2);
       return nothing;
     }
 
     ctx.set({
-      node: markdownToMindmap(answer, host.doc, host.std.provider),
+      node: markdownToMindmap(answer, host.doc),
     });
 
-    handler(host, ctx);
+    handler(ctx);
 
     return nothing;
   };

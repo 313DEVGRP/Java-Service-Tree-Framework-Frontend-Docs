@@ -1,12 +1,12 @@
 import { toast, useConfirmModal } from '@affine/component';
-import { useBlockSuiteMetaHelper } from '@affine/core/components/hooks/affine/use-block-suite-meta-helper';
-import { useBlockSuiteDocMeta } from '@affine/core/components/hooks/use-block-suite-page-meta';
-import { WorkspaceService } from '@affine/core/modules/workspace';
+import { useBlockSuiteMetaHelper } from '@affine/core/hooks/affine/use-block-suite-meta-helper';
+import { useBlockSuiteDocMeta } from '@affine/core/hooks/use-block-suite-page-meta';
 import { Trans, useI18n } from '@affine/i18n';
-import type { DocMeta } from '@blocksuite/affine/store';
-import { useService } from '@toeverything/infra';
+import type { DocMeta } from '@blocksuite/store';
+import { useService, WorkspaceService } from '@toeverything/infra';
 import { useCallback, useMemo, useRef, useState } from 'react';
 
+import { usePageHelper } from '../blocksuite/block-suite-page-list/utils';
 import { ListFloatingToolbar } from './components/list-floating-toolbar';
 import { usePageHeaderColsDef } from './header-col-def';
 import { TrashOperationCell } from './operation-cell';
@@ -19,11 +19,14 @@ import { VirtualizedList } from './virtualized-list';
 export const VirtualizedTrashList = () => {
   const currentWorkspace = useService(WorkspaceService).workspace;
   const docCollection = currentWorkspace.docCollection;
-  const { restoreFromTrash, permanentlyDeletePage } = useBlockSuiteMetaHelper();
+  const { restoreFromTrash, permanentlyDeletePage } =
+    useBlockSuiteMetaHelper(docCollection);
   const pageMetas = useBlockSuiteDocMeta(docCollection);
   const filteredPageMetas = useFilteredPageMetas(pageMetas, {
     trash: true,
   });
+
+  const { isPreferredEdgeless } = usePageHelper(docCollection);
 
   const listRef = useRef<ItemListHandle>(null);
   const [showFloatingToolbar, setShowFloatingToolbar] = useState(false);
@@ -34,8 +37,8 @@ export const VirtualizedTrashList = () => {
   const pageHeaderColsDef = usePageHeaderColsDef();
 
   const filteredSelectedPageIds = useMemo(() => {
-    const ids = new Set(filteredPageMetas.map(page => page.id));
-    return selectedPageIds.filter(id => ids.has(id));
+    const ids = filteredPageMetas.map(page => page.id);
+    return selectedPageIds.filter(id => ids.includes(id));
   }, [filteredPageMetas, selectedPageIds]);
 
   const hideFloatingToolbar = useCallback(() => {
@@ -47,7 +50,7 @@ export const VirtualizedTrashList = () => {
       permanentlyDeletePage(pageId);
     });
     hideFloatingToolbar();
-    toast(t['com.affine.toastMessage.permanentlyDeleted']());
+    toast(t['com.arms.toastMessage.permanentlyDeleted']());
   }, [filteredSelectedPageIds, hideFloatingToolbar, permanentlyDeletePage, t]);
 
   const handleMultiRestore = useCallback(() => {
@@ -56,7 +59,7 @@ export const VirtualizedTrashList = () => {
     });
     hideFloatingToolbar();
     toast(
-      t['com.affine.toastMessage.restored']({
+      t['com.arms.toastMessage.restored']({
         title: filteredSelectedPageIds.length > 1 ? 'docs' : 'doc',
       })
     );
@@ -67,10 +70,10 @@ export const VirtualizedTrashList = () => {
       return;
     }
     openConfirmModal({
-      title: `${t['com.affine.trashOperation.deletePermanently']()}?`,
-      description: t['com.affine.trashOperation.deleteDescription'](),
+      title: `${t['com.arms.trashOperation.deletePermanently']()}?`,
+      description: t['com.arms.trashOperation.deleteDescription'](),
       cancelText: t['Cancel'](),
-      confirmText: t['com.affine.trashOperation.delete'](),
+      confirmText: t['com.arms.trashOperation.delete'](),
       confirmButtonOptions: {
         variant: 'error',
       },
@@ -84,14 +87,14 @@ export const VirtualizedTrashList = () => {
       const onRestorePage = () => {
         restoreFromTrash(page.id);
         toast(
-          t['com.affine.toastMessage.restored']({
+          t['com.arms.toastMessage.restored']({
             title: page.title || 'Untitled',
           })
         );
       };
       const onPermanentlyDeletePage = () => {
         permanentlyDeletePage(page.id);
-        toast(t['com.affine.toastMessage.permanentlyDeleted']());
+        toast(t['com.arms.toastMessage.permanentlyDeleted']());
       };
 
       return (
@@ -118,6 +121,7 @@ export const VirtualizedTrashList = () => {
         selectable="toggle"
         items={filteredPageMetas}
         rowAsLink
+        isPreferredEdgeless={isPreferredEdgeless}
         onSelectionActiveChange={setShowFloatingToolbar}
         docCollection={currentWorkspace.docCollection}
         operationsRenderer={pageOperationsRenderer}
@@ -133,7 +137,7 @@ export const VirtualizedTrashList = () => {
         onRestore={handleMultiRestore}
         content={
           <Trans
-            i18nKey="com.affine.page.toolbar.selected"
+            i18nKey="com.arms.page.toolbar.selected"
             count={filteredSelectedPageIds.length}
           >
             <div style={{ color: 'var(--affine-text-secondary-color)' }}>

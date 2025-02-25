@@ -1,4 +1,3 @@
-import { cssVarV2 } from '@toeverything/theme/v2';
 import { keyframes, style } from '@vanilla-extract/css';
 
 import { block } from '../articles/blocks.css';
@@ -17,7 +16,7 @@ export const switchButtons = style({
 
   selectors: {
     // indicator
-    '&::before': {
+    '&::after': {
       content: '',
       width: '48px',
       height: '48px',
@@ -27,28 +26,25 @@ export const switchButtons = style({
       transition: 'transform 0.15s ease',
       boxShadow: 'var(--affine-shadow-1)',
     },
-    '&[data-mode="edgeless"]::before': {
+    '&[data-mode="edgeless"]::after': {
       transform: `translateX(64px)`,
     },
   },
 });
 
 export const switchButton = style({
-  width: 48,
-  height: 48,
-  fontSize: 36,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
+  transform: 'scale(2)',
   boxShadow: 'none',
   opacity: 0.6,
-  cursor: 'pointer',
-  color: cssVarV2('switch/iconColor/default'),
-  position: 'relative',
   selectors: {
+    '&:nth-child(1)': {
+      transformOrigin: 'left',
+    },
+    '&:nth-child(2)': {
+      transformOrigin: 'right',
+    },
     '&[data-active="true"]': {
       opacity: 1,
-      color: cssVarV2('switch/iconColor/active'),
     },
   },
 });

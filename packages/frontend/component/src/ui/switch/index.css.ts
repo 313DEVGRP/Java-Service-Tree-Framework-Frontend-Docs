@@ -1,18 +1,6 @@
 import { cssVar } from '@toeverything/theme';
-import { createVar, style } from '@vanilla-extract/css';
-
-export const switchHeightVar = createVar('switchSize');
-export const switchPaddingVar = createVar('switchPadding');
-const switchWidthVar = createVar('switchWidth');
-const dotSizeVar = createVar('dotSize');
-
+import { style } from '@vanilla-extract/css';
 export const labelStyle = style({
-  vars: {
-    [switchHeightVar]: '26px',
-    [switchPaddingVar]: '3px',
-    [switchWidthVar]: `calc((${switchHeightVar} - ${switchPaddingVar}) * 2)`,
-    [dotSizeVar]: `calc(${switchHeightVar} - ${switchPaddingVar} * 2)`,
-  },
   display: 'flex',
   alignItems: 'center',
   gap: '10px',
@@ -24,8 +12,8 @@ export const inputStyle = style({
 });
 export const switchStyle = style({
   position: 'relative',
-  height: switchHeightVar,
-  width: switchWidthVar,
+  width: '46px',
+  height: '26px',
   background: cssVar('toggleDisableBackgroundColor'),
   borderRadius: '37px',
   transition: '200ms all',
@@ -34,12 +22,12 @@ export const switchStyle = style({
       transition: 'all .2s cubic-bezier(0.27, 0.2, 0.25, 1.51)',
       content: '""',
       position: 'absolute',
-      width: dotSizeVar,
-      height: dotSizeVar,
+      width: '20px',
+      height: '20px',
       borderRadius: '50%',
       top: '50%',
       background: cssVar('toggleCircleBackgroundColor'),
-      transform: `translate(${switchPaddingVar}, -50%)`,
+      transform: 'translate(3px, -50%)',
     },
   },
 });
@@ -48,7 +36,7 @@ export const switchCheckedStyle = style({
   selectors: {
     '&:before': {
       borderColor: cssVar('pureBlack10'),
-      transform: `translate(calc(${switchHeightVar} - ${switchPaddingVar}), -50%)`,
+      transform: 'translate(23px,-50%)',
     },
   },
 });

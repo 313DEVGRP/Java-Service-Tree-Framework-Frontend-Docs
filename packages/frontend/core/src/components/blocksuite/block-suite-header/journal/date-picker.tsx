@@ -1,23 +1,27 @@
 import type { WeekDatePickerHandle } from '@affine/component';
 import { WeekDatePicker } from '@affine/component';
-import { useJournalRouteHelper } from '@affine/core/components/hooks/use-journal';
-import { JournalService } from '@affine/core/modules/journal';
-import type { Doc } from '@blocksuite/affine/store';
-import { useLiveData, useService } from '@toeverything/infra';
+import {
+  useJournalInfoHelper,
+  useJournalRouteHelper,
+} from '@affine/core/hooks/use-journal';
+import type { DocCollection } from '@affine/core/shared';
+import type { Doc } from '@blocksuite/store';
 import dayjs from 'dayjs';
 import { useEffect, useRef, useState } from 'react';
 
 export interface JournalWeekDatePickerProps {
+  docCollection: DocCollection;
   page: Doc;
 }
 
 const weekStyle = { maxWidth: 800, width: '100%' };
-export const JournalWeekDatePicker = ({ page }: JournalWeekDatePickerProps) => {
+export const JournalWeekDatePicker = ({
+  docCollection,
+  page,
+}: JournalWeekDatePickerProps) => {
   const handleRef = useRef<WeekDatePickerHandle>(null);
-  const journalService = useService(JournalService);
-  const journalDateStr = useLiveData(journalService.journalDate$(page.id));
-  const journalDate = journalDateStr ? dayjs(journalDateStr) : null;
-  const { openJournal } = useJournalRouteHelper();
+  const { journalDate } = useJournalInfoHelper(docCollection, page.id);
+  const { openJournal } = useJournalRouteHelper(docCollection);
   const [date, setDate] = useState(
     (journalDate ?? dayjs()).format('YYYY-MM-DD')
   );
@@ -30,7 +34,6 @@ export const JournalWeekDatePicker = ({ page }: JournalWeekDatePickerProps) => {
 
   return (
     <WeekDatePicker
-      data-testid="journal-week-picker"
       handleRef={handleRef}
       style={weekStyle}
       value={date}

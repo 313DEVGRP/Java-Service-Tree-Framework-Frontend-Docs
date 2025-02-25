@@ -1,5 +1,4 @@
 export type CollapsibleSectionName =
-  | 'recent'
   | 'collections'
   | 'favorites'
   | 'tags'

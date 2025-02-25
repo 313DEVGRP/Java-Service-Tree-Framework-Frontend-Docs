@@ -1,17 +1,14 @@
-import type { WorkspaceServerService } from '@affine/core/modules/cloud';
+import type { GraphQLService } from '@affine/core/modules/cloud';
 import { getWorkspacePublicPagesQuery } from '@affine/graphql';
 import { Store } from '@toeverything/infra';
 
 export class ShareDocsStore extends Store {
-  constructor(private readonly workspaceServerService: WorkspaceServerService) {
+  constructor(private readonly graphqlService: GraphQLService) {
     super();
   }
 
   async getWorkspacesShareDocs(workspaceId: string, signal?: AbortSignal) {
-    if (!this.workspaceServerService.server) {
-      throw new Error('No Server');
-    }
-    const data = await this.workspaceServerService.server.gql({
+    const data = await this.graphqlService.gql({
       query: getWorkspacePublicPagesQuery,
       variables: {
         workspaceId: workspaceId,

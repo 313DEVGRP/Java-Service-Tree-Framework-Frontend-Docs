@@ -1,7 +1,7 @@
 import { OnEvent, Service } from '@toeverything/infra';
 
 import { UserFeature } from '../entities/user-feature';
-import { AccountChanged } from '../events/account-changed';
+import { AccountChanged } from './auth';
 
 @OnEvent(AccountChanged, e => e.onAccountChanged)
 export class UserFeatureService extends Service {

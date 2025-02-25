@@ -4,11 +4,10 @@ import {
   type CommandCategory,
   PreconditionStrategy,
 } from '@affine/core/commands';
-import type { DocMode } from '@blocksuite/affine/blocks';
+import type { DocMode, GlobalContextService } from '@toeverything/infra';
 import { Entity, LiveData } from '@toeverything/infra';
 import Fuse from 'fuse.js';
 
-import type { GlobalContextService } from '../../global-context';
 import type { QuickSearchSession } from '../providers/quick-search-provider';
 import type { QuickSearchGroup } from '../types/group';
 import type { QuickSearchItem } from '../types/item';
@@ -17,81 +16,81 @@ import { highlighter } from '../utils/highlighter';
 const categories = {
   'affine:recent': {
     id: 'command:affine:recent',
-    label: { i18nKey: 'com.affine.cmdk.affine.category.affine.recent' },
+    label: { key: 'com.arms.cmdk.affine.category.affine.recent' },
     score: 10,
   },
   'affine:navigation': {
     id: 'command:affine:navigation',
     label: {
-      i18nKey: 'com.affine.cmdk.affine.category.affine.navigation',
+      key: 'com.arms.cmdk.affine.category.affine.navigation',
     },
     score: 10,
   },
   'affine:creation': {
     id: 'command:affine:creation',
-    label: { i18nKey: 'com.affine.cmdk.affine.category.affine.creation' },
+    label: { key: 'com.arms.cmdk.affine.category.affine.creation' },
     score: 10,
   },
   'affine:general': {
     id: 'command:affine:general',
-    label: { i18nKey: 'com.affine.cmdk.affine.category.affine.general' },
+    label: { key: 'com.arms.cmdk.affine.category.affine.general' },
     score: 10,
   },
   'affine:layout': {
     id: 'command:affine:layout',
-    label: { i18nKey: 'com.affine.cmdk.affine.category.affine.layout' },
+    label: { key: 'com.arms.cmdk.affine.category.affine.layout' },
     score: 10,
   },
   'affine:pages': {
     id: 'command:affine:pages',
-    label: { i18nKey: 'com.affine.cmdk.affine.category.affine.pages' },
+    label: { key: 'com.arms.cmdk.affine.category.affine.pages' },
     score: 10,
   },
   'affine:edgeless': {
     id: 'command:affine:edgeless',
-    label: { i18nKey: 'com.affine.cmdk.affine.category.affine.edgeless' },
+    label: { key: 'com.arms.cmdk.affine.category.affine.edgeless' },
     score: 10,
   },
   'affine:collections': {
     id: 'command:affine:collections',
     label: {
-      i18nKey: 'com.affine.cmdk.affine.category.affine.collections',
+      key: 'com.arms.cmdk.affine.category.affine.collections',
     },
     score: 10,
   },
   'affine:settings': {
     id: 'command:affine:settings',
-    label: { i18nKey: 'com.affine.cmdk.affine.category.affine.settings' },
+    label: { key: 'com.arms.cmdk.affine.category.affine.settings' },
     score: 10,
   },
   'affine:updates': {
     id: 'command:affine:updates',
-    label: { i18nKey: 'com.affine.cmdk.affine.category.affine.updates' },
+    label: { key: 'com.arms.cmdk.affine.category.affine.updates' },
     score: 10,
   },
   'affine:help': {
     id: 'command:affine:help',
-    label: { i18nKey: 'com.affine.cmdk.affine.category.affine.help' },
+    label: { key: 'com.arms.cmdk.affine.category.affine.help' },
     score: 10,
   },
   'editor:edgeless': {
     id: 'command:editor:edgeless',
-    label: { i18nKey: 'com.affine.cmdk.affine.category.editor.edgeless' },
+    label: { key: 'com.arms.cmdk.affine.category.editor.edgeless' },
     score: 10,
   },
   'editor:insert-object': {
     id: 'command:editor:insert-object',
-    label: { i18nKey: 'com.affine.cmdk.affine.category.editor.insert-object' },
+    label: { key: 'com.arms.cmdk.affine.category.editor.insert-object' },
     score: 10,
   },
   'editor:page': {
     id: 'command:editor:page',
-    label: { i18nKey: 'com.affine.cmdk.affine.category.editor.page' },
+    label: { key: 'com.arms.cmdk.affine.category.editor.page' },
     score: 10,
   },
   'affine:results': {
     id: 'command:affine:results',
-    label: { i18nKey: 'com.affine.cmdk.affine.category.results' },
+    label: { key: 'com.arms.cmdk.affine.category.results' },
     score: 10,
   },
 } satisfies Required<{
@@ -186,12 +185,12 @@ export class CommandsQuickSearchSession
                 titleMatches ?? []
               ) ?? item.label.title,
             subTitle: item.label.subTitle
-              ? (highlighter(
+              ? highlighter(
                   item.label.subTitle,
                   '<b>',
                   '</b>',
                   subTitleMatches ?? []
-                ) ?? item.label.subTitle)
+                ) ?? item.label.subTitle
               : undefined,
           },
           group: categories[item.category],

@@ -34,7 +34,7 @@ export const LocalDemoTips = ({
   return (
     <div className={styles.tipsContainer} data-testid="local-demo-tips">
       <div className={styles.tipsMessage}>
-        {t['com.affine.banner.local-warning']()}
+        {t['com.arms.banner.local-warning']()}
       </div>
 
       <div className={styles.tipsRightItem}>
