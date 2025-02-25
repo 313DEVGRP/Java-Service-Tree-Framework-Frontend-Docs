@@ -1,9 +1,10 @@
-import type { EditorHost } from '@blocksuite/block-std';
-import type { EdgelessRootService } from '@blocksuite/blocks';
-import type { BlockSnapshot } from '@blocksuite/store';
+import type { EditorHost } from '@blocksuite/affine/block-std';
+import type { EdgelessRootService } from '@blocksuite/affine/blocks';
+import type { BlockSnapshot } from '@blocksuite/affine/store';
 
-import { markdownToSnapshot } from '../_common/markdown-utils';
-import { getSurfaceElementFromEditor } from '../_common/selection-utils';
+import { markdownToSnapshot } from '../../_common';
+import { getSurfaceElementFromEditor } from '../utils/selection-utils';
+import { createTemplateJob } from '../utils/template-job';
 import {
   basicTheme,
   type PPTDoc,
@@ -12,10 +13,11 @@ import {
 } from './template';
 
 export const PPTBuilder = (host: EditorHost) => {
-  const service = host.spec.getService<EdgelessRootService>('affine:page');
+  const service = host.std.getService<EdgelessRootService>('affine:page');
   const docs: PPTDoc[] = [];
   const contents: unknown[] = [];
   const allImages: TemplateImage[][] = [];
+  if (!service) return;
 
   const addDoc = async (block: BlockSnapshot) => {
     const sections = block.children.map(v => {
@@ -35,8 +37,7 @@ export const PPTBuilder = (host: EditorHost) => {
     };
     docs.push(doc);
 
-    if (doc.isCover) return;
-    const job = service.createTemplateJob('template');
+    const job = createTemplateJob(host);
     const { images, content } = await basicTheme(doc);
     contents.push(content);
     allImages.push(images);

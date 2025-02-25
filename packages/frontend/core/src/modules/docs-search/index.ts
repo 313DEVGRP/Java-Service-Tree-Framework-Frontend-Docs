@@ -1,17 +1,18 @@
 export { DocsSearchService } from './services/docs-search';
 
+import { type Framework } from '@toeverything/infra';
+
 import {
-  type Framework,
+  WorkspaceLocalState,
   WorkspaceScope,
   WorkspaceService,
-} from '@toeverything/infra';
-
+} from '../workspace';
 import { DocsIndexer } from './entities/docs-indexer';
 import { DocsSearchService } from './services/docs-search';
 
 export function configureDocsSearchModule(framework: Framework) {
   framework
     .scope(WorkspaceScope)
-    .service(DocsSearchService)
-    .entity(DocsIndexer, [WorkspaceService]);
+    .service(DocsSearchService, [WorkspaceService])
+    .entity(DocsIndexer, [WorkspaceService, WorkspaceLocalState]);
 }

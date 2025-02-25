@@ -22,7 +22,7 @@ export const ChangePasswordPage: FC<{
         .then(() => setHasSetUp(true))
         .catch(e =>
           notify.error({
-            title: t['com.arms.auth.password.set-failed'](),
+            title: t['com.affine.auth.password.set-failed'](),
             message: String(e),
           })
         );
@@ -34,13 +34,13 @@ export const ChangePasswordPage: FC<{
     <AuthPageContainer
       title={
         hasSetUp
-          ? t['com.arms.auth.reset.password.page.success']()
-          : t['com.arms.auth.reset.password.page.title']()
+          ? t['com.affine.auth.reset.password.page.success']()
+          : t['com.affine.auth.reset.password.page.title']()
       }
       subtitle={
         hasSetUp
-          ? t['com.arms.auth.sent.reset.password.success.message']()
-          : t['com.arms.auth.page.sent.email.subtitle']({
+          ? t['com.affine.auth.sent.reset.password.success.message']()
+          : t['com.affine.auth.page.sent.email.subtitle']({
               min: String(passwordLimits.minLength),
               max: String(passwordLimits.maxLength),
             })
@@ -48,7 +48,7 @@ export const ChangePasswordPage: FC<{
     >
       {hasSetUp ? (
         <Button variant="primary" size="large" onClick={onOpenAffine}>
-          {t['com.arms.auth.open.affine']()}
+          {t['com.affine.auth.open.affine']()}
         </Button>
       ) : (
         <SetPassword

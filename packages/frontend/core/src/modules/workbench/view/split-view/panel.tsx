@@ -1,4 +1,4 @@
-import { MenuIcon, MenuItem } from '@affine/component';
+import { MenuItem } from '@affine/component';
 import { useI18n } from '@affine/i18n';
 import {
   ExpandCloseIcon,
@@ -9,12 +9,12 @@ import {
 import { useSortable } from '@dnd-kit/sortable';
 import { useLiveData, useService } from '@toeverything/infra';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
-import type { SetStateAction } from 'jotai';
 import type {
   Dispatch,
   HTMLAttributes,
   PropsWithChildren,
   RefObject,
+  SetStateAction,
 } from 'react';
 import {
   memo,
@@ -38,6 +38,17 @@ export interface SplitViewPanelProps
     SetStateAction<Record<string, RefObject<HTMLDivElement | null>>>
   >;
 }
+
+export const SplitViewPanelContainer = ({
+  children,
+  ...props
+}: HTMLAttributes<HTMLDivElement>) => {
+  return (
+    <div className={styles.splitViewPanel} {...props}>
+      {children}
+    </div>
+  );
+};
 
 export const SplitViewPanel = memo(function SplitViewPanel({
   children,
@@ -85,9 +96,8 @@ export const SplitViewPanel = memo(function SplitViewPanel({
   );
 
   return (
-    <div
+    <SplitViewPanelContainer
       style={style}
-      className={styles.splitViewPanel}
       data-is-dragging={isDragging}
       data-is-active={isActive && views.length > 1}
       data-is-last={isLast}
@@ -110,7 +120,7 @@ export const SplitViewPanel = memo(function SplitViewPanel({
         ) : null}
       </div>
       {children}
-    </div>
+    </SplitViewPanelContainer>
   );
 });
 
@@ -137,31 +147,22 @@ const SplitViewMenu = ({ view }: { view: View }) => {
 
   const CloseItem =
     views.length > 1 ? (
-      <MenuItem
-        preFix={<MenuIcon icon={<ExpandCloseIcon />} />}
-        onClick={handleClose}
-      >
-        {t['com.arms.workbench.split-view-menu.close']()}
+      <MenuItem prefixIcon={<ExpandCloseIcon />} onClick={handleClose}>
+        {t['com.affine.workbench.split-view-menu.close']()}
       </MenuItem>
     ) : null;
 
   const MoveLeftItem =
     viewIndex > 0 && views.length > 1 ? (
-      <MenuItem
-        onClick={handleMoveLeft}
-        preFix={<MenuIcon icon={<MoveToLeftDuotoneIcon />} />}
-      >
-        {t['com.arms.workbench.split-view-menu.move-left']()}
+      <MenuItem onClick={handleMoveLeft} prefixIcon={<MoveToLeftDuotoneIcon />}>
+        {t['com.affine.workbench.split-view-menu.move-left']()}
       </MenuItem>
     ) : null;
 
   const FullScreenItem =
     views.length > 1 ? (
-      <MenuItem
-        onClick={handleCloseOthers}
-        preFix={<MenuIcon icon={<SoloViewIcon />} />}
-      >
-        {t['com.arms.workbench.split-view-menu.keep-this-one']()}
+      <MenuItem onClick={handleCloseOthers} prefixIcon={<SoloViewIcon />}>
+        {t['com.affine.workbench.split-view-menu.keep-this-one']()}
       </MenuItem>
     ) : null;
 
@@ -169,9 +170,9 @@ const SplitViewMenu = ({ view }: { view: View }) => {
     viewIndex < views.length - 1 ? (
       <MenuItem
         onClick={handleMoveRight}
-        preFix={<MenuIcon icon={<MoveToRightDuotoneIcon />} />}
+        prefixIcon={<MoveToRightDuotoneIcon />}
       >
-        {t['com.arms.workbench.split-view-menu.move-right']()}
+        {t['com.affine.workbench.split-view-menu.move-right']()}
       </MenuItem>
     ) : null;
   return (

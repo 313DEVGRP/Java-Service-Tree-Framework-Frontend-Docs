@@ -18,7 +18,7 @@ export const Empty = ({
   const t = useI18n();
   return (
     <EmptyNodeChildren ref={dropTargetRef}>
-      {t['com.arms.rootAppSidebar.tags.no-doc']()}
+      {t['com.affine.rootAppSidebar.tags.no-doc']()}
     </EmptyNodeChildren>
   );
 };

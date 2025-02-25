@@ -29,10 +29,10 @@ export const DropEffect = ({
         <LinkIcon className={styles.icon} />
       )}
       {dropEffect === 'copy'
-        ? t['com.arms.rootAppSidebar.explorer.drop-effect.copy']()
+        ? t['com.affine.rootAppSidebar.explorer.drop-effect.copy']()
         : dropEffect === 'move'
-          ? t['com.arms.rootAppSidebar.explorer.drop-effect.move']()
-          : t['com.arms.rootAppSidebar.explorer.drop-effect.link']()}
+          ? t['com.affine.rootAppSidebar.explorer.drop-effect.move']()
+          : t['com.affine.rootAppSidebar.explorer.drop-effect.link']()}
     </div>,
     document.body
   );

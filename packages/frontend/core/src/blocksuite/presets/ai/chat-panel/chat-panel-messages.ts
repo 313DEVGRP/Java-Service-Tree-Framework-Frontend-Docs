@@ -1,30 +1,18 @@
-import '../messages/slides-renderer';
-import './ai-loading';
-import '../messages/text';
-import './actions/text';
-import './actions/action-wrapper';
-import './actions/make-real';
-import './actions/slides';
-import './actions/mindmap';
-import './actions/chat-text';
-import './actions/image-to-text';
-import './actions/image';
-import './chat-cards';
-import '../_common/components/chat-action-list';
-import '../_common/components/copy-more';
-
-import type { BaseSelection, EditorHost } from '@blocksuite/block-std';
-import { ShadowlessElement, WithDisposable } from '@blocksuite/block-std';
+import type { BaseSelection, EditorHost } from '@blocksuite/affine/block-std';
+import { ShadowlessElement } from '@blocksuite/affine/block-std';
 import {
   type AIError,
+  DocModeProvider,
   isInsidePageEditor,
   PaymentRequiredError,
   UnauthorizedError,
-} from '@blocksuite/blocks';
-import { css, html, nothing, type PropertyValues } from 'lit';
-import { customElement, property, query, state } from 'lit/decorators.js';
+} from '@blocksuite/affine/blocks';
+import { WithDisposable } from '@blocksuite/affine/global/utils';
+import { css, html, nothing } from 'lit';
+import { property, query, state } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
 import { styleMap } from 'lit/directives/style-map.js';
+import { debounce } from 'lodash-es';
 
 import {
   EdgelessEditorActions,
@@ -37,7 +25,6 @@ import type { ChatContextValue, ChatItem, ChatMessage } from './chat-context';
 import { HISTORY_IMAGE_ACTIONS } from './const';
 import { AIPreloadConfig } from './preload-config';
 
-@customElement('chat-panel-messages')
 export class ChatPanelMessages extends WithDisposable(ShadowlessElement) {
   static override styles = css`
     chat-panel-messages {
@@ -147,24 +134,10 @@ export class ChatPanelMessages extends WithDisposable(ShadowlessElement) {
   accessor updateContext!: (context: Partial<ChatContextValue>) => void;
 
   @query('.chat-panel-messages')
-  accessor messagesContainer!: HTMLDivElement;
+  accessor messagesContainer: HTMLDivElement | null = null;
 
   @state()
   accessor showChatCards = true;
-
-  protected override updated(changedProperties: PropertyValues) {
-    if (changedProperties.has('host')) {
-      const { disposables } = this;
-
-      disposables.add(
-        this.host.selection.slots.changed.on(() => {
-          this._selectionValue = this.host.selection.value;
-        })
-      );
-      const { docModeService } = this.host.spec.getService('affine:page');
-      disposables.add(docModeService.onModeChange(() => this.requestUpdate()));
-    }
-  }
 
   private _renderAIOnboarding() {
     return this.isLoading ||
@@ -212,6 +185,17 @@ export class ChatPanelMessages extends WithDisposable(ShadowlessElement) {
         </div>`;
   }
 
+  private readonly _onScroll = () => {
+    if (!this.messagesContainer) return;
+    const { clientHeight, scrollTop, scrollHeight } = this.messagesContainer;
+    this.showDownIndicator = scrollHeight - scrollTop - clientHeight > 200;
+  };
+
+  private readonly _debouncedOnScroll = debounce(
+    this._onScroll.bind(this),
+    100
+  );
+
   protected override render() {
     const { items } = this.chatContextValue;
     const { isLoading } = this;
@@ -236,12 +220,7 @@ export class ChatPanelMessages extends WithDisposable(ShadowlessElement) {
 
       <div
         class="chat-panel-messages"
-        @scroll=${(evt: Event) => {
-          const element = evt.target as HTMLDivElement;
-          this.showDownIndicator =
-            element.scrollHeight - element.scrollTop - element.clientHeight >
-            200;
-        }}
+        @scroll=${() => this._debouncedOnScroll()}
       >
         ${items.length === 0
           ? html`<div class="chat-panel-messages-placeholder">
@@ -257,13 +236,19 @@ export class ChatPanelMessages extends WithDisposable(ShadowlessElement) {
               </div>
               ${this._renderAIOnboarding()}
             </div> `
-          : repeat(filteredItems, (item, index) => {
-              const isLast = index === filteredItems.length - 1;
-              return html`<div class="message">
-                ${this.renderAvatar(item)}
-                <div class="item-wrapper">${this.renderItem(item, isLast)}</div>
-              </div>`;
-            })}
+          : repeat(
+              filteredItems,
+              item => ('role' in item ? item.id : item.sessionId),
+              (item, index) => {
+                const isLast = index === filteredItems.length - 1;
+                return html`<div class="message">
+                  ${this.renderAvatar(item)}
+                  <div class="item-wrapper">
+                    ${this.renderItem(item, isLast)}
+                  </div>
+                </div>`;
+              }
+            )}
         <chat-cards
           .updateContext=${this.updateContext}
           .host=${this.host}
@@ -272,18 +257,24 @@ export class ChatPanelMessages extends WithDisposable(ShadowlessElement) {
         ></chat-cards>
       </div>
       ${this.showDownIndicator
-        ? html`<div class="down-indicator" @click=${() => this.scrollToDown()}>
+        ? html`<div class="down-indicator" @click=${this.scrollToEnd}>
             ${DownArrowIcon}
           </div>`
         : nothing} `;
   }
 
-  override async connectedCallback() {
+  override connectedCallback() {
     super.connectedCallback();
+    const { disposables } = this;
+    const docModeService = this.host.std.get(DocModeProvider);
 
-    const res = await AIProvider.userInfo;
-    this.avatarUrl = res?.avatarUrl ?? '';
-    this.disposables.add(
+    Promise.resolve(AIProvider.userInfo)
+      .then(res => {
+        this.avatarUrl = res?.avatarUrl ?? '';
+      })
+      .catch(console.error);
+
+    disposables.add(
       AIProvider.slots.userInfo.on(userInfo => {
         const { status, error } = this.chatContextValue;
         this.avatarUrl = userInfo?.avatarUrl ?? '';
@@ -296,11 +287,21 @@ export class ChatPanelMessages extends WithDisposable(ShadowlessElement) {
         }
       })
     );
-
-    this.disposables.add(
+    disposables.add(
       AIProvider.slots.toggleChatCards.on(({ visible }) => {
         this.showChatCards = visible;
       })
+    );
+    disposables.add(
+      this.host.selection.slots.changed.on(() => {
+        this._selectionValue = this.host.selection.value;
+      })
+    );
+    disposables.add(
+      docModeService.onPrimaryModeChange(
+        () => this.requestUpdate(),
+        this.host.doc.id
+      )
     );
   }
 
@@ -388,7 +389,7 @@ export class ChatPanelMessages extends WithDisposable(ShadowlessElement) {
               : html`<div class="avatar"></div>`}
           </div>`
         : AffineAvatarIcon}
-      ${isUser ? 'You' : 'AFFINE AI'}
+      ${isUser ? 'You' : 'AFFiNE AI'}
     </div>`;
   }
 
@@ -396,8 +397,14 @@ export class ChatPanelMessages extends WithDisposable(ShadowlessElement) {
     return html` <ai-loading></ai-loading>`;
   }
 
-  scrollToDown() {
-    this.messagesContainer.scrollTo(0, this.messagesContainer.scrollHeight);
+  scrollToEnd() {
+    requestAnimationFrame(() => {
+      if (!this.messagesContainer) return;
+      this.messagesContainer.scrollTo({
+        top: this.messagesContainer.scrollHeight,
+        behavior: 'smooth',
+      });
+    });
   }
 
   retry = async () => {

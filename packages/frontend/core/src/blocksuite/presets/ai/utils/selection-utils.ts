@@ -1,24 +1,25 @@
-import type { EditorHost } from '@blocksuite/block-std';
+import type { EditorHost } from '@blocksuite/affine/block-std';
 import {
-  type CopilotSelectionController,
+  BlocksUtils,
+  type CopilotTool,
+  EdgelessRootService,
   type FrameBlockModel,
   ImageBlockModel,
   type SurfaceBlockComponent,
-} from '@blocksuite/blocks';
-import { BlocksUtils, EdgelessRootService } from '@blocksuite/blocks';
-import { assertExists } from '@blocksuite/global/utils';
+} from '@blocksuite/affine/blocks';
+import { assertExists } from '@blocksuite/affine/global/utils';
 import {
   type BlockModel,
   type DraftModel,
   Slice,
   toDraftModel,
-} from '@blocksuite/store';
+} from '@blocksuite/affine/store';
 
+import { getContentFromSlice } from '../../_common';
 import { getEdgelessCopilotWidget, getService } from './edgeless';
-import { getContentFromSlice } from './markdown-utils';
 
 export const getRootService = (host: EditorHost) => {
-  return host.std.spec.getService('affine:page');
+  return host.std.getService('affine:page');
 };
 
 export function getEdgelessRootFromEditor(editor: EditorHost) {
@@ -30,7 +31,7 @@ export function getEdgelessRootFromEditor(editor: EditorHost) {
   return edgelessRoot;
 }
 export function getEdgelessService(editor: EditorHost) {
-  const rootService = editor.std.spec.getService('affine:page');
+  const rootService = editor.std.getService('affine:page');
   if (rootService instanceof EdgelessRootService) {
     return rootService;
   }
@@ -62,7 +63,7 @@ export async function frameToCanvas(
 ) {
   const edgelessRoot = getEdgelessRootFromEditor(editor);
   const { notes, frames, shapes, images } = BlocksUtils.splitElements(
-    edgelessRoot.service.frame.getElementsInFrame(frame, true)
+    edgelessRoot.service.frame.getElementsInFrameBound(frame, true)
   );
   if (notes.length + frames.length + images.length + shapes.length === 0) {
     return;
@@ -213,7 +214,10 @@ export const getFirstImageInFrame = (
   editor: EditorHost
 ) => {
   const edgelessRoot = getEdgelessRootFromEditor(editor);
-  const elements = edgelessRoot.service.frame.getElementsInFrame(frame, false);
+  const elements = edgelessRoot.service.frame.getElementsInFrameBound(
+    frame,
+    false
+  );
   const image = elements.find(ele => {
     if (!BlocksUtils.isCanvasElement(ele)) {
       return ele.flavour === 'affine:image';
@@ -266,7 +270,7 @@ export const getSelectedImagesAsBlobs = async (host: EditorHost) => {
 };
 
 export const getSelectedNoteAnchor = (host: EditorHost, id: string) => {
-  return host.querySelector(`[data-portal-block-id="${id}"] .note-background`);
+  return host.querySelector(`affine-edgeless-note[data-block-id="${id}"]`);
 };
 
 export function getCopilotSelectedElems(
@@ -276,8 +280,8 @@ export function getCopilotSelectedElems(
   const copilotWidget = getEdgelessCopilotWidget(host);
 
   if (copilotWidget.visible) {
-    return (service.tool.controllers['copilot'] as CopilotSelectionController)
-      .selectedElements;
+    const currentTool = service.gfx.tool.currentTool$.peek() as CopilotTool;
+    return currentTool?.selectedElements ?? [];
   }
 
   return service.selection.selectedElements;

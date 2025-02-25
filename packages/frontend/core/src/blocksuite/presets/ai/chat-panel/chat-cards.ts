@@ -1,12 +1,13 @@
-import type { EditorHost } from '@blocksuite/block-std';
-import { WithDisposable } from '@blocksuite/block-std';
+import type { EditorHost } from '@blocksuite/affine/block-std';
 import {
   type ImageBlockModel,
   isInsideEdgelessEditor,
   type NoteBlockModel,
   NoteDisplayMode,
-} from '@blocksuite/blocks';
-import type { BlockModel } from '@blocksuite/store';
+} from '@blocksuite/affine/blocks';
+import { WithDisposable } from '@blocksuite/affine/global/utils';
+import type { BlockModel } from '@blocksuite/affine/store';
+import { captureException } from '@sentry/react';
 import {
   css,
   html,
@@ -15,7 +16,7 @@ import {
   type PropertyValues,
   type TemplateResult,
 } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
 import { styleMap } from 'lit/directives/style-map.js';
 
@@ -56,6 +57,11 @@ const cardsStyles = css`
       font-size: 14px;
       font-weight: 400;
       color: var(--affine-text-secondary-color);
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 `;
@@ -94,7 +100,6 @@ type Card = CardText | CardImage | CardBlock;
 
 const MAX_CARDS = 3;
 
-@customElement('chat-cards')
 export class ChatCards extends WithDisposable(LitElement) {
   static override styles = css`
     :host {
@@ -360,7 +365,7 @@ export class ChatCards extends WithDisposable(LitElement) {
           (
             this.host.doc.getBlock(data.currentImageSelections[0].blockId)
               ?.model as ImageBlockModel
-          ).caption ?? '';
+          )?.caption ?? '';
       }
 
       this._updateCards({
@@ -467,39 +472,47 @@ export class ChatCards extends WithDisposable(LitElement) {
     }
   }
 
-  protected override async willUpdate(changedProperties: PropertyValues) {
-    if (changedProperties.has('temporaryParams') && this.temporaryParams) {
-      const params = this.temporaryParams;
-      await this._appendCardWithParams(params);
-      this.temporaryParams = null;
-    }
-
-    if (changedProperties.has('host')) {
-      if (this._currentDocId === this.host.doc.id) return;
-      this._currentDocId = this.host.doc.id;
-      this.cards = [];
-
-      const { text, images } = await this._extractAll();
-      const hasText = text.length > 0;
-      const hasImages = images.length > 0;
-
-      // Currently only supports checking on first load
-      if (hasText || hasImages) {
-        const card: CardBlock = {
-          id: Date.now(),
-          type: CardType.Doc,
-        };
-        if (hasText) {
-          card.text = text;
-        }
-        if (hasImages) {
-          card.images = images;
+  protected override willUpdate(changedProperties: PropertyValues) {
+    Promise.resolve()
+      .then(async () => {
+        if (changedProperties.has('temporaryParams') && this.temporaryParams) {
+          const params = this.temporaryParams;
+          await this._appendCardWithParams(params);
+          this.temporaryParams = null;
         }
 
-        this.cards.push(card);
-        this.requestUpdate();
-      }
-    }
+        if (changedProperties.has('host')) {
+          if (this._currentDocId === this.host.doc.id) return;
+          this._currentDocId = this.host.doc.id;
+          this.cards = [];
+
+          const { text, images } = await this._extractAll();
+          const hasText = text.length > 0;
+          const hasImages = images.length > 0;
+
+          // Currently only supports checking on first load
+          if (hasText || hasImages) {
+            const card: CardBlock = {
+              id: Date.now(),
+              type: CardType.Doc,
+            };
+            if (hasText) {
+              card.text = text;
+            }
+            if (hasImages) {
+              card.images = images;
+            }
+
+            this.cards.push(card);
+            this.requestUpdate();
+          }
+        }
+      })
+      .catch(err => {
+        captureException(err, {
+          level: 'fatal',
+        });
+      });
   }
 
   override connectedCallback() {
@@ -507,7 +520,9 @@ export class ChatCards extends WithDisposable(LitElement) {
 
     this._disposables.add(
       AIProvider.slots.requestOpenWithChat.on(async params => {
-        await this._appendCardWithParams(params);
+        if (params.appendCard) {
+          await this._appendCardWithParams(params);
+        }
       })
     );
 

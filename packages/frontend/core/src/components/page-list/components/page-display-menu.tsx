@@ -18,6 +18,31 @@ type GroupOption = {
   label: string;
 };
 
+export function getGroupOptions(t: ReturnType<typeof useI18n>) {
+  return [
+    {
+      value: 'createDate',
+      label: t['Created'](),
+    },
+    {
+      value: 'updatedDate',
+      label: t['Updated'](),
+    },
+    {
+      value: 'tag',
+      label: t['com.affine.page.display.grouping.group-by-tag'](),
+    },
+    {
+      value: 'favourites',
+      label: t['com.affine.page.display.grouping.group-by-favourites'](),
+    },
+    {
+      value: 'none',
+      label: t['com.affine.page.display.grouping.no-grouping'](),
+    },
+  ] satisfies GroupOption[];
+}
+
 export const PageDisplayMenu = () => {
   const t = useI18n();
   const [workspaceProperties, setProperties] = useAllDocDisplayProperties();
@@ -45,7 +70,7 @@ export const PageDisplayMenu = () => {
       {
         key: 'bodyNotes',
         onClick: () => handleSetDocDisplayProperties('bodyNotes'),
-        label: t['com.arms.page.display.display-properties.body-notes'](),
+        label: t['com.affine.page.display.display-properties.body-notes'](),
       },
       {
         key: 'tags',
@@ -66,35 +91,14 @@ export const PageDisplayMenu = () => {
   }, [handleSetDocDisplayProperties, t]);
 
   const items = useMemo(() => {
-    const groupOptions: GroupOption[] = [
-      {
-        value: 'createDate',
-        label: t['Created'](),
-      },
-      {
-        value: 'updatedDate',
-        label: t['Updated'](),
-      },
-      {
-        value: 'tag',
-        label: t['com.arms.page.display.grouping.group-by-tag'](),
-      },
-      {
-        value: 'favourites',
-        label: t['com.arms.page.display.grouping.group-by-favourites'](),
-      },
-      {
-        value: 'none',
-        label: t['com.arms.page.display.grouping.no-grouping'](),
-      },
-    ];
+    const groupOptions: GroupOption[] = getGroupOptions(t);
 
     const subItems = groupOptions.map(option => (
       <MenuItem
         key={option.value}
         onSelect={() => handleSelect(option.value)}
         data-active={workspaceProperties.groupBy === option.value}
-        endFix={
+        suffixIcon={
           workspaceProperties.groupBy === option.value ? (
             <DoneIcon fontSize={'20px'} />
           ) : null
@@ -124,16 +128,16 @@ export const PageDisplayMenu = () => {
             className={styles.subMenuTriggerContent}
             data-testid="page-display-grouping-menuItem"
           >
-            <span>{t['com.arms.page.display.grouping']()}</span>
+            <span>{t['com.affine.page.display.grouping']()}</span>
             <span className={styles.currentGroupType}>{currentGroupType}</span>
           </div>
         </MenuSub>
         <MenuSeparator />
         <div className={styles.listOption}>
-          {t['com.arms.page.display.list-option']()}
+          {t['com.affine.page.display.list-option']()}
         </div>
         <div className={styles.properties}>
-          {t['com.arms.page.display.display-properties']()}
+          {t['com.affine.page.display.display-properties']()}
         </div>
         <div className={styles.propertiesWrapper}>
           {propertyOptions.map(option => (
@@ -171,7 +175,7 @@ export const PageDisplayMenu = () => {
         className={styles.headerDisplayButton}
         data-testid="page-display-menu-button"
       >
-        {t['com.arms.page.display']()}
+        {t['com.affine.page.display']()}
       </Button>
     </Menu>
   );

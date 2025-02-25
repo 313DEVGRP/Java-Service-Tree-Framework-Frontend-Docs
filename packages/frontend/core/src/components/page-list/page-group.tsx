@@ -1,21 +1,15 @@
-import { useJournalInfoHelper } from '@affine/core/hooks/use-journal';
+import { DocDisplayMetaService } from '@affine/core/modules/doc-display-meta';
 import type { Tag } from '@affine/env/filter';
 import { useI18n } from '@affine/i18n';
-import { assertExists } from '@blocksuite/global/utils';
-import {
-  EdgelessIcon,
-  PageIcon,
-  TodayIcon,
-  ToggleCollapseIcon,
-  ViewLayersIcon,
-} from '@blocksuite/icons/rc';
-import type { DocCollection, DocMeta } from '@blocksuite/store';
+import { assertExists } from '@blocksuite/affine/global/utils';
+import type { DocCollection, DocMeta } from '@blocksuite/affine/store';
+import { ToggleCollapseIcon, ViewLayersIcon } from '@blocksuite/icons/rc';
 import * as Collapsible from '@radix-ui/react-collapsible';
-import { DocsService, useLiveData, useService } from '@toeverything/infra';
+import { useLiveData, useService } from '@toeverything/infra';
 import clsx from 'clsx';
 import { selectAtom } from 'jotai/utils';
 import type { MouseEventHandler } from 'react';
-import { useCallback, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 
 import { CollectionListItem } from './collections/collection-list-item';
 import { PageListItem } from './docs/page-list-item';
@@ -42,11 +36,9 @@ import type {
 } from './types';
 import { shallowEqual } from './utils';
 
-export const ItemGroupHeader = <T extends ListItem>({
-  id,
-  items,
-  label,
-}: ItemGroupProps<T>) => {
+export const ItemGroupHeader = memo(function ItemGroupHeader<
+  T extends ListItem,
+>({ id, items, label }: ItemGroupProps<T>) {
   const [collapseState, setCollapseState] = useAtom(groupCollapseStateAtom);
   const collapsed = collapseState[id];
   const onExpandedClicked: MouseEventHandler = useCallback(
@@ -113,13 +105,13 @@ export const ItemGroupHeader = <T extends ListItem>({
       <button className={styles.selectAllButton} onClick={onSelectAll}>
         {t[
           allSelected
-            ? 'com.arms.page.group-header.clear'
-            : 'com.arms.page.group-header.select-all'
+            ? 'com.affine.page.group-header.clear'
+            : 'com.affine.page.group-header.select-all'
         ]()}
       </button>
     </div>
   ) : null;
-};
+});
 
 export const ItemGroup = <T extends ListItem>({
   id,
@@ -178,7 +170,7 @@ export const ItemGroup = <T extends ListItem>({
           <div className={styles.spacer} />
           {selectionState.selectionActive ? (
             <button className={styles.selectAllButton} onClick={onSelectAll}>
-              {t['com.arms.page.group-header.select-all']()}
+              {t['com.affine.page.group-header.select-all']()}
             </button>
           ) : null}
         </div>
@@ -201,7 +193,6 @@ export const ItemGroup = <T extends ListItem>({
 const requiredPropNames = [
   'docCollection',
   'rowAsLink',
-  'isPreferredEdgeless',
   'operationsRenderer',
   'selectedIds',
   'onSelectedIdsChange',
@@ -225,7 +216,9 @@ const listsPropsAtom = selectAtom(
   shallowEqual
 );
 
-export const PageListItemRenderer = (item: ListItem) => {
+export const PageListItemRenderer = memo(function PageListItemRenderer(
+  item: ListItem
+) {
   const props = useAtomValue(listsPropsAtom);
   const { selectionActive } = useAtomValue(selectionStateAtom);
   const groups = useAtomValue(groupsAtom);
@@ -245,9 +238,9 @@ export const PageListItemRenderer = (item: ListItem) => {
       )}
     />
   );
-};
+});
 
-export const CollectionListItemRenderer = (item: ListItem) => {
+export const CollectionListItemRenderer = memo((item: ListItem) => {
   const props = useAtomValue(listsPropsAtom);
   const { selectionActive } = useAtomValue(selectionStateAtom);
   const collection = item as CollectionMeta;
@@ -259,9 +252,13 @@ export const CollectionListItemRenderer = (item: ListItem) => {
       })}
     />
   );
-};
+});
 
-export const TagListItemRenderer = (item: ListItem) => {
+CollectionListItemRenderer.displayName = 'CollectionListItemRenderer';
+
+export const TagListItemRenderer = memo(function TagListItemRenderer(
+  item: ListItem
+) {
   const props = useAtomValue(listsPropsAtom);
   const { selectionActive } = useAtomValue(selectionStateAtom);
   const tag = item as TagMeta;
@@ -273,7 +270,7 @@ export const TagListItemRenderer = (item: ListItem) => {
       })}
     />
   );
-};
+});
 
 function tagIdToTagOption(
   tagId: string,
@@ -285,27 +282,16 @@ function tagIdToTagOption(
 }
 
 const PageTitle = ({ id }: { id: string }) => {
-  const doc = useLiveData(useService(DocsService).list.doc$(id));
-  const title = useLiveData(doc?.title$);
-  const t = useI18n();
-  return title || t['Untitled']();
+  const i18n = useI18n();
+  const docDisplayMetaService = useService(DocDisplayMetaService);
+  const title = useLiveData(docDisplayMetaService.title$(id));
+  return i18n.t(title);
 };
 
-const UnifiedPageIcon = ({
-  id,
-  docCollection,
-  isPreferredEdgeless,
-}: {
-  id: string;
-  docCollection: DocCollection;
-  isPreferredEdgeless?: (id: string) => boolean;
-}) => {
-  const isEdgeless = isPreferredEdgeless ? isPreferredEdgeless(id) : false;
-  const { isJournal } = useJournalInfoHelper(docCollection, id);
-  if (isJournal) {
-    return <TodayIcon />;
-  }
-  return isEdgeless ? <EdgelessIcon /> : <PageIcon />;
+const UnifiedPageIcon = ({ id }: { id: string }) => {
+  const docDisplayMetaService = useService(DocDisplayMetaService);
+  const Icon = useLiveData(docDisplayMetaService.icon$(id));
+  return <Icon />;
 };
 
 function pageMetaToListItemProp(
@@ -333,20 +319,12 @@ function pageMetaToListItemProp(
     pageId: item.id,
     pageIds,
     title: <PageTitle id={item.id} />,
-    preview: (
-      <PagePreview docCollection={props.docCollection} pageId={item.id} />
-    ),
+    preview: <PagePreview pageId={item.id} />,
     createDate: new Date(item.createDate),
     updatedDate: item.updatedDate ? new Date(item.updatedDate) : undefined,
     to: props.rowAsLink && !props.selectable ? `/${item.id}` : undefined,
     onClick: toggleSelection,
-    icon: (
-      <UnifiedPageIcon
-        id={item.id}
-        docCollection={props.docCollection}
-        isPreferredEdgeless={props.isPreferredEdgeless}
-      />
-    ),
+    icon: <UnifiedPageIcon id={item.id} />,
     tags:
       item.tags
         ?.map(id => tagIdToTagOption(id, props.docCollection))

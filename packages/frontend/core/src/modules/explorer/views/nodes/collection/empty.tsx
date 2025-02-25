@@ -18,7 +18,7 @@ export const Empty = ({
   const t = useI18n();
   return (
     <EmptyNodeChildren ref={dropTargetRef}>
-      {t['com.arms.collection.emptyCollection']()}
+      {t['com.affine.collection.emptyCollection']()}
     </EmptyNodeChildren>
   );
 };

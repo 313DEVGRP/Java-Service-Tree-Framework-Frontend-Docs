@@ -1,27 +1,38 @@
-import type { BlockSpec } from '@blocksuite/block-std';
+import { AIEdgelessRootBlockSpec } from '@affine/core/blocksuite/presets/ai';
+import { FeatureFlagService } from '@affine/core/modules/feature-flag';
+import { builtInTemplates as builtInEdgelessTemplates } from '@affine/templates/edgeless';
+import { builtInTemplates as builtInStickersTemplates } from '@affine/templates/stickers';
+import type { ExtensionType } from '@blocksuite/affine/block-std';
+import type { TemplateManager } from '@blocksuite/affine/blocks';
 import {
-  EdgelessNoteBlockSpec,
-  EdgelessSurfaceBlockSpec,
-  EdgelessSurfaceRefBlockSpec,
-  EdgelessTextBlockSpec,
-  FrameBlockSpec,
-} from '@blocksuite/blocks';
-import type { FrameworkProvider } from '@toeverything/infra';
+  EdgelessRootBlockSpec,
+  EdgelessTemplatePanel,
+  SpecProvider,
+} from '@blocksuite/affine/blocks';
+import { type FrameworkProvider } from '@toeverything/infra';
 
-import { CommonBlockSpecs } from './common';
-import { createEdgelessRootBlockSpec } from './custom/root-block';
+import { enableAffineExtension, enableAIExtension } from './custom/root-block';
 
 export function createEdgelessModeSpecs(
   framework: FrameworkProvider
-): BlockSpec[] {
-  return [
-    ...CommonBlockSpecs,
-    EdgelessSurfaceBlockSpec,
-    EdgelessSurfaceRefBlockSpec,
-    FrameBlockSpec,
-    EdgelessTextBlockSpec,
-    EdgelessNoteBlockSpec,
-    // special
-    createEdgelessRootBlockSpec(framework),
-  ];
+): ExtensionType[] {
+  const featureFlagService = framework.get(FeatureFlagService);
+  const enableAI = featureFlagService.flags.enable_ai.value;
+  const edgelessSpec = SpecProvider.getInstance().getSpec('edgeless');
+  enableAffineExtension(framework, edgelessSpec);
+  if (enableAI) {
+    enableAIExtension(edgelessSpec);
+    edgelessSpec.replace(EdgelessRootBlockSpec, AIEdgelessRootBlockSpec);
+  }
+
+  return edgelessSpec.value;
+}
+
+export function effects() {
+  EdgelessTemplatePanel.templates.extend(
+    builtInStickersTemplates as TemplateManager
+  );
+  EdgelessTemplatePanel.templates.extend(
+    builtInEdgelessTemplates as TemplateManager
+  );
 }

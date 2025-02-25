@@ -16,33 +16,33 @@ const useFilterTag = ({ name }: FilterTagProps) => {
     case 'Tags':
       return t['Tags']();
     case 'Is Favourited':
-      return t['com.arms.filter.is-favourited']();
+      return t['com.affine.filter.is-favourited']();
     case 'Is Public':
-      return t['com.arms.filter.is-public']();
+      return t['com.affine.filter.is-public']();
     case 'after':
-      return t['com.arms.filter.after']();
+      return t['com.affine.filter.after']();
     case 'before':
-      return t['com.arms.filter.before']();
+      return t['com.affine.filter.before']();
     case 'last':
-      return t['com.arms.filter.last']();
+      return t['com.affine.filter.last']();
     case 'is':
-      return t['com.arms.filter.is']();
+      return t['com.affine.filter.is']();
     case 'is not empty':
-      return t['com.arms.filter.is not empty']();
+      return t['com.affine.filter.is not empty']();
     case 'is empty':
-      return t['com.arms.filter.is empty']();
+      return t['com.affine.filter.is empty']();
     case 'contains all':
-      return t['com.arms.filter.contains all']();
+      return t['com.affine.filter.contains all']();
     case 'contains one of':
-      return t['com.arms.filter.contains one of']();
+      return t['com.affine.filter.contains one of']();
     case 'does not contains all':
-      return t['com.arms.filter.does not contains all']();
+      return t['com.affine.filter.does not contains all']();
     case 'does not contains one of':
-      return t['com.arms.filter.does not contains one of']();
+      return t['com.affine.filter.does not contains one of']();
     case 'true':
-      return t['com.arms.filter.true']();
+      return t['com.affine.filter.true']();
     case 'false':
-      return t['com.arms.filter.false']();
+      return t['com.affine.filter.false']();
     default:
       return name;
   }

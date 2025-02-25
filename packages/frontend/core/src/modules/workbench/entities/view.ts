@@ -1,5 +1,8 @@
 import { Entity, LiveData } from '@toeverything/infra';
 import type { Location, To } from 'history';
+import { isEqual } from 'lodash-es';
+import type { ParseOptions } from 'query-string';
+import queryString from 'query-string';
 import { Observable } from 'rxjs';
 
 import { createNavigableHistory } from '../../../utils/navigable-history';
@@ -26,6 +29,16 @@ export class View extends Entity<{
   }
 
   sidebarTabs$ = new LiveData<SidebarTab[]>([]);
+
+  scrollPositions = new WeakMap<
+    Location,
+    | number
+    | {
+        centerX: number;
+        centerY: number;
+        zoom: number;
+      }
+  >();
 
   // _activeTabId may point to a non-existent tab.
   // In this case, we still retain the activeTabId data and wait for the non-existent tab to be mounted.
@@ -77,6 +90,51 @@ export class View extends Entity<{
 
   icon$ = new LiveData(this.props.icon ?? 'allDocs');
 
+  queryString$<T extends Record<string, unknown>>(
+    options: ParseOptions = {
+      parseNumbers: true,
+      parseBooleans: true,
+    }
+  ) {
+    return this.location$
+      .selector(v => v.search)
+      .map(search => queryString.parse(search, options) as Partial<T>);
+  }
+
+  updateQueryString<T extends Record<string, unknown>>(
+    patch: Partial<T>,
+    {
+      forceUpdate,
+      parseNumbers,
+      replace,
+    }: {
+      forceUpdate?: boolean;
+      parseNumbers?: boolean;
+      replace?: boolean;
+    } = {}
+  ) {
+    const oldQueryStrings = queryString.parse(location.search, {
+      parseBooleans: true,
+      parseNumbers: parseNumbers,
+    });
+    const newQueryStrings = { ...oldQueryStrings, ...patch };
+
+    if (forceUpdate || !isEqual(oldQueryStrings, newQueryStrings)) {
+      const search = queryString.stringify(newQueryStrings);
+
+      const newState = {
+        ...this.history.location,
+        search,
+      };
+
+      if (replace) {
+        this.history.replace(newState);
+      } else {
+        this.history.push(newState);
+      }
+    }
+  }
+
   push(path: To) {
     this.history.push(path);
   }
@@ -111,6 +169,22 @@ export class View extends Entity<{
 
   activeSidebarTab(id: string | null) {
     this._activeSidebarTabId$.next(id);
+  }
+
+  getScrollPosition() {
+    return this.scrollPositions.get(this.history.location);
+  }
+
+  setScrollPosition(
+    position:
+      | number
+      | {
+          centerX: number;
+          centerY: number;
+          zoom: number;
+        }
+  ) {
+    this.scrollPositions.set(this.history.location, position);
   }
 
   setTitle(title: string) {

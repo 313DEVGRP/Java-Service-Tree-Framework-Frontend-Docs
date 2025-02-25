@@ -41,11 +41,11 @@ export const SetPassword: FC<{
           onSetPassword(passwordRef.current);
         }, [onSetPassword])}
       >
-        {t['com.arms.auth.set.password.save']()}
+        {t['com.affine.auth.set.password.save']()}
       </Button>
       {showLater ? (
         <Button variant="plain" size="large" onClick={onLater}>
-          {t['com.arms.auth.later']()}
+          {t['com.affine.auth.later']()}
         </Button>
       ) : null}
     </>

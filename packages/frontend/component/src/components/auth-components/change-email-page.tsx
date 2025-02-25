@@ -40,18 +40,20 @@ export const ChangeEmailPage = ({
   }, []);
   return (
     <AuthPageContainer
-      title={t['com.arms.auth.change.email.page.title']()}
-      subtitle={t['com.arms.auth.change.email.page.subtitle']()}
+      title={t['com.affine.auth.change.email.page.title']()}
+      subtitle={t['com.affine.auth.change.email.page.subtitle']()}
     >
       <>
         <AuthInput
           className={styles.input}
-          label={t['com.arms.settings.email']()}
-          placeholder={t['com.arms.auth.sign.email.placeholder']()}
+          label={t['com.affine.settings.email']()}
+          placeholder={t['com.affine.auth.sign.email.placeholder']()}
           value={email}
           onChange={onEmailChange}
           error={!isValidEmail}
-          errorHint={isValidEmail ? '' : t['com.arms.auth.sign.email.error']()}
+          errorHint={
+            isValidEmail ? '' : t['com.affine.auth.sign.email.error']()
+          }
           onEnter={onContinue}
           disabled={hasSetUp}
         />
@@ -62,7 +64,7 @@ export const ChangeEmailPage = ({
           loading={loading}
           disabled={hasSetUp}
         >
-          {t['com.arms.auth.set.email.save']()}
+          {t['com.affine.auth.set.email.save']()}
         </Button>
       </>
     </AuthPageContainer>

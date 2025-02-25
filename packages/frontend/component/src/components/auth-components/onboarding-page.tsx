@@ -45,7 +45,7 @@ function getCallbackUrl(location: Location) {
       const parsedUrl = new URL(url);
       return parsedUrl.pathname + parsedUrl.search;
     }
-  } catch (_) {}
+  } catch {}
   return null;
 }
 
@@ -119,13 +119,15 @@ export const OnboardingPage = ({
     () => questions?.[questionIdx],
     [questionIdx, questions]
   );
-  const isMacosDesktop = environment.isDesktop && environment.isMacOs;
-  const isWindowsDesktop = environment.isDesktop && environment.isWindows;
+  const isMacosDesktop = BUILD_CONFIG.isElectron && environment.isMacOs;
+  const isWindowsDesktop = BUILD_CONFIG.isElectron && environment.isWindows;
 
   if (!questions) {
     return null;
   }
 
+  // deprecated
+  // TODO(@forehalo): remove
   if (callbackUrl?.startsWith('/open-app/signin-redirect')) {
     const url = new URL(callbackUrl, window.location.origin);
     url.searchParams.set('next', 'onboarding');
@@ -157,11 +159,11 @@ export const OnboardingPage = ({
           <div className={styles.optionsWrapper}>
             {question.options &&
               question.options.length > 0 &&
-              question.options.map((option, optionIndex) => {
+              question.options.map(option => {
                 if (option.type === 'checkbox') {
                   return (
                     <Checkbox
-                      key={optionIndex}
+                      key={option.label}
                       name={option.value}
                       className={styles.checkBox}
                       labelClassName={styles.label}
@@ -182,7 +184,7 @@ export const OnboardingPage = ({
                 } else if (option.type === 'input') {
                   return (
                     <Input
-                      key={optionIndex}
+                      key={option.label}
                       className={styles.input}
                       type="text"
                       size="large"

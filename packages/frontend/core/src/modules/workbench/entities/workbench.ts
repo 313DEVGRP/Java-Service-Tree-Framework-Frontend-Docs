@@ -1,6 +1,9 @@
+import { toURLSearchParams } from '@affine/core/modules/navigation/utils';
 import { Unreachable } from '@affine/env/constant';
+import type { ReferenceParams } from '@blocksuite/affine/blocks';
 import { Entity, LiveData } from '@toeverything/infra';
 import { type To } from 'history';
+import { omit } from 'lodash-es';
 import { nanoid } from 'nanoid';
 
 import type { WorkbenchNewTabHandler } from '../services/workbench-new-tab-handler';
@@ -40,8 +43,10 @@ export class Workbench extends Entity {
   activeView$ = LiveData.computed(get => {
     const activeIndex = get(this.activeViewIndex$);
     const views = get(this.views$);
-    return views[activeIndex]; // todo: this could be null
+    // activeIndex could be out of bounds when reordering views
+    return views.at(activeIndex) || views[0];
   });
+
   location$ = LiveData.computed(get => {
     return get(get(this.activeView$).location$);
   });
@@ -113,7 +118,7 @@ export class Workbench extends Entity {
       show?: boolean;
     } = {}
   ) {
-    this.newTabHandler({
+    this.newTabHandler.handle({
       basename: this.basename$.value,
       to,
       show: show ?? true,
@@ -121,12 +126,34 @@ export class Workbench extends Entity {
   }
 
   openDoc(
-    id: string | { docId: string; blockId?: string },
+    id:
+      | string
+      | ({ docId: string } & (
+          | ReferenceParams
+          | Record<string, string | undefined>
+        )),
     options?: WorkbenchOpenOptions
   ) {
-    const docId = typeof id === 'string' ? id : id.docId;
-    const blockId = typeof id === 'string' ? undefined : id.blockId;
-    this.open(blockId ? `/${docId}#${blockId}` : `/${docId}`, options);
+    const isString = typeof id === 'string';
+    const docId = isString ? id : id.docId;
+
+    let query = '';
+    if (!isString) {
+      const search = toURLSearchParams(omit(id, ['docId']));
+      if (search?.size) {
+        query = `?${search.toString()}`;
+      }
+    }
+
+    this.open(`/${docId}${query}`, options);
+  }
+
+  openAttachment(
+    docId: string,
+    blockId: string,
+    options?: WorkbenchOpenOptions
+  ) {
+    this.open(`/${docId}/attachments/${blockId}`, options);
   }
 
   openCollections(options?: WorkbenchOpenOptions) {

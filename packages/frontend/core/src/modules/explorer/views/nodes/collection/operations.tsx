@@ -1,27 +1,27 @@
 import {
   IconButton,
-  MenuIcon,
   MenuItem,
   MenuSeparator,
   useConfirmModal,
 } from '@affine/component';
-import { useAppSettingHelper } from '@affine/core/hooks/affine/use-app-setting-helper';
-import { useDeleteCollectionInfo } from '@affine/core/hooks/affine/use-delete-collection-info';
-import { track } from '@affine/core/mixpanel';
+import { usePageHelper } from '@affine/core/components/blocksuite/block-suite-page-list/utils';
+import { useDeleteCollectionInfo } from '@affine/core/components/hooks/affine/use-delete-collection-info';
+import { IsFavoriteIcon } from '@affine/core/components/pure/icons';
 import { CollectionService } from '@affine/core/modules/collection';
-import { CompatibleFavoriteItemsAdapter } from '@affine/core/modules/properties';
+import { CompatibleFavoriteItemsAdapter } from '@affine/core/modules/favorite';
+import { FeatureFlagService } from '@affine/core/modules/feature-flag';
 import { WorkbenchService } from '@affine/core/modules/workbench';
+import { WorkspaceService } from '@affine/core/modules/workspace';
 import { useI18n } from '@affine/i18n';
+import { track } from '@affine/track';
 import {
   DeleteIcon,
-  FavoritedIcon,
-  FavoriteIcon,
   FilterIcon,
   OpenInNewIcon,
   PlusIcon,
   SplitViewIcon,
 } from '@blocksuite/icons/rc';
-import { DocsService, useLiveData, useServices } from '@toeverything/infra';
+import { useLiveData, useServices } from '@toeverything/infra';
 import { useCallback, useMemo } from 'react';
 
 import type { NodeOperation } from '../../tree/types';
@@ -32,20 +32,28 @@ export const useExplorerCollectionNodeOperations = (
   onOpenEdit: () => void
 ): NodeOperation[] => {
   const t = useI18n();
-  const { appSettings } = useAppSettingHelper();
   const {
     workbenchService,
-    docsService,
+    workspaceService,
     collectionService,
     compatibleFavoriteItemsAdapter,
+    featureFlagService,
   } = useServices({
-    DocsService,
     WorkbenchService,
+    WorkspaceService,
     CollectionService,
     CompatibleFavoriteItemsAdapter,
+    FeatureFlagService,
   });
   const deleteInfo = useDeleteCollectionInfo();
 
+  const { createPage } = usePageHelper(
+    workspaceService.workspace.docCollection
+  );
+
+  const enableMultiView = useLiveData(
+    featureFlagService.flags.enable_multi_view.$
+  );
   const favorite = useLiveData(
     useMemo(
       () =>
@@ -56,21 +64,14 @@ export const useExplorerCollectionNodeOperations = (
   const { openConfirmModal } = useConfirmModal();
 
   const createAndAddDocument = useCallback(() => {
-    const newDoc = docsService.createDoc();
+    const newDoc = createPage();
     collectionService.addPageToCollection(collectionId, newDoc.id);
     track.$.navigationPanel.collections.createDoc();
     track.$.navigationPanel.collections.addDocToCollection({
       control: 'button',
     });
-    workbenchService.workbench.openDoc(newDoc.id);
     onOpenCollapsed();
-  }, [
-    collectionId,
-    collectionService,
-    docsService,
-    onOpenCollapsed,
-    workbenchService.workbench,
-  ]);
+  }, [collectionId, collectionService, createPage, onOpenCollapsed]);
 
   const handleToggleFavoriteCollection = useCallback(() => {
     compatibleFavoriteItemsAdapter.toggle(collectionId, 'collection');
@@ -81,8 +82,8 @@ export const useExplorerCollectionNodeOperations = (
 
   const handleAddDocToCollection = useCallback(() => {
     openConfirmModal({
-      title: t['com.arms.collection.add-doc.confirm.title'](),
-      description: t['com.arms.collection.add-doc.confirm.description'](),
+      title: t['com.affine.collection.add-doc.confirm.title'](),
+      description: t['com.affine.collection.add-doc.confirm.description'](),
       cancelText: t['Cancel'](),
       confirmText: t['Confirm'](),
       confirmButtonOptions: {
@@ -125,7 +126,7 @@ export const useExplorerCollectionNodeOperations = (
             size="16"
             onClick={handleAddDocToCollection}
             tooltip={t[
-              'com.arms.rootAppSidebar.explorer.collection-add-tooltip'
+              'com.affine.rootAppSidebar.explorer.collection-add-tooltip'
             ]()}
           >
             <PlusIcon />
@@ -135,15 +136,8 @@ export const useExplorerCollectionNodeOperations = (
       {
         index: 99,
         view: (
-          <MenuItem
-            preFix={
-              <MenuIcon>
-                <FilterIcon />
-              </MenuIcon>
-            }
-            onClick={handleShowEdit}
-          >
-            {t['com.arms.collection.menu.edit']()}
+          <MenuItem prefixIcon={<FilterIcon />} onClick={handleShowEdit}>
+            {t['com.affine.collection.menu.edit']()}
           </MenuItem>
         ),
       },
@@ -151,11 +145,7 @@ export const useExplorerCollectionNodeOperations = (
         index: 99,
         view: (
           <MenuItem
-            preFix={
-              <MenuIcon>
-                <PlusIcon />
-              </MenuIcon>
-            }
+            prefixIcon={<PlusIcon />}
             onClick={handleAddDocToCollection}
           >
             {t['New Page']()}
@@ -166,54 +156,33 @@ export const useExplorerCollectionNodeOperations = (
         index: 99,
         view: (
           <MenuItem
-            preFix={
-              <MenuIcon>
-                {favorite ? (
-                  <FavoritedIcon
-                    style={{ color: 'var(--affine-primary-color)' }}
-                  />
-                ) : (
-                  <FavoriteIcon />
-                )}
-              </MenuIcon>
-            }
+            prefixIcon={<IsFavoriteIcon favorite={favorite} />}
             onClick={handleToggleFavoriteCollection}
           >
             {favorite
-              ? t['com.arms.favoritePageOperation.remove']()
-              : t['com.arms.favoritePageOperation.add']()}
+              ? t['com.affine.favoritePageOperation.remove']()
+              : t['com.affine.favoritePageOperation.add']()}
           </MenuItem>
         ),
       },
       {
         index: 99,
         view: (
-          <MenuItem
-            preFix={
-              <MenuIcon>
-                <OpenInNewIcon />
-              </MenuIcon>
-            }
-            onClick={handleOpenInNewTab}
-          >
-            {t['com.arms.workbench.tab.page-menu-open']()}
+          <MenuItem prefixIcon={<OpenInNewIcon />} onClick={handleOpenInNewTab}>
+            {t['com.affine.workbench.tab.page-menu-open']()}
           </MenuItem>
         ),
       },
-      ...(appSettings.enableMultiView
+      ...(BUILD_CONFIG.isElectron && enableMultiView
         ? [
             {
               index: 99,
               view: (
                 <MenuItem
-                  preFix={
-                    <MenuIcon>
-                      <SplitViewIcon />
-                    </MenuIcon>
-                  }
+                  prefixIcon={<SplitViewIcon />}
                   onClick={handleOpenInSplitView}
                 >
-                  {t['com.arms.workbench.split-view.page-menu-open']()}
+                  {t['com.affine.workbench.split-view.page-menu-open']()}
                 </MenuItem>
               ),
             },
@@ -228,11 +197,7 @@ export const useExplorerCollectionNodeOperations = (
         view: (
           <MenuItem
             type={'danger'}
-            preFix={
-              <MenuIcon>
-                <DeleteIcon />
-              </MenuIcon>
-            }
+            prefixIcon={<DeleteIcon />}
             onClick={handleDeleteCollection}
           >
             {t['Delete']()}
@@ -241,7 +206,7 @@ export const useExplorerCollectionNodeOperations = (
       },
     ],
     [
-      appSettings.enableMultiView,
+      enableMultiView,
       favorite,
       handleAddDocToCollection,
       handleDeleteCollection,

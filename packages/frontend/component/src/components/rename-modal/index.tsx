@@ -41,6 +41,7 @@ export const RenameModal = ({
   return (
     <Menu
       rootOptions={{
+        modal: true,
         open: open,
         onOpenChange: onOpenChange,
       }}
@@ -50,6 +51,7 @@ export const RenameModal = ({
         sideOffset: -12,
         onClick: e => e.stopPropagation(),
         style: { borderRadius: 10, padding: 8 },
+        role: 'rename-modal',
       }}
       items={
         <Input

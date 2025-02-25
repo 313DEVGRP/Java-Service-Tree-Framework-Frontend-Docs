@@ -1,4 +1,4 @@
-import { CategoryDivider } from '@affine/core/components/app-sidebar';
+import { CategoryDivider } from '@affine/core/modules/app-sidebar/views';
 import * as Collapsible from '@radix-ui/react-collapsible';
 import { useLiveData, useService } from '@toeverything/infra';
 import clsx from 'clsx';
@@ -71,7 +71,10 @@ export const CollapsibleSection = ({
       >
         {actions}
       </CategoryDivider>
-      <Collapsible.Content className={clsx(content, contentClassName)}>
+      <Collapsible.Content
+        data-testid="collapsible-section-content"
+        className={clsx(content, contentClassName)}
+      >
         {children}
       </Collapsible.Content>
     </Collapsible.Root>

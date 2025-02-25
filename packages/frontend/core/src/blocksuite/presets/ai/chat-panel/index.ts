@@ -1,12 +1,13 @@
 import './chat-panel-input';
 import './chat-panel-messages';
 
-import type { EditorHost } from '@blocksuite/block-std';
-import { ShadowlessElement, WithDisposable } from '@blocksuite/block-std';
-import { debounce } from '@blocksuite/global/utils';
-import type { Doc } from '@blocksuite/store';
+import type { EditorHost } from '@blocksuite/affine/block-std';
+import { ShadowlessElement } from '@blocksuite/affine/block-std';
+import { NotificationProvider } from '@blocksuite/affine/blocks';
+import { debounce, WithDisposable } from '@blocksuite/affine/global/utils';
+import type { Doc } from '@blocksuite/affine/store';
 import { css, html, type PropertyValues } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 import { createRef, type Ref, ref } from 'lit/directives/ref.js';
 
 import { AIHelpIcon, SmallHintIcon } from '../_common/icons';
@@ -18,7 +19,6 @@ import {
 import type { ChatAction, ChatContextValue, ChatItem } from './chat-context';
 import type { ChatPanelMessages } from './chat-panel-messages';
 
-@customElement('chat-panel')
 export class ChatPanel extends WithDisposable(ShadowlessElement) {
   static override styles = css`
     chat-panel {
@@ -133,7 +133,7 @@ export class ChatPanel extends WithDisposable(ShadowlessElement) {
       };
 
       this.isLoading = false;
-      this.scrollToDown();
+      this._scrollToEnd();
     })().catch(console.error);
   }, 200);
 
@@ -158,9 +158,12 @@ export class ChatPanel extends WithDisposable(ShadowlessElement) {
     chatSessionId: null,
   };
 
+  private readonly _scrollToEnd = () => {
+    this._chatMessages.value?.scrollToEnd();
+  };
+
   private readonly _cleanupHistories = async () => {
-    const notification =
-      this.host.std.spec.getService('affine:page').notificationService;
+    const notification = this.host.std.getOptional(NotificationProvider);
     if (!notification) return;
 
     if (
@@ -188,8 +191,26 @@ export class ChatPanel extends WithDisposable(ShadowlessElement) {
 
   protected override updated(_changedProperties: PropertyValues) {
     if (_changedProperties.has('doc')) {
-      this.chatContextValue.chatSessionId = null;
-      this._resetItems();
+      requestAnimationFrame(() => {
+        this.chatContextValue.chatSessionId = null;
+        this._resetItems();
+      });
+    }
+
+    if (
+      !this.isLoading &&
+      _changedProperties.has('chatContextValue') &&
+      this.chatContextValue.status !== 'idle'
+    ) {
+      if (this.chatContextValue.status === 'transmitting') {
+        this._scrollToEnd();
+      } else if (
+        this.chatContextValue.status === 'loading' ||
+        this.chatContextValue.status === 'error' ||
+        this.chatContextValue.status === 'success'
+      ) {
+        setTimeout(this._scrollToEnd, 500);
+      }
     }
   }
 
@@ -238,14 +259,10 @@ export class ChatPanel extends WithDisposable(ShadowlessElement) {
     });
   };
 
-  scrollToDown() {
-    requestAnimationFrame(() => this._chatMessages.value?.scrollToDown());
-  }
-
   override render() {
     return html` <div class="chat-panel-container">
       <div class="chat-panel-title">
-        <div>AFFINE AI</div>
+        <div>AFFiNE AI</div>
         <div
           @click=${() => {
             AIProvider.toggleGeneralAIOnboarding?.(true);

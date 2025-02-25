@@ -1,25 +1,23 @@
-import './chat-block-input';
-import './date-time';
-import '../_common/components/chat-action-list';
-import '../_common/components/copy-more';
-
-import { type EditorHost } from '@blocksuite/block-std';
+import { type EditorHost } from '@blocksuite/affine/block-std';
 import {
   type AIError,
   CanvasElementType,
   ConnectorMode,
+  DocModeProvider,
   type EdgelessRootService,
-} from '@blocksuite/blocks';
+  NotificationProvider,
+  TelemetryProvider,
+} from '@blocksuite/affine/blocks';
+import { html, LitElement, nothing } from 'lit';
+import { property, query, state } from 'lit/decorators.js';
+import { classMap } from 'lit/directives/class-map.js';
+import { repeat } from 'lit/directives/repeat.js';
+
 import {
   type AIChatBlockModel,
   type ChatMessage,
   ChatMessagesSchema,
-} from '@blocksuite/presets';
-import { html, LitElement, nothing } from 'lit';
-import { customElement, property, query, state } from 'lit/decorators.js';
-import { classMap } from 'lit/directives/class-map.js';
-import { repeat } from 'lit/directives/repeat.js';
-
+} from '../../../blocks';
 import {
   ChatBlockPeekViewActions,
   constructUserInfoWithMessages,
@@ -32,16 +30,15 @@ import { PeekViewStyles } from './styles';
 import type { ChatContext } from './types';
 import { calcChildBound } from './utils';
 
-@customElement('ai-chat-block-peek-view')
 export class AIChatBlockPeekView extends LitElement {
   static override styles = PeekViewStyles;
 
   private get _rootService() {
-    return this.host.spec.getService('affine:page');
+    return this.host.std.getService('affine:page');
   }
 
   private get _modeService() {
-    return this._rootService.docModeService;
+    return this.host.std.get(DocModeProvider);
   }
 
   private get parentSessionId() {
@@ -137,7 +134,7 @@ export class AIChatBlockPeekView extends LitElement {
    */
   createAIChatBlock = async () => {
     // Only create AI chat block in edgeless mode
-    const mode = this._modeService.getMode();
+    const mode = this._modeService.getEditorMode();
     if (mode !== 'edgeless') {
       return;
     }
@@ -177,7 +174,7 @@ export class AIChatBlockPeekView extends LitElement {
 
     const edgelessService = this._rootService as EdgelessRootService;
     const bound = calcChildBound(this.parentModel, edgelessService);
-    const aiChatBlockId = edgelessService.addBlock(
+    const aiChatBlockId = edgelessService.crud.addBlock(
       'affine:embed-ai-chat' as keyof BlockSuite.BlockModels,
       {
         xywh: bound.serialize(),
@@ -196,14 +193,15 @@ export class AIChatBlockPeekView extends LitElement {
     this.updateContext({ currentChatBlockId: aiChatBlockId });
 
     // Connect the parent chat block to the AI chat block
-    edgelessService.addElement(CanvasElementType.CONNECTOR, {
+    edgelessService.crud.addElement(CanvasElementType.CONNECTOR, {
       mode: ConnectorMode.Curve,
       controllers: [],
       source: { id: this.parentChatBlockId },
       target: { id: aiChatBlockId },
     });
 
-    edgelessService.telemetryService?.track('CanvasElementAdded', {
+    const telemetryService = this.host.std.getOptional(TelemetryProvider);
+    telemetryService?.track('CanvasElementAdded', {
       control: 'conversation',
       page: 'whiteboard editor',
       module: 'canvas',
@@ -226,6 +224,7 @@ export class AIChatBlockPeekView extends LitElement {
 
     const { doc } = this.host;
     const chatBlock = doc.getBlock(this.chatContext.currentChatBlockId);
+    if (!chatBlock) return;
 
     // Get fork session messages
     const { parentRootWorkspaceId, parentRootDocId } = this;
@@ -250,10 +249,9 @@ export class AIChatBlockPeekView extends LitElement {
    * Clean current chat messages and delete the newly created AI chat block
    */
   cleanCurrentChatHistories = async () => {
-    const { notificationService } = this._rootService;
-    if (!notificationService) {
-      return;
-    }
+    if (!this._rootService) return;
+    const notificationService = this.host.std.getOptional(NotificationProvider);
+    if (!notificationService) return;
 
     const { currentChatBlockId, currentSessionId } = this.chatContext;
     if (!currentChatBlockId && !currentSessionId) {
@@ -278,7 +276,7 @@ export class AIChatBlockPeekView extends LitElement {
 
       if (currentChatBlockId) {
         const edgelessService = this._rootService as EdgelessRootService;
-        const chatBlock = doc.getBlock(currentChatBlockId).model;
+        const chatBlock = doc.getBlock(currentChatBlockId)?.model;
         if (chatBlock) {
           const connectors = edgelessService.getConnectors(
             chatBlock as AIChatBlockModel

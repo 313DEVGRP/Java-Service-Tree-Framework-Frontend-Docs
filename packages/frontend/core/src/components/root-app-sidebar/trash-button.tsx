@@ -3,16 +3,12 @@ import {
   useConfirmModal,
   useDropTarget,
 } from '@affine/component';
+import { MenuLinkItem } from '@affine/core/modules/app-sidebar/views';
+import { DocsService } from '@affine/core/modules/doc';
+import { GlobalContextService } from '@affine/core/modules/global-context';
 import type { AffineDNDData } from '@affine/core/types/dnd';
 import { useI18n } from '@affine/i18n';
-import {
-  DocsService,
-  GlobalContextService,
-  useLiveData,
-  useService,
-} from '@toeverything/infra';
-
-import { MenuLinkItem } from '../app-sidebar';
+import { useLiveData, useService } from '@toeverything/infra';
 
 export const TrashButton = () => {
   const t = useI18n();
@@ -35,10 +31,12 @@ export const TrashButton = () => {
           const docRecord = docsService.list.doc$(docId).value;
           if (docRecord) {
             openConfirmModal({
-              title: t['com.arms.moveToTrash.confirmModal.title'](),
-              description: t['com.arms.moveToTrash.confirmModal.description']({
-                title: docRecord.title$.value || t['Untitled'](),
-              }),
+              title: t['com.affine.moveToTrash.confirmModal.title'](),
+              description: t['com.affine.moveToTrash.confirmModal.description'](
+                {
+                  title: docRecord.title$.value || t['Untitled'](),
+                }
+              ),
               confirmText: t.Delete(),
               confirmButtonOptions: {
                 variant: 'error',
@@ -62,7 +60,7 @@ export const TrashButton = () => {
       to={'/trash'}
     >
       <span data-testid="trash-page">
-        {t['com.arms.workspaceSubPath.trash']()}
+        {t['com.affine.workspaceSubPath.trash']()}
       </span>
     </MenuLinkItem>
   );

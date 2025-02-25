@@ -1,17 +1,12 @@
 import { Button, FlexWrapper, notify } from '@affine/component';
-import { openSettingModalAtom } from '@affine/core/atoms';
-import { track } from '@affine/core/mixpanel';
 import { SubscriptionService } from '@affine/core/modules/cloud';
+import { GlobalDialogService } from '@affine/core/modules/dialogs';
+import { EditorService } from '@affine/core/modules/editor';
 import { useI18n } from '@affine/i18n';
+import { track } from '@affine/track';
 import { AiIcon } from '@blocksuite/icons/rc';
-import {
-  DocService,
-  useLiveData,
-  useServices,
-  WorkspaceService,
-} from '@toeverything/infra';
+import { useLiveData, useService, useServices } from '@toeverything/infra';
 import { cssVar } from '@toeverything/theme';
-import { useAtomValue, useSetAtom } from 'jotai';
 import Lottie from 'lottie-react';
 import { useTheme } from 'next-themes';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
@@ -46,47 +41,43 @@ const EdgelessOnboardingAnimation = () => {
 };
 
 export const AIOnboardingEdgeless = () => {
-  const { docService, subscriptionService } = useServices({
-    WorkspaceService,
-    DocService,
+  const { subscriptionService, editorService } = useServices({
     SubscriptionService,
+    EditorService,
   });
 
   const t = useI18n();
   const notifyId = useLiveData(edgelessNotifyId$);
   const generalAIOnboardingOpened = useLiveData(showAIOnboardingGeneral$);
   const aiSubscription = useLiveData(subscriptionService.subscription.ai$);
-  const settingModalOpen = useAtomValue(openSettingModalAtom);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
+  const globalDialogService = useService(GlobalDialogService);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const setSettingModal = useSetAtom(openSettingModalAtom);
-
-  const doc = docService.doc;
-  const mode = useLiveData(doc.mode$);
+  const mode = useLiveData(editorService.editor.mode$);
 
   const goToPricingPlans = useCallback(() => {
     track.$.aiOnboarding.dialog.viewPlans();
-    setSettingModal({
-      open: true,
+    globalDialogService.open('setting', {
       activeTab: 'plans',
       scrollAnchor: 'aiPricingPlan',
     });
-  }, [setSettingModal]);
+  }, [globalDialogService]);
 
   useEffect(() => {
-    if (settingModalOpen.open) return;
     if (generalAIOnboardingOpened) return;
     if (notifyId) return;
     if (mode !== 'edgeless') return;
-    clearTimeout(timeoutRef.current);
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
     timeoutRef.current = setTimeout(() => {
       // try to close local onboarding
       notify.dismiss(localNotifyId$.value);
 
       const id = notify(
         {
-          title: t['com.arms.ai-onboarding.edgeless.title'](),
-          message: t['com.arms.ai-onboarding.edgeless.message'](),
+          title: t['com.affine.ai-onboarding.edgeless.title'](),
+          message: t['com.affine.ai-onboarding.edgeless.message'](),
           icon: <AiIcon />,
           iconColor: cssVar('processingColor'),
           thumb: <EdgelessOnboardingAnimation />,
@@ -103,7 +94,7 @@ export const AIOnboardingEdgeless = () => {
                 className={styles.actionButton}
               >
                 <span className={styles.getStartedButtonText}>
-                  {t['com.arms.ai-onboarding.edgeless.get-started']()}
+                  {t['com.affine.ai-onboarding.edgeless.get-started']()}
                 </span>
               </Button>
               {aiSubscription ? null : (
@@ -117,7 +108,7 @@ export const AIOnboardingEdgeless = () => {
                   }}
                 >
                   <span className={styles.purchaseButtonText}>
-                    {t['com.arms.ai-onboarding.edgeless.purchase']()}
+                    {t['com.affine.ai-onboarding.edgeless.purchase']()}
                   </span>
                 </Button>
               )}
@@ -134,7 +125,6 @@ export const AIOnboardingEdgeless = () => {
     goToPricingPlans,
     mode,
     notifyId,
-    settingModalOpen,
     t,
   ]);
 

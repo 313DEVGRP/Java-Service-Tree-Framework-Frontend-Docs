@@ -27,7 +27,7 @@ export const FolderEmpty = ({
   const t = useI18n();
   return (
     <EmptyNodeChildren ref={dropTargetRef} className={draggedOverHighlight}>
-      {t['com.arms.rootAppSidebar.organize.empty-folder']()}
+      {t['com.affine.rootAppSidebar.organize.empty-folder']()}
     </EmptyNodeChildren>
   );
 };

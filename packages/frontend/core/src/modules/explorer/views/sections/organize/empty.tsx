@@ -41,10 +41,10 @@ export const RootEmptyReady = ({
     <ExplorerEmptySection
       ref={dropTargetRef}
       icon={<AnimatedFolderIcon open={!!draggedOverDraggable} />}
-      message={t['com.arms.rootAppSidebar.organize.empty']()}
+      message={t['com.affine.rootAppSidebar.organize.empty']()}
       messageTestId="slider-bar-organize-empty-message"
       actionText={t[
-        'com.arms.rootAppSidebar.organize.empty.new-folders-button'
+        'com.affine.rootAppSidebar.organize.empty.new-folders-button'
       ]()}
       onActionClick={onClickCreate}
     >

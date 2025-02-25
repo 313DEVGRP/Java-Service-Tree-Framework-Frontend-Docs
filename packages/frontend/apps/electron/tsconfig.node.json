@@ -1,0 +1,26 @@
+{
+  "extends": "../../../../tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "target": "ESNext",
+    "module": "ESNext",
+    "resolveJsonModule": true,
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true,
+    "noEmit": false,
+    "outDir": "./lib/scripts",
+    "types": ["node", "affine__env"],
+    "allowJs": true
+  },
+  "include": ["./scripts"],
+  "exclude": ["./renderer"],
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
+  },
+  "references": [
+    {
+      "path": "../../../../tools/utils"
+    }
+  ]
+}

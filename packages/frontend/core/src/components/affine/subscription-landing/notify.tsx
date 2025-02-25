@@ -49,46 +49,6 @@ const SubscriptionChangedNotifyFooter = ({
   );
 };
 
-const isDesktop = environment.isDesktop;
-export const useUpgradeNotify = () => {
-  const t = useI18n();
-  const prevNotifyIdRef = useRef<string | number | null>(null);
-
-  return useCallback(
-    (link: string) => {
-      prevNotifyIdRef.current && notify.dismiss(prevNotifyIdRef.current);
-      const id = notify(
-        {
-          title: (
-            <span className={notifyHeader}>
-              {t['com.arms.payment.upgrade-success-notify.title']()}
-            </span>
-          ),
-          message: t['com.arms.payment.upgrade-success-notify.content'](),
-          alignMessage: 'title',
-          icon: null,
-          footer: (
-            <SubscriptionChangedNotifyFooter
-              to={link}
-              okText={
-                isDesktop
-                  ? t['com.arms.payment.upgrade-success-notify.ok-client']()
-                  : t['com.arms.payment.upgrade-success-notify.ok-web']()
-              }
-              cancelText={t['com.arms.payment.upgrade-success-notify.later']()}
-              onCancel={() => notify.dismiss(id)}
-              onConfirm={() => notify.dismiss(id)}
-            />
-          ),
-        },
-        { duration: 24 * 60 * 60 * 1000 }
-      );
-      prevNotifyIdRef.current = id;
-    },
-    [t]
-  );
-};
-
 export const useDowngradeNotify = () => {
   const t = useI18n();
   const prevNotifyIdRef = useRef<string | number | null>(null);
@@ -100,21 +60,21 @@ export const useDowngradeNotify = () => {
         {
           title: (
             <span className={notifyHeader}>
-              {t['com.arms.payment.downgraded-notify.title']()}
+              {t['com.affine.payment.downgraded-notify.title']()}
             </span>
           ),
-          message: t['com.arms.payment.downgraded-notify.content'](),
+          message: t['com.affine.payment.downgraded-notify.content'](),
           alignMessage: 'title',
           icon: null,
           footer: (
             <SubscriptionChangedNotifyFooter
               to={link}
               okText={
-                isDesktop
-                  ? t['com.arms.payment.downgraded-notify.ok-client']()
-                  : t['com.arms.payment.downgraded-notify.ok-web']()
+                BUILD_CONFIG.isElectron
+                  ? t['com.affine.payment.downgraded-notify.ok-client']()
+                  : t['com.affine.payment.downgraded-notify.ok-web']()
               }
-              cancelText={t['com.arms.payment.downgraded-notify.later']()}
+              cancelText={t['com.affine.payment.downgraded-notify.later']()}
               onCancel={() => notify.dismiss(id)}
               onConfirm={() => notify.dismiss(id)}
             />

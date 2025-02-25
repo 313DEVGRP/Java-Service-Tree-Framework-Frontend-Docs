@@ -21,7 +21,7 @@ export const BackButton: FC<ButtonProps> = props => {
       prefix={<ArrowLeftSmallIcon />}
       {...props}
     >
-      {t['com.arms.backButton']()}
+      {t['com.affine.backButton']()}
     </Button>
   );
 };

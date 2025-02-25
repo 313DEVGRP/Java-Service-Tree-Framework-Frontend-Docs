@@ -5,7 +5,7 @@ import { useCallback } from 'react';
 import {
   RouteLogic,
   useNavigateHelper,
-} from '../../../../hooks/use-navigate-helper';
+} from '../../../../components/hooks/use-navigate-helper';
 import { ErrorDetail, ErrorStatus } from '../error-basic/error-detail';
 import { createErrorFallback } from '../error-basic/fallback-creator';
 
@@ -20,7 +20,7 @@ export const PageNotFoundDetail = createErrorFallback(PageNotFoundError, () => {
 
   return (
     <ErrorDetail
-      title={t['com.arms.notFoundPage.title']()}
+      title={t['com.affine.notFoundPage.title']()}
       description={t['404.hint']()}
       buttonText={t['404.back']()}
       onButtonClick={onBtnClick}

@@ -50,7 +50,7 @@ export const InviteModal = ({
       onOpenChange={setOpen}
       title={t['Invite Members']()}
       description={t['Invite Members Message']()}
-      cancelText={t['com.arms.inviteModal.button.cancel']()}
+      cancelText={t['com.affine.inviteModal.button.cancel']()}
       contentOptions={{
         ['data-testid' as string]: 'invite-modal',
         style: {
@@ -61,7 +61,7 @@ export const InviteModal = ({
       confirmButtonOptions={{
         loading: isMutating,
         variant: 'primary',
-        ['data-testid' as string]: 'confirm-enable-affine-cloud-button',
+        'data-testid': 'confirm-enable-affine-cloud-button',
       }}
       onConfirm={handleConfirm}
     >
@@ -71,7 +71,7 @@ export const InviteModal = ({
         value={inviteEmail}
         onChange={setInviteEmail}
         error={!isValidEmail}
-        errorHint={isValidEmail ? '' : t['com.arms.auth.sign.email.error']()}
+        errorHint={isValidEmail ? '' : t['com.affine.auth.sign.email.error']()}
         onEnter={handleConfirm}
         size="large"
       />

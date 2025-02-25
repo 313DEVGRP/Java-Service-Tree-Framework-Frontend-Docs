@@ -3,16 +3,13 @@ import {
   type DropTargetOptions,
   toast,
 } from '@affine/component';
-import { track } from '@affine/core/mixpanel';
+import { GlobalContextService } from '@affine/core/modules/global-context';
 import type { Tag } from '@affine/core/modules/tag';
 import { TagService } from '@affine/core/modules/tag';
 import type { AffineDNDData } from '@affine/core/types/dnd';
 import { useI18n } from '@affine/i18n';
-import {
-  GlobalContextService,
-  useLiveData,
-  useServices,
-} from '@toeverything/infra';
+import { track } from '@affine/track';
+import { useLiveData, useServices } from '@toeverything/infra';
 import clsx from 'clsx';
 import { useCallback, useMemo, useState } from 'react';
 
@@ -100,8 +97,11 @@ export const ExplorerTagNode = ({
           track.$.navigationPanel.tags.tagDoc({
             control: 'drag',
           });
+          track.$.navigationPanel.tags.drop({
+            type: data.source.data.entity.type,
+          });
         } else {
-          toast(t['com.arms.rootAppSidebar.tag.doc-only']());
+          toast(t['com.affine.rootAppSidebar.tag.doc-only']());
         }
       } else {
         onDrop?.(data);
@@ -130,7 +130,7 @@ export const ExplorerTagNode = ({
         if (data.source.data.entity?.type === 'doc') {
           tagRecord.tag(data.source.data.entity.id);
         } else {
-          toast(t['com.arms.rootAppSidebar.tag.doc-only']());
+          toast(t['com.affine.rootAppSidebar.tag.doc-only']());
         }
       }
     },
@@ -141,7 +141,7 @@ export const ExplorerTagNode = ({
     () => args => {
       const entityType = args.source.data.entity?.type;
       return args.treeInstruction?.type !== 'make-child'
-        ? (typeof canDrop === 'function' ? canDrop(args) : canDrop) ?? true
+        ? ((typeof canDrop === 'function' ? canDrop(args) : canDrop) ?? true)
         : entityType === 'doc';
     },
     [canDrop]

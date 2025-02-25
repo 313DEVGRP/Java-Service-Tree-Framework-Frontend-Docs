@@ -6,19 +6,15 @@ export const useNavConfig = () => {
   return useMemo(
     () => [
       {
-        title: t['com.arms.other-page.nav.official-website'](),
+        title: t['com.affine.other-page.nav.official-website'](),
         path: 'https://affine.pro',
       },
       {
-        title: t['com.arms.other-page.nav.affine-community'](),
-        path: 'https://community.affine.pro/home',
-      },
-      {
-        title: t['com.arms.other-page.nav.blog'](),
+        title: t['com.affine.other-page.nav.blog'](),
         path: 'https://affine.pro/blog',
       },
       {
-        title: t['com.arms.other-page.nav.contact-us'](),
+        title: t['com.affine.other-page.nav.contact-us'](),
         path: 'https://affine.pro/about-us',
       },
     ],

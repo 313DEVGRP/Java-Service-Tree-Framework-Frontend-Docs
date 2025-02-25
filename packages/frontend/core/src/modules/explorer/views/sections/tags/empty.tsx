@@ -9,7 +9,7 @@ export const RootEmpty = () => {
   return (
     <ExplorerEmptySection
       icon={TagIcon}
-      message={t['com.arms.rootAppSidebar.tags.empty']()}
+      message={t['com.affine.rootAppSidebar.tags.empty']()}
       messageTestId="slider-bar-tags-empty-message"
     />
   );

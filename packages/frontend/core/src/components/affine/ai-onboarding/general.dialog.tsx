@@ -1,12 +1,11 @@
 import { Button, IconButton, Modal } from '@affine/component';
-import { openSettingModalAtom } from '@affine/core/atoms';
-import { useBlurRoot } from '@affine/core/hooks/use-blur-root';
-import { track } from '@affine/core/mixpanel';
+import { useBlurRoot } from '@affine/core/components/hooks/use-blur-root';
 import { AuthService, SubscriptionService } from '@affine/core/modules/cloud';
+import { GlobalDialogService } from '@affine/core/modules/dialogs';
 import { Trans, useI18n } from '@affine/i18n';
+import { track } from '@affine/track';
 import { ArrowLeftSmallIcon } from '@blocksuite/icons/rc';
-import { useLiveData, useServices } from '@toeverything/infra';
-import { useAtom } from 'jotai';
+import { useLiveData, useService, useServices } from '@toeverything/infra';
 import type { ReactNode } from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
@@ -22,30 +21,30 @@ type Translate = ReturnType<typeof useI18n>;
 const getPlayList = (t: Translate): Array<PlayListItem> => [
   {
     video: '/onboarding/ai-onboarding.general.1.mp4',
-    title: t['com.arms.ai-onboarding.general.1.title'](),
-    desc: t['com.arms.ai-onboarding.general.1.description'](),
+    title: t['com.affine.ai-onboarding.general.1.title'](),
+    desc: t['com.affine.ai-onboarding.general.1.description'](),
   },
   {
     video: '/onboarding/ai-onboarding.general.2.mp4',
-    title: t['com.arms.ai-onboarding.general.2.title'](),
-    desc: t['com.arms.ai-onboarding.general.2.description'](),
+    title: t['com.affine.ai-onboarding.general.2.title'](),
+    desc: t['com.affine.ai-onboarding.general.2.description'](),
   },
   {
     video: '/onboarding/ai-onboarding.general.3.mp4',
-    title: t['com.arms.ai-onboarding.general.3.title'](),
-    desc: t['com.arms.ai-onboarding.general.3.description'](),
+    title: t['com.affine.ai-onboarding.general.3.title'](),
+    desc: t['com.affine.ai-onboarding.general.3.description'](),
   },
   {
     video: '/onboarding/ai-onboarding.general.4.mp4',
-    title: t['com.arms.ai-onboarding.general.4.title'](),
-    desc: t['com.arms.ai-onboarding.general.4.description'](),
+    title: t['com.affine.ai-onboarding.general.4.title'](),
+    desc: t['com.affine.ai-onboarding.general.4.description'](),
   },
   {
     video: '/onboarding/ai-onboarding.general.5.mp4',
-    title: t['com.arms.ai-onboarding.general.5.title'](),
+    title: t['com.affine.ai-onboarding.general.5.title'](),
     desc: (
       <Trans
-        i18nKey="com.arms.ai-onboarding.general.5.description"
+        i18nKey="com.affine.ai-onboarding.general.5.description"
         values={{ link: 'ai.affine.pro' }}
         components={{
           a: (
@@ -96,8 +95,8 @@ export const AIOnboardingGeneral = () => {
   const aiSubscription = useLiveData(subscriptionService.subscription.ai$);
   const [index, setIndex] = useState(0);
   const list = useMemo(() => getPlayList(t), [t]);
-  const [settingModal, setSettingModal] = useAtom(openSettingModalAtom);
-  const readyToOpen = isLoggedIn && !settingModal.open;
+  const globalDialogService = useService(GlobalDialogService);
+  const readyToOpen = isLoggedIn;
   useBlurRoot(open && readyToOpen);
 
   const isFirst = index === 0;
@@ -111,14 +110,13 @@ export const AIOnboardingGeneral = () => {
     toggleGeneralAIOnboarding(false);
   }, []);
   const goToPricingPlans = useCallback(() => {
-    setSettingModal({
-      open: true,
+    globalDialogService.open('setting', {
       activeTab: 'plans',
       scrollAnchor: 'aiPricingPlan',
     });
     track.$.aiOnboarding.dialog.viewPlans();
     closeAndDismiss();
-  }, [closeAndDismiss, setSettingModal]);
+  }, [closeAndDismiss, globalDialogService]);
   const onPrev = useCallback(() => {
     setIndex(i => Math.max(0, i - 1));
   }, []);
@@ -220,7 +218,7 @@ export const AIOnboardingGeneral = () => {
           aria-hidden={!isLast || !!aiSubscription}
         >
           <Trans
-            i18nKey="com.arms.ai-onboarding.general.privacy"
+            i18nKey="com.affine.ai-onboarding.general.privacy"
             components={{
               a: (
                 <a
@@ -248,19 +246,19 @@ export const AIOnboardingGeneral = () => {
                   onClick={closeAndDismiss}
                   variant="primary"
                 >
-                  {t['com.arms.ai-onboarding.general.get-started']()}
+                  {t['com.affine.ai-onboarding.general.get-started']()}
                 </Button>
               ) : (
                 <div className={styles.subscribeActions}>
                   <Button size="large" onClick={goToPricingPlans}>
-                    {t['com.arms.ai-onboarding.general.purchase']()}
+                    {t['com.affine.ai-onboarding.general.purchase']()}
                   </Button>
                   <Button
                     size="large"
                     onClick={closeAndDismiss}
                     variant="primary"
                   >
-                    {t['com.arms.ai-onboarding.general.try-for-free']()}
+                    {t['com.affine.ai-onboarding.general.try-for-free']()}
                   </Button>
                 </div>
               )}
@@ -269,7 +267,7 @@ export const AIOnboardingGeneral = () => {
             <>
               {isFirst ? (
                 <Button onClick={remindLater} size="large">
-                  {t['com.arms.ai-onboarding.general.skip']()}
+                  {t['com.affine.ai-onboarding.general.skip']()}
                 </Button>
               ) : (
                 <Button
@@ -278,7 +276,7 @@ export const AIOnboardingGeneral = () => {
                   size="large"
                   variant="plain"
                 >
-                  {t['com.arms.ai-onboarding.general.prev']()}
+                  {t['com.affine.ai-onboarding.general.prev']()}
                 </Button>
               )}
               <div className={styles.actionAndIndicator}>
@@ -286,7 +284,7 @@ export const AIOnboardingGeneral = () => {
                   {index + 1} / {list.length}
                 </div>
                 <Button size="large" variant="primary" onClick={onNext}>
-                  {t['com.arms.ai-onboarding.general.next']()}
+                  {t['com.affine.ai-onboarding.general.next']()}
                 </Button>
               </div>
             </>

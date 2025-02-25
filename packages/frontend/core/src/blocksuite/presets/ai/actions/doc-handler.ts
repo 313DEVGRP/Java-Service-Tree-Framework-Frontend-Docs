@@ -1,10 +1,10 @@
-import type { EditorHost } from '@blocksuite/block-std';
+import type { EditorHost } from '@blocksuite/affine/block-std';
 import type {
   AffineAIPanelWidget,
   AffineAIPanelWidgetConfig,
   AIError,
-} from '@blocksuite/blocks';
-import { assertExists } from '@blocksuite/global/utils';
+} from '@blocksuite/affine/blocks';
+import { assertExists } from '@blocksuite/affine/global/utils';
 import type { TemplateResult } from 'lit';
 
 import {
@@ -12,17 +12,18 @@ import {
   buildErrorConfig,
   buildFinishConfig,
   buildGeneratingConfig,
-  getAIPanel,
 } from '../ai-panel';
-import { createTextRenderer } from '../messages/text';
 import { AIProvider } from '../provider';
 import { reportResponse } from '../utils/action-reporter';
+import { getAIPanelWidget } from '../utils/ai-widgets';
+import { AIContext } from '../utils/context';
 import {
   getSelectedImagesAsBlobs,
   getSelectedTextContent,
   getSelections,
   selectAboveBlocks,
 } from '../utils/selection-utils';
+import { actionToAnswerRenderer } from './answer-renderer';
 
 export function bindTextStream(
   stream: BlockSuitePresets.TextStream,
@@ -174,8 +175,10 @@ function updateAIPanelConfig<T extends keyof BlockSuitePresets.AIActions>(
     variants,
     trackerOptions
   )(host);
-  config.answerRenderer = createTextRenderer(host, { maxHeight: 320 });
-  config.finishStateConfig = buildFinishConfig(aiPanel, id);
+
+  const ctx = new AIContext();
+  config.answerRenderer = actionToAnswerRenderer(id, host, ctx);
+  config.finishStateConfig = buildFinishConfig(aiPanel, id, ctx);
   config.generatingStateConfig = buildGeneratingConfig(generatingIcon);
   config.errorStateConfig = buildErrorConfig(aiPanel);
   config.copy = buildCopyConfig(aiPanel);
@@ -194,7 +197,7 @@ export function actionToHandler<T extends keyof BlockSuitePresets.AIActions>(
   trackerOptions?: BlockSuitePresets.TrackerOptions
 ) {
   return (host: EditorHost) => {
-    const aiPanel = getAIPanel(host);
+    const aiPanel = getAIPanelWidget(host);
     updateAIPanelConfig(aiPanel, id, generatingIcon, variants, trackerOptions);
     const { selectedBlocks: blocks } = getSelections(aiPanel.host);
     if (!blocks || blocks.length === 0) return;
@@ -205,7 +208,7 @@ export function actionToHandler<T extends keyof BlockSuitePresets.AIActions>(
 }
 
 export function handleInlineAskAIAction(host: EditorHost) {
-  const panel = getAIPanel(host);
+  const panel = getAIPanelWidget(host);
   const selection = host.selection.find('text');
   const lastBlockPath = selection
     ? (selection.to?.blockId ?? selection.blockId)

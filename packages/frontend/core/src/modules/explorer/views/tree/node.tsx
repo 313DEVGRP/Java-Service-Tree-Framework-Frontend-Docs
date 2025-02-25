@@ -5,15 +5,15 @@ import {
   type DropTargetTreeInstruction,
   IconButton,
   Menu,
-  MenuIcon,
   MenuItem,
   useDraggable,
   useDropTarget,
 } from '@affine/component';
 import { RenameModal } from '@affine/component/rename-modal';
-import { appSidebarWidthAtom } from '@affine/core/components/app-sidebar/index.jotai';
+import { AppSidebarService } from '@affine/core/modules/app-sidebar';
 import { WorkbenchLink } from '@affine/core/modules/workbench';
 import type { AffineDNDData } from '@affine/core/types/dnd';
+import { extractEmojiIcon } from '@affine/core/utils';
 import { useI18n } from '@affine/i18n';
 import {
   ArrowDownSmallIcon,
@@ -21,10 +21,10 @@ import {
   MoreHorizontalIcon,
 } from '@blocksuite/icons/rc';
 import * as Collapsible from '@radix-ui/react-collapsible';
+import { useLiveData, useService } from '@toeverything/infra';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
 import clsx from 'clsx';
 import type { To } from 'history';
-import { useAtomValue } from 'jotai';
 import {
   Fragment,
   type RefAttributes,
@@ -56,10 +56,71 @@ export type ExplorerTreeNodeIcon = React.ComponentType<{
   collapsed?: boolean;
 }>;
 
+export interface BaseExplorerTreeNodeProps {
+  name?: string;
+  icon?: ExplorerTreeNodeIcon;
+  children?: React.ReactNode;
+  active?: boolean;
+  extractEmojiAsIcon?: boolean;
+  collapsed: boolean;
+  setCollapsed: (collapsed: boolean) => void;
+  disabled?: boolean;
+  onClick?: () => void;
+  to?: To;
+  postfix?: React.ReactNode;
+  operations?: NodeOperation[];
+  childrenOperations?: NodeOperation[];
+  childrenPlaceholder?: React.ReactNode;
+  linkComponent?: React.ComponentType<
+    React.PropsWithChildren<{ to: To; className?: string }> & RefAttributes<any>
+  >;
+  [key: `data-${string}`]: any;
+}
+
+interface WebExplorerTreeNodeProps extends BaseExplorerTreeNodeProps {
+  renameable?: boolean;
+  onRename?: (newName: string) => void;
+  defaultRenaming?: boolean;
+
+  canDrop?: DropTargetOptions<AffineDNDData>['canDrop'];
+  reorderable?: boolean;
+  dndData?: AffineDNDData;
+  onDrop?: (data: DropTargetDropEvent<AffineDNDData>) => void;
+  dropEffect?: ExplorerTreeNodeDropEffect;
+}
+
+/**
+ * specific rename modal for explorer tree node,
+ * Separate it into a separate component to prevent re-rendering the entire component when width changes.
+ */
+const ExplorerTreeNodeRenameModal = ({
+  setRenaming,
+  handleRename,
+  rawName,
+}: {
+  setRenaming: (renaming: boolean) => void;
+  handleRename: (newName: string) => void;
+  rawName: string | undefined;
+}) => {
+  const appSidebarService = useService(AppSidebarService).sidebar;
+  const sidebarWidth = useLiveData(appSidebarService.width$);
+  return (
+    <RenameModal
+      open
+      width={sidebarWidth - 32}
+      onOpenChange={setRenaming}
+      onRename={handleRename}
+      currentName={rawName ?? ''}
+    >
+      <div className={styles.itemRenameAnchor} />
+    </RenameModal>
+  );
+};
+
 export const ExplorerTreeNode = ({
   children,
   icon: Icon,
-  name,
+  name: rawName,
   onClick,
   to,
   active,
@@ -68,6 +129,7 @@ export const ExplorerTreeNode = ({
   onRename,
   disabled,
   collapsed,
+  extractEmojiAsIcon,
   setCollapsed,
   canDrop,
   reorderable = true,
@@ -80,32 +142,7 @@ export const ExplorerTreeNode = ({
   onDrop,
   dropEffect,
   ...otherProps
-}: {
-  name?: string;
-  icon?: ExplorerTreeNodeIcon;
-  children?: React.ReactNode;
-  active?: boolean;
-  reorderable?: boolean;
-  defaultRenaming?: boolean;
-  collapsed: boolean;
-  setCollapsed: (collapsed: boolean) => void;
-  renameable?: boolean;
-  onRename?: (newName: string) => void;
-  disabled?: boolean;
-  onClick?: () => void;
-  to?: To;
-  postfix?: React.ReactNode;
-  canDrop?: DropTargetOptions<AffineDNDData>['canDrop'];
-  operations?: NodeOperation[];
-  childrenOperations?: NodeOperation[];
-  childrenPlaceholder?: React.ReactNode;
-  linkComponent?: React.ComponentType<
-    React.PropsWithChildren<{ to: To; className?: string }> & RefAttributes<any>
-  >;
-  dndData?: AffineDNDData;
-  onDrop?: (data: DropTargetDropEvent<AffineDNDData>) => void;
-  dropEffect?: ExplorerTreeNodeDropEffect;
-} & { [key in `data-${string}`]?: any }) => {
+}: WebExplorerTreeNodeProps) => {
   const t = useI18n();
   const cid = useId();
   const context = useContext(ExplorerTreeContext);
@@ -113,10 +150,23 @@ export const ExplorerTreeNode = ({
   // If no onClick or to is provided, clicking on the node will toggle the collapse state
   const clickForCollapse = !onClick && !to && !disabled;
   const [childCount, setChildCount] = useState(0);
-  const sidebarWidth = useAtomValue(appSidebarWidthAtom);
   const [renaming, setRenaming] = useState(defaultRenaming);
   const [lastInGroup, setLastInGroup] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
+
+  const { emoji, name } = useMemo(() => {
+    if (!extractEmojiAsIcon || !rawName) {
+      return {
+        emoji: null,
+        name: rawName,
+      };
+    }
+    const { emoji, rest } = extractEmojiIcon(rawName);
+    return {
+      emoji,
+      name: rest,
+    };
+  }, [extractEmojiAsIcon, rawName]);
   const { dragRef, dragging, CustomDragPreview } = useDraggable<
     AffineDNDData & { draggable: { __cid: string } }
   >(
@@ -135,6 +185,7 @@ export const ExplorerTreeNode = ({
     },
     [canDrop, reorderable]
   );
+
   const {
     dropTargetRef,
     treeInstruction,
@@ -171,6 +222,7 @@ export const ExplorerTreeNode = ({
         }
       },
       canDrop: handleCanDrop,
+      allowExternal: true,
     }),
     [
       dndData?.dropTarget,
@@ -230,14 +282,10 @@ export const ExplorerTreeNode = ({
                   <MenuItem
                     key={'explorer-tree-rename'}
                     type={'default'}
-                    preFix={
-                      <MenuIcon>
-                        <EditIcon />
-                      </MenuIcon>
-                    }
+                    prefixIcon={<EditIcon />}
                     onClick={() => setRenaming(true)}
                   >
-                    {t['com.arms.menu.rename']()}
+                    {t['com.affine.menu.rename']()}
                   </MenuItem>
                 ),
               }
@@ -284,13 +332,19 @@ export const ExplorerTreeNode = ({
     [onRename]
   );
 
-  const handleClick = useCallback(() => {
-    if (!clickForCollapse) {
-      onClick?.();
-    } else {
-      setCollapsed(!collapsed);
-    }
-  }, [clickForCollapse, collapsed, onClick, setCollapsed]);
+  const handleClick = useCallback(
+    (e: React.MouseEvent) => {
+      if (e.defaultPrevented) {
+        return;
+      }
+      if (!clickForCollapse) {
+        onClick?.();
+      } else {
+        setCollapsed(!collapsed);
+      }
+    },
+    [clickForCollapse, collapsed, onClick, setCollapsed]
+  );
 
   const content = (
     <div
@@ -299,69 +353,66 @@ export const ExplorerTreeNode = ({
       data-active={active}
       data-disabled={disabled}
     >
-      {Icon && (
-        <div className={styles.iconsContainer}>
-          <div
-            data-disabled={disabled}
-            onClick={handleCollapsedChange}
-            data-testid="explorer-collapsed-button"
-            className={styles.collapsedIconContainer}
-          >
-            <ArrowDownSmallIcon
-              className={styles.collapsedIcon}
-              data-collapsed={collapsed !== false}
-            />
-          </div>
-          <Icon
-            className={styles.icon}
-            draggedOver={draggedOver && !isSelfDraggedOver}
-            treeInstruction={treeInstruction}
-            collapsed={collapsed}
-          />
-        </div>
-      )}
-      {renameable && renaming && (
-        <RenameModal
-          open
-          width={sidebarWidth - 32}
-          onOpenChange={setRenaming}
-          onRename={handleRename}
-          currentName={name ?? ''}
-        >
-          <div className={styles.itemRenameAnchor} />
-        </RenameModal>
-      )}
-
-      <div className={styles.itemContent}>{name}</div>
-
-      {postfix}
       <div
-        className={styles.postfix}
-        onClick={e => {
-          // prevent jump to page
-          e.stopPropagation();
-          e.preventDefault();
-        }}
+        data-disabled={disabled}
+        onClick={handleCollapsedChange}
+        data-testid="explorer-collapsed-button"
+        className={styles.collapsedIconContainer}
       >
-        {inlineOperations.map(({ view }, index) => (
-          <Fragment key={index}>{view}</Fragment>
-        ))}
-        {menuOperations.length > 0 && (
-          <Menu
-            items={menuOperations.map(({ view }, index) => (
-              <Fragment key={index}>{view}</Fragment>
-            ))}
-          >
-            <IconButton
-              size="16"
-              data-testid="explorer-tree-node-operation-button"
-              style={{ marginLeft: 4 }}
-            >
-              <MoreHorizontalIcon />
-            </IconButton>
-          </Menu>
-        )}
+        <ArrowDownSmallIcon
+          className={styles.collapsedIcon}
+          data-collapsed={collapsed !== false}
+        />
       </div>
+
+      <div className={styles.itemMain}>
+        <div className={styles.iconContainer}>
+          {emoji ??
+            (Icon && (
+              <Icon
+                draggedOver={draggedOver && !isSelfDraggedOver}
+                treeInstruction={treeInstruction}
+                collapsed={collapsed}
+              />
+            ))}
+        </div>
+        <div className={styles.itemContent}>{name}</div>
+        {postfix}
+        <div
+          className={styles.postfix}
+          onClick={e => {
+            // prevent jump to page
+            e.preventDefault();
+          }}
+        >
+          {inlineOperations.map(({ view, index }) => (
+            <Fragment key={index}>{view}</Fragment>
+          ))}
+          {menuOperations.length > 0 && (
+            <Menu
+              items={menuOperations.map(({ view, index }) => (
+                <Fragment key={index}>{view}</Fragment>
+              ))}
+            >
+              <IconButton
+                size="16"
+                data-testid="explorer-tree-node-operation-button"
+                style={{ marginLeft: 4 }}
+              >
+                <MoreHorizontalIcon />
+              </IconButton>
+            </Menu>
+          )}
+        </div>
+      </div>
+
+      {renameable && renaming && (
+        <ExplorerTreeNodeRenameModal
+          setRenaming={setRenaming}
+          handleRename={handleRename}
+          rawName={rawName}
+        />
+      )}
     </div>
   );
 

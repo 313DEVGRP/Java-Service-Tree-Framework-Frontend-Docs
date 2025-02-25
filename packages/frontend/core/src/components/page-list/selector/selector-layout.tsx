@@ -1,4 +1,4 @@
-import { Button } from '@affine/component';
+import { Button, RowInput } from '@affine/component';
 import { useI18n } from '@affine/i18n';
 import { type PropsWithChildren, type ReactNode, useCallback } from 'react';
 
@@ -37,8 +37,8 @@ export const SelectorLayout = ({
   const t = useI18n();
 
   const onSearchChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      onSearch?.(e.target.value);
+    (value: string) => {
+      onSearch?.(value);
     },
     [onSearch]
   );
@@ -46,7 +46,7 @@ export const SelectorLayout = ({
   return (
     <div className={styles.root}>
       <header className={styles.header}>
-        <input
+        <RowInput
           className={styles.search}
           placeholder={searchPlaceholder}
           onChange={onSearchChange}
@@ -58,7 +58,7 @@ export const SelectorLayout = ({
       <footer className={styles.footer}>
         <div className={styles.footerInfo}>
           <div className={styles.selectedCount}>
-            <span>{t['com.arms.selectPage.selected']()}</span>
+            <span>{t['com.affine.selectPage.selected']()}</span>
             <span className={styles.selectedNum}>{selectedCount ?? 0}</span>
           </div>
           <Button
@@ -66,7 +66,7 @@ export const SelectorLayout = ({
             className={styles.clearButton}
             onClick={onClear}
           >
-            {t['com.arms.editCollection.pages.clear']()}
+            {t['com.affine.editCollection.pages.clear']()}
           </Button>
         </div>
 

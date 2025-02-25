@@ -19,7 +19,7 @@ export const Empty = ({
 
   return (
     <EmptyNodeChildren ref={dropTargetRef}>
-      {t['com.arms.rootAppSidebar.docs.no-subdoc']()}
+      {t['com.affine.rootAppSidebar.docs.no-subdoc']()}
     </EmptyNodeChildren>
   );
 };
