@@ -125,17 +125,17 @@ export const AIParagraphBlockSpec: BlockSpec = {
   },
 };
 
-// export const AICodeBlockSpec: BlockSpec = {
-//   ...CodeBlockSpec,
-//   setup(slots, disposableGroup) {
-//     CodeBlockSpec.setup?.(slots, disposableGroup);
-//     slots.widgetConnected.on(view => {
-//       if (view.component instanceof AffineCodeToolbarWidget) {
-//         setupCodeToolbarEntry(view.component);
-//       }
-//     });
-//   },
-// };
+export const AICodeBlockSpec: BlockSpec = {
+  ...CodeBlockSpec,
+  setup(slots, disposableGroup) {
+    CodeBlockSpec.setup?.(slots, disposableGroup);
+    slots.widgetConnected.on(view => {
+      if (view.component instanceof AffineCodeToolbarWidget) {
+        setupCodeToolbarEntry(view.component);
+      }
+    });
+  },
+};
 
 export const AIImageBlockSpec: BlockSpec = {
   ...ImageBlockSpec,
