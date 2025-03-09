@@ -2,9 +2,11 @@ import type { BlockSpec } from '@blocksuite/block-std';
 import {
   AFFINE_AI_PANEL_WIDGET,
   AFFINE_EDGELESS_COPILOT_WIDGET,
+  AffineCodeToolbarWidget,
   AffineFormatBarWidget,
   AffineImageToolbarWidget,
   AffineSlashMenuWidget,
+  CodeBlockSpec,
   EdgelessCopilotWidget,
   EdgelessElementToolbarWidget,
   EdgelessRootBlockSpec,
@@ -16,6 +18,7 @@ import {
 import { assertInstanceOf } from '@blocksuite/global/utils';
 import { literal, unsafeStatic } from 'lit/static-html.js';
 
+import { setupCodeToolbarEntry } from './entries/code-toolbar/setup-code-toolbar';
 import {
   setupEdgelessCopilot,
   setupEdgelessElementToolbarEntry,
