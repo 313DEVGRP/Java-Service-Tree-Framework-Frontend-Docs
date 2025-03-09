@@ -1,5 +1,5 @@
 import {
-  //AICodeBlockSpec,
+  AICodeBlockSpec,
   AIImageBlockSpec,
   AIParagraphBlockSpec,
 } from '@affine/core/blocksuite/presets/ai';
@@ -39,7 +39,7 @@ export const CommonBlockSpecs: BlockSpec[] = [
   EmbedLinkedDocBlockSpec,
   // special
   CustomAttachmentBlockSpec,
-  //AICodeBlockSpec,
+  AICodeBlockSpec,
   AIImageBlockSpec,
   AIParagraphBlockSpec,
   AIChatBlockSpec,
