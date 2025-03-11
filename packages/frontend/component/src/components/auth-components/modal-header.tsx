@@ -9,7 +9,6 @@ export const ModalHeader: FC<{
   return (
     <div className={modalHeaderWrapper}>
       <p>
-        <Logo1Icon className="logo" />
         {title}
       </p>
       <p>{subTitle}</p>
